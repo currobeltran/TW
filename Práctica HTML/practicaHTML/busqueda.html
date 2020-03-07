@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-
+<html lang="es">
+    
     <head>
         <meta charset="utf-8">
         <title>Libreria</title>
@@ -9,7 +10,7 @@
 
         <header>
             <div id="imagenInicio">
-                <img src="" alt="Logo de la libreria">
+                <img src="img/iconoLibro.png" alt="Logo de la libreria">
             </div>
 
             <aside>
@@ -29,6 +30,8 @@
         </nav>
 
         <section id="contenido">
+            <h2>Búsqueda de libros</h2>
+
             <form action="script.php" method="POST">
                 <label>Autor</label>  <input type="text" name="autor"/>
 
@@ -39,16 +42,15 @@
                 <p>Precio entre <input type="number" name="precioMin"/> y 
                    <input type="number" name="precioMax"/></p>
 
-                <label>Genero </label>
+                <label>Género </label>
 
-                    <input type="text" list="generos" name="generoSeleccionado"/>
-                    <datalist id="generos">
-                        <option value="Terror">
-                        <option value="Novela Histórica">
-                        <option value="Fantasía">
-                        <option value="Clásicos">
-                        <option value="Poesía">
-                    </datalist>
+                    <select name="genero">
+                        <option>Terror</option>
+                        <option>Novela Histórica</option>
+                        <option>Fantasía</option>
+                        <option>Clásicos</option>
+                        <option>Poesía</option>
+                    </select>
 
                 <label>Encuadernacion</label>
                     <input type="radio" name="encuadernado" value="tapadura"/> 
@@ -66,6 +68,7 @@
 
         <aside>
             <section id="top">
+                <h2>Ranking</h2>
                 <article id="masVendidos">
                     <h3>Más Vendidos</h3>
                     <ul>
@@ -97,13 +100,17 @@
             </article>
 
             <article id="contacto">
-                <img src="" alt="icono correo">
-                <img src="" alt="icono twitter">
-                <img src="" alt="icono facebook">
-                <img src="" alt="icono pinterest">
+                <h2>Contacta con nosotros</h2>
+
+                <img src="img/correo.png" alt="icono correo">
+                <img src="img/twitter.png" alt="icono twitter">
+                <img src="img/facebook.png" alt="icono facebook">
+                <img src="img/pinterest.png" alt="icono pinterest">
             </article>
 
             <article id="otrainfo">
+                <h2>Otra información</h2>
+
                 <ul>
                     <li>La empresa</li>
                     <li>Política de envio</li>
