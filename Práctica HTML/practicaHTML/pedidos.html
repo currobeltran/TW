@@ -15,7 +15,7 @@
 
             <aside>
                 <h1>El Lector de Libros</h1>
-                <h1>Contando historias desde hace 100 años</h1>
+                <h2>Contando historias desde hace 100 años</h2>
             </aside>
         </header>
 
@@ -30,61 +30,67 @@
         </nav>
 
         <section id="contenido">
-            <h2>información del pedido</h2>
+            <h2>Información del pedido</h2>
+            
+            <article id="infoLibro">
+                <ul id="informacion">
+                    <li><img src="img/madreFrankenstein.jpg" alt="madreFrankenstein Portada"></li>
+                    <li>Titulo: La madre de Frankenstein</li>
+                    <li>Autor: Almudena Grandes</li>
+                    <li>Editorial: Tusquets Editores</li>
+                    <li>ISBN: 978-84-9066-780-4</li>
+                    <li>Año: 2020</li>
 
-            <ul id="informacion">
-                <li>Titulo: La madre de Frankenstein</li>
-                <li>Autor: Almudena Grandes</li>
-                <li>Editorial: Tusquets Editores</li>
-                <li>ISBN: 978-84-9066-780-4</li>
-                <li>Año: 2020</li>
+                    <li>Sinopsis: 
+                        <p>
+                            En 1954, el joven psiquiatra Germán Velázquez vuelve a España para trabajar 
+                            en el manicomio de mujeres de Ciempozuelos, al sur de Madrid. Tras salir al 
+                            exilio en 1939, ha vivido quince años en Suiza, acogido por la familia del 
+                            doctor Goldstein. En Ciempozuelos, Germán se reencuentra con Aurora 
+                            Rodríguez Carballeira, una parricida paranoica, inteligentísima, que le 
+                            fascinó a los trece años, y conoce a... 
+                            <a href="catalogo.html#madreFrankenstein">Sinopsis completa</a>        
+                        </p>
+                    </li>
 
-                <li>Sinopsis: 
-                    <p>
-                        En 1954, el joven psiquiatra Germán Velázquez vuelve a España para trabajar 
-                        en el manicomio de mujeres de Ciempozuelos, al sur de Madrid. Tras salir al 
-                        exilio en 1939, ha vivido quince años en Suiza, acogido por la familia del 
-                        doctor Goldstein. En Ciempozuelos, Germán se reencuentra con Aurora 
-                        Rodríguez Carballeira, una parricida paranoica, inteligentísima, que le 
-                        fascinó a los trece años, y conoce a... 
-                        <a href="catalogo.html#madreFrankenstein">Sinopsis completa</a>        
-                    </p>
-                </li>
-
-                <li>Precio: 22.90€</li>
-            </ul>
-
-            <form action="script.php" method="POST">
-                <label>Nombre y apellidos: </label>
-                    <input type="text" name="Nombre y apellidos"/>
-
-                <label>Direccion de envío: </label>
-                    <textarea name="Dirección de envío"></textarea>
-
-                <label>Email: </label>
-                    <input type="email" name="Email"/>
-
-                <label>Número de tarjeta: </label>
-                    <input type="number" name="Tarjeta"/>
-
-                <label>Fecha de caducidad: </label>
-                    <input type="date" name="Fecha"/>
-
-                <label>CVC: </label>
-                    <input type="number" name="CVC"/>
-
-                <label>Marque si procede: </label>
-                    <input type="checkbox" name="Condiciones" value="si"/>
-                        <label>He leido y acepto las condiciones de compra</label>
-                    
-                    <input type="checkbox" name="InfoNovedad" value="si"/>
-                        <label>Deseo recibir información sobre novedades</label>
-
-                    <input type="checkbox" name="Regalo" value="si"/>
-                        <label>Deseo el envío envuelto para regalo</label>
-
-                <input type="submit" value="Hacer pedido"/>
-            </form>
+                    <li>Precio: 22.90€</li>
+                </ul>
+            </article>
+            
+            <article id="formularioPedido">
+                <form action="script.php" method="POST">
+                    <label>Nombre y apellidos: </label>
+                        <input type="text" name="Nombre y apellidos"/>
+    
+                    <label>Direccion de envío: </label>
+                        <textarea name="Dirección de envío"></textarea>
+    
+                    <label>Email: </label>
+                        <input type="email" name="Email"/>
+    
+                    <label>Número de tarjeta: </label>
+                        <input type="number" name="Tarjeta"/>
+    
+                    <label>Fecha de caducidad: </label>
+                        <input type="date" name="Fecha"/>
+    
+                    <label>CVC: </label>
+                        <input type="number" name="CVC"/>
+    
+                    <label>Marque si procede: </label>
+                        <input type="checkbox" name="Condiciones" value="si"/>
+                            <label>He leido y acepto las condiciones de compra</label>
+                        
+                        <input type="checkbox" name="InfoNovedad" value="si"/>
+                            <label>Deseo recibir información sobre novedades</label>
+    
+                        <input type="checkbox" name="Regalo" value="si"/>
+                            <label>Deseo el envío envuelto para regalo</label>
+    
+                    <input type="submit" value="Hacer pedido"/>
+                </form>
+            </article>
+            
         </section>
 
         <aside>
@@ -113,21 +119,33 @@
 
         <footer>
             <article id="direcciones">
-                <h2>Granada</h2>
-                <p>Reyes Católicos (555 112233)</p>
-                <p>Avda Dilar (555 332211)</p>
-                
-                <h2>Málaga</h2>
-                <p>Marques de Larios (555 221133)</p>
+                <ul>
+                    <li>
+                        <h2>Granada</h2>
+                        <ul>
+                            <li>Reyes Católicos (555 112233)</li>
+                            <li>Avda Dilar (555 332211)</li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <h2>Málaga</h2>
+                        <ul>
+                            <li>Marques de Larios (555 221133)</li>
+                        </ul>
+                    </li>
+                </ul>
             </article>
 
             <article id="contacto">
                 <h2>Contacta con nosotros</h2>
 
-                <img src="img/correo.png" alt="icono correo">
-                <img src="img/twitter.png" alt="icono twitter">
-                <img src="img/facebook.png" alt="icono facebook">
-                <img src="img/pinterest.png" alt="icono pinterest">
+                <ul>
+                    <li><img src="img/correo.png" alt="icono correo"></li>
+                    <li><img src="img/twitter.png" alt="icono twitter"></li>
+                    <li><img src="img/facebook.png" alt="icono facebook"></li>
+                    <li><img src="img/pinterest.png" alt="icono pinterest"></li>
+                </ul>
             </article>
 
             <article id="otrainfo">

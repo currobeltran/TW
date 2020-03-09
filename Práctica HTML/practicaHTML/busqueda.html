@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-    
+
     <head>
         <meta charset="utf-8">
         <title>Libreria</title>
@@ -9,14 +9,10 @@
     <body>
 
         <header>
-            <div id="imagenInicio">
-                <img src="img/iconoLibro.png" alt="Logo de la libreria">
-            </div>
+            <img src="img/iconoLibro.png" alt="Logo de la libreria">
 
-            <aside>
-                <h1>El Lector de Libros</h1>
-                <h1>Contando historias desde hace 100 años</h1>
-            </aside>
+            <h1>El Lector de Libros</h1>
+            <h2>Contando historias desde hace 100 años</h2>
         </header>
 
         <nav>
@@ -30,45 +26,50 @@
         </nav>
 
         <section id="contenido">
-            <h2>Búsqueda de libros</h2>
 
-            <form action="script.php" method="POST">
-                <label>Autor</label>  <input type="text" name="autor"/>
+            <article id="formularioBusqueda">
+                <h2>Búsqueda de libros</h2>
 
-                <label>Título</label> <input type="text" name="titulo"/>
+                <form action="script.php" method="POST">
+                    <label>Autor</label>  <input type="text" name="autor"/>
 
-                <label>ISBN</label> <input type="text" name="ISBN"/>
+                    <label>Título</label> <input type="text" name="titulo"/>
 
-                <p>Precio entre <input type="number" name="precioMin"/> y 
-                   <input type="number" name="precioMax"/></p>
+                    <label>ISBN</label> <input type="text" name="ISBN"/>
 
-                <label>Género </label>
+                    <p>Precio entre <input type="number" name="precioMin"/> y 
+                    <input type="number" name="precioMax"/></p>
 
-                    <select name="genero">
-                        <option>Terror</option>
-                        <option>Novela Histórica</option>
-                        <option>Fantasía</option>
-                        <option>Clásicos</option>
-                        <option>Poesía</option>
-                    </select>
+                    <label>Género </label>
 
-                <label>Encuadernacion</label>
-                    <input type="radio" name="encuadernado" value="tapadura"/> 
-                    <label>Tapa dura</label>
+                        <select name="genero">
+                            <option>Terror</option>
+                            <option>Novela Histórica</option>
+                            <option>Fantasía</option>
+                            <option>Clásicos</option>
+                            <option>Poesía</option>
+                        </select>
 
-                    <input type="radio" name="encuadernado" value="tapablanda"/> 
-                    <label>Tapa blanda</label>
+                    <label>Encuadernacion</label>
+                        <input type="radio" name="encuadernado" value="tapadura"/> 
+                        <label>Tapa dura</label>
 
-                    <input type="radio" name="encuadernado" value="cualquiera"/> 
-                    <label>Cualquiera</label>
+                        <input type="radio" name="encuadernado" value="tapablanda"/> 
+                        <label>Tapa blanda</label>
 
-                <input type="submit" value="Buscar"/>
-            </form>
+                        <input type="radio" name="encuadernado" value="cualquiera"/> 
+                        <label>Cualquiera</label>
+
+                    <input type="submit" value="Buscar"/>
+                </form>
+            </article>
+            
         </section>
 
         <aside>
             <section id="top">
                 <h2>Ranking</h2>
+
                 <article id="masVendidos">
                     <h3>Más Vendidos</h3>
                     <ul>
@@ -91,21 +92,33 @@
 
         <footer>
             <article id="direcciones">
-                <h2>Granada</h2>
-                <p>Reyes Católicos (555 112233)</p>
-                <p>Avda Dilar (555 332211)</p>
-                
-                <h2>Málaga</h2>
-                <p>Marques de Larios (555 221133)</p>
+                <ul>
+                    <li>
+                        <h2>Granada</h2>
+                        <ul>
+                            <li>Reyes Católicos (555 112233)</li>
+                            <li>Avda Dilar (555 332211)</li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <h2>Málaga</h2>
+                        <ul>
+                            <li>Marques de Larios (555 221133)</li>
+                        </ul>
+                    </li>
+                </ul>
             </article>
 
             <article id="contacto">
                 <h2>Contacta con nosotros</h2>
 
-                <img src="img/correo.png" alt="icono correo">
-                <img src="img/twitter.png" alt="icono twitter">
-                <img src="img/facebook.png" alt="icono facebook">
-                <img src="img/pinterest.png" alt="icono pinterest">
+                <ul>
+                    <li><img src="img/correo.png" alt="icono correo"></li>
+                    <li><img src="img/twitter.png" alt="icono twitter"></li>
+                    <li><img src="img/facebook.png" alt="icono facebook"></li>
+                    <li><img src="img/pinterest.png" alt="icono pinterest"></li>
+                </ul>
             </article>
 
             <article id="otrainfo">
