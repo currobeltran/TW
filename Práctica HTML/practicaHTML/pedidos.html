@@ -9,14 +9,10 @@
     <body>
 
         <header>
-            <div id="imagenInicio">
-                <img src="img/iconoLibro.png" alt="Logo de la libreria">
-            </div>
+            <img src="img/iconoLibro.png" alt="Logo de la libreria">
 
-            <aside>
-                <h1>El Lector de Libros</h1>
-                <h2>Contando historias desde hace 100 años</h2>
-            </aside>
+            <h1>El Lector de Libros</h1>
+            <h2>Contando historias desde hace 100 años</h2>
         </header>
 
         <nav>
@@ -29,11 +25,12 @@
             </ul>
         </nav>
 
-        <section id="contenido">
-            <h2>Información del pedido</h2>
+        <section>
+            <h2>Pedido</h2>
             
-            <article id="infoLibro">
-                <ul id="informacion">
+            <article>
+                <h3>Información del pedido</h3>
+                <ul>
                     <li><img src="img/madreFrankenstein.jpg" alt="madreFrankenstein Portada"></li>
                     <li>Titulo: La madre de Frankenstein</li>
                     <li>Autor: Almudena Grandes</li>
@@ -57,7 +54,8 @@
                 </ul>
             </article>
             
-            <article id="formularioPedido">
+            <article>
+                <h3>Datos personales</h3>
                 <form action="script.php" method="POST">
                     <label>Nombre y apellidos: </label>
                         <input type="text" name="Nombre y apellidos"/>
@@ -78,14 +76,20 @@
                         <input type="number" name="CVC"/>
     
                     <label>Marque si procede: </label>
-                        <input type="checkbox" name="Condiciones" value="si"/>
-                            <label>He leido y acepto las condiciones de compra</label>
+                        <label>
+                            <input type="checkbox" name="Condiciones" value="si"/>
+                            He leido y acepto las condiciones de compra
+                        </label>
                         
-                        <input type="checkbox" name="InfoNovedad" value="si"/>
-                            <label>Deseo recibir información sobre novedades</label>
+                        <label>
+                            <input type="checkbox" name="InfoNovedad" value="si"/>
+                            Deseo recibir información sobre novedades
+                        </label>
     
-                        <input type="checkbox" name="Regalo" value="si"/>
-                            <label>Deseo el envío envuelto para regalo</label>
+                        <label>
+                            <input type="checkbox" name="Regalo" value="si"/>
+                            Deseo el envío envuelto para regalo
+                        </label>
     
                     <input type="submit" value="Hacer pedido"/>
                 </form>
@@ -94,10 +98,10 @@
         </section>
 
         <aside>
-            <section id="top">
+            <section>
                 <h2>Ranking</h2>
 
-                <article id="masVendidos">
+                <article>
                     <h3>Más Vendidos</h3>
                     <ul>
                         <li>El quijote</li>
@@ -106,7 +110,7 @@
                     </ul>
                 </article>
 
-                <article id="masPopulares">
+                <article>
                     <h3>Más Populares</h3>
                     <ul>
                         <li>Charles Dickens</li>
@@ -118,7 +122,7 @@
         </aside>
 
         <footer>
-            <article id="direcciones">
+            <article>
                 <ul>
                     <li>
                         <h2>Granada</h2>
@@ -137,7 +141,7 @@
                 </ul>
             </article>
 
-            <article id="contacto">
+            <article>
                 <h2>Contacta con nosotros</h2>
 
                 <ul>
@@ -148,7 +152,7 @@
                 </ul>
             </article>
 
-            <article id="otrainfo">
+            <article>
                 <h2>Otra información</h2>
 
                 <ul>
