@@ -39,6 +39,11 @@ html{
     padding: 1%;
 }
 
+.fichaTecnica ul{
+    padding: 1%;
+    margin-left: 3%;
+}
+
 .descripcion{
     margin-top: 5%;
     background-color: lightsalmon;
@@ -57,4 +62,30 @@ li{
 #ISBN{
     font-style: italic;
     font-weight: bold;
+}
+
+.descripcion article{
+    background-color: aquamarine;
+    padding: 2%;
+}
+
+.descripcion p{
+    background-color: beige;
+    padding: 2%;
+    margin-left: 5%;
+}
+
+.descripcion h3{
+    font: inherit;
+    font-size: larger;
+    color: white;
+    background-color: cornflowerblue;
+    padding: 1%;
+    margin-right: 40%;
+    margin-bottom: -1.9%;
+}
+
+.descripcion img{
+    margin-left: 30%;
+    margin-top: 5%;
 }
