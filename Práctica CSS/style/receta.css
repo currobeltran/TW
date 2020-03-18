@@ -1,15 +1,78 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* border-radius: 3%;
+border: blue solid; */
+
 /*Reglas generales*/
 html{
     font-family: Arial, Helvetica, sans-serif;
+    display: flex;
 }
 
 ul li{
     list-style: none;
 }
 
+main{
+    width: 60%;
+    padding: 2%;
+    display: flex;
+    flex-flow: column;
+    background-color: beige;
+    line-height: 120%;
+}
+
 /*Reglas para el encabezado*/
 .titulo{
-    background-color: olive;
+    background-color: rgb(66, 170, 62);
     display: flex;
     flex-flow: row;
     padding-left: 3%;
@@ -29,15 +92,90 @@ ul li{
 
 /*Reglas para la barra de navegación*/
 .barraNavegacion{
-    background-color: olivedrab;
+    background-color:rgb(146, 207, 76);
 }
 
 .barraNavegacion ul{
+    width: 35%;
     display: flex;
     flex-flow: row;
+    justify-content: space-between;
+    padding: 0.75% 1%;
+    margin-top: 0.5%;
 }
 
 .barraNavegacion ul li{
-    padding: 1% 3% 1% 0.5%;
     font-weight: bold;
+}
+
+/*Reglas para imagenes*/
+
+.iconos{
+    width: 3%;
+    height: 3%;
+}
+
+.fotosPasos{
+    width: 30%;
+    height: 30%;
+}  
+
+#valoracion{
+    width: 10%;
+    height: 10%;
+}
+
+/*Reglas para la zona de la receta*/
+
+#cabeceraReceta{
+    background-color: rgb(66, 170, 62);
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    padding: 1% 0.5%;
+    font-size: larger;
+}
+
+#subcabecera{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+
+    font-size: small;
+    font-style: italic;
+    
+    padding: 0% 1%;
+    margin-bottom: 2%;
+}
+
+#descripcion{
+    background-color: rgb(146, 207, 76);
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    padding: 1%;
+}
+
+#descripcion p{
+    width: 65%;
+    height: 60%;
+}
+
+#preparacion{
+    display: flex;
+    flex-flow: column;
+}
+
+#preparacion ol{
+    width: fit-content;
+}
+
+#ingredientes{
+    background-color: gainsboro;
+    width: 30%;
+    height: 30%;
+    padding: 1%;
+    align-self: flex-end;
 }
