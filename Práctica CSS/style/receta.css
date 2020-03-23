@@ -48,13 +48,14 @@ table {
 	border-spacing: 0;
 }
 
-/* border-radius: 3%;
-border: blue solid; */
+/*  border-radius: 3%;
+    border: blue solid; */
 
 /*Reglas generales*/
 html{
     font-family: Arial, Helvetica, sans-serif;
-    display: flex;
+    /* display: flex;
+    flex-flow: row; */
 }
 
 ul li{
@@ -62,12 +63,18 @@ ul li{
 }
 
 main{
-    width: 60%;
+    width: 70%;
     padding: 2%;
     display: flex;
-    flex-flow: column;
+    flex-flow: row;
+    flex-wrap: wrap;
     background-color: beige;
-    line-height: 120%;
+    line-height: 130%;
+}
+
+aside{
+    float: right;
+    width: 25%;
 }
 
 /*Reglas para el encabezado*/
@@ -80,12 +87,10 @@ main{
 
 .titulo img{
     width: 10%;
-    height: 10%;
 }
 
 .titulo h1{
-    font-weight: inherit;
-    font-size: 250%;
+    font-size: 320%;
     margin-left: 5%;
     margin-top: 3%;
 }
@@ -112,17 +117,18 @@ main{
 
 .iconos{
     width: 3%;
-    height: 3%;
 }
 
 .fotosPasos{
-    width: 30%;
-    height: 30%;
+    width: 100%;
 }  
 
 #valoracion{
     width: 10%;
-    height: 10%;
+}
+
+#fotoFinal{
+    width: 30%;
 }
 
 /*Reglas para la zona de la receta*/
@@ -146,6 +152,7 @@ main{
     
     padding: 0% 1%;
     margin-bottom: 2%;
+    width: 100%;
 }
 
 #descripcion{
@@ -159,23 +166,83 @@ main{
 }
 
 #descripcion p{
-    width: 65%;
-    height: 60%;
+    width: 70%;
+    margin-right: 2%;
 }
 
 #preparacion{
-    display: flex;
-    flex-flow: column;
-}
-
-#preparacion ol{
-    width: fit-content;
-}
+    padding: 1%;
+} 
 
 #ingredientes{
-    background-color: gainsboro;
+    background-color:gainsboro;
+    float: right;
+
     width: 30%;
-    height: 30%;
     padding: 1%;
-    align-self: flex-end;
+    margin-left: 2%;
+}
+
+#preparacion ol li{
+    margin-bottom: 1%;
+}
+
+#imagenesPasos{
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    margin-left: 10%;
+}
+
+#imagenesPasos li{
+    width: 15%;
+    padding: 1%;
+}
+
+.comentario{
+    width: 100%;
+    background-color: lightcoral;
+    margin-bottom: 1%;
+    padding: 0.5%;
+    padding-left: 1%;
+    color: blueviolet;
+}
+
+.comentario p{
+    color: black;
+}
+
+#barraInferior{
+    background-color:  rgb(66, 170, 62);
+    display: flex;
+    justify-content: flex-end;
+}
+
+#barraInferior *{
+    padding: 0.5%;
+}
+
+#barraInferior :nth-child(5){
+    margin-right: 3%;
+}
+
+.lateral{
+    background-color: rgb(248, 191, 199);
+    margin-top: 5%;
+    display: flex;
+    flex-flow: column;
+    flex-wrap: nowrap;
+}
+
+.lateral h3{
+    background-color: gold;
+    font-weight: bold;
+    font-size: larger;
+    padding:2%;
+    width: 100%;
+}
+
+.lateral form{
+    width: 80%;
+    align-self: center;
 }

@@ -26,6 +26,33 @@
             </ul>
         </nav>
 
+        <aside>
+            <article class="lateral">
+                <h3>Login</h3>
+                <form action="script.php" method="POST">
+                    <label>Usuario <input type="text" name="Usuario"></label>
+                    <label>Clave <input type="text" name="Clave"></label>
+
+                    <input type="submit" value="Login">
+                </form>
+            </article>
+
+            <article class="lateral">
+                <h3>+ valoradas</h3>
+
+                <ol>
+                    <li>Risotto de calabaza y champiñones</li>
+                    <li>Pollo al salmorejo</li>
+                    <li>Ensalada de espinacas y mango</li>
+                </ol>
+            </article>
+
+            <article class="lateral">
+                <h3>nº de recetas</h3>
+                <p>El sitio contiene 1452 recetas diferentes</p>
+            </article>
+        </aside>  
+
         <main>
             <header id="cabeceraReceta">
                 <h2>Risotto de calabaza y champiñones</h2>
@@ -39,36 +66,37 @@
 
             <article id="descripcion">
                 <p>El risotto es una técnica culinaria italiana que tiene su origen en el noroeste del país, concretamente en el Piamonte, donde tradicionalmente había abundancia de arroz. Cuando se cocina el risotto, el arroz cuece poco a poco con el resto de ingredientes del plato, no por separado. Verás como en este risotto de calabaza y champiñones uno de los distintivos es el queso parmesano, fundamental en cualquier variedad de risotto.</p>
-                <img class="fotosPasos" src="img/risotto.jpg" alt="risotto">
+                <img id="fotoFinal" src="img/risotto.jpg" alt="risotto">
             </article>
 
-            <aside id="ingredientes">
-                <ul>
-                    <li>1 kilogramo de calabaza</li>
-                    <li>1 Cebolleta</li>
-                    <li>120 gramos de champiñón</li>
-                    <li>60 gramos de Parmesano</li>
-                    <li>1 chorro de Aceite de oliva</li>
-                    <li>150 gramos de arroz blanco</li>
-                    <li>1 pizca de Sal</li>
-                    <li>1 pizca de Pimienta negra</li>
-                    <li>700 mililitros de caldo de verduras</li>
-                </ul>
-            </aside>
-
             <article id="preparacion">
-                <ol>
-                    <li>Si no tienes caldo de verduras, puedes preparar uno mientras elaborados el resto de la receta. Para ello, pon a hervir unas verduras en abundante agua. Puedes incluir cebolla, puerro, apio y zanahoria. Deja hervir durante media horay pon un poco de sal.</li>
-                    <li>Mientras se hace el caldo de verduras, hamos un sofrito con la cebolleta picada y un poco de aceite de oliva. Dejamos que se cocine durante 4 minutos.</li>
-                    <li>Agregamos la calabaza pelada y cortada en cuadraditos. Cuanto más pequeña la cortes antes se cocinará. Ponemos un poco de sal y pimiento negramolida y dejamos cocinar hasta que comience a ablandarse un poco, unos 20 minutos</li>
-                    <li>Es el momento de incorporar los champiñones fileteados y limpios a este risotto de calabaza. Dejamos cocinar durante 2-3 minutos.</li>
-                    <li>Echamos el arroz, rehogamos mezclando bien con el resto de ingredientes y cubrimos con el caldo de verduras. Vamos moviendo el risotto de calabaza y champiñones poco a poco y dejamos que reduzca el agua</li>
-                    <li>Lo importante del risotto es ir incorporando el caldo poco a poco y dejar que el arroz suelte el almidón y se cocine a fuego lento, pero siempre con líquido, sin que quede seco. El tiempo de cocción es de unos 20-22 minutos, dependiendo del tipo de arroz.</li>
-                    <li>Cuando tengamos el arroz casi listo, ponemos un poco de parmesano rallado y movemos para que se integre su sabor.</li>
-                    <li>Servimos el risotto de calabaza y champiñones con un poco más de parmesano rallado por encima.</li>
-                </ol>
+                    
+                <aside id="ingredientes">
+                    <ul>
+                        <li>1 kilogramo de calabaza</li>
+                        <li>1 Cebolleta</li>
+                        <li>120 gramos de champiñón</li>
+                        <li>60 gramos de Parmesano</li>
+                        <li>1 chorro de Aceite de oliva</li>
+                        <li>150 gramos de arroz blanco</li>
+                        <li>1 pizca de Sal</li>
+                        <li>1 pizca de Pimienta negra</li>
+                        <li>700 mililitros de caldo de verduras</li>
+                    </ul>
+                </aside>
                 
-                <ul>
+                <ol>
+                    <li>1.- Si no tienes caldo de verduras, puedes preparar uno mientras elaborados el resto de la receta. Para ello, pon a hervir unas verduras en abundante agua. Puedes incluir cebolla, puerro, apio y zanahoria. Deja hervir durante media horay pon un poco de sal.</li>
+                    <li>2.- Mientras se hace el caldo de verduras, hamos un sofrito con la cebolleta picada y un poco de aceite de oliva. Dejamos que se cocine durante 4 minutos.</li>
+                    <li>3.- Agregamos la calabaza pelada y cortada en cuadraditos. Cuanto más pequeña la cortes antes se cocinará. Ponemos un poco de sal y pimiento negramolida y dejamos cocinar hasta que comience a ablandarse un poco, unos 20 minutos</li>
+                    <li>4.- Es el momento de incorporar los champiñones fileteados y limpios a este risotto de calabaza. Dejamos cocinar durante 2-3 minutos.</li>
+                    <li>5.- Echamos el arroz, rehogamos mezclando bien con el resto de ingredientes y cubrimos con el caldo de verduras. Vamos moviendo el risotto de calabaza y champiñones poco a poco y dejamos que reduzca el agua</li>
+                    <li>6.- Lo importante del risotto es ir incorporando el caldo poco a poco y dejar que el arroz suelte el almidón y se cocine a fuego lento, pero siempre con líquido, sin que quede seco. El tiempo de cocción es de unos 20-22 minutos, dependiendo del tipo de arroz.</li>
+                    <li>7.- Cuando tengamos el arroz casi listo, ponemos un poco de parmesano rallado y movemos para que se integre su sabor.</li>
+                    <li>8.- Servimos el risotto de calabaza y champiñones con un poco más de parmesano rallado por encima.</li>
+                </ol>
+            
+                <ul id="imagenesPasos">
                     <li><img class="fotosPasos" src="img/paso1.jpg" alt="paso 1"></li>
                     <li><img class="fotosPasos" src="img/paso2.jpg" alt="paso 2"></li>
                     <li><img class="fotosPasos" src="img/paso3.jpg" alt="paso 3"></li>
@@ -90,7 +118,7 @@
                 <p>Sí, mañana lo voy a probar y ya os contaré</p>
             </article>
 
-            <footer>
+            <footer id="barraInferior">
                 <img class="iconos" src="img/numero1.png" alt="uno">
                 <img class="iconos" src="img/numero2.png" alt="dos">
                 <img class="iconos" src="img/numero3.png" alt="tres">
@@ -101,33 +129,7 @@
                 <img class="iconos" src="img/comentario.png" alt="comentar">
                 <img class="iconos" src="img/cerrar.png" alt="cerrar">
             </footer>
-        </main>
-
-        <aside>
-            <article class="Login">
-                <form action="script.php" method="POST">
-                    <label>Usuario <input type="text" name="Usuario"></label>
-                    <label>Clave <input type="text" name="Clave"></label>
-
-                    <input type="submit" value="Login">
-                </form>
-            </article>
-
-            <article class="masValoradas">
-                <h3>+ valoradas</h3>
-
-                <ol>
-                    <li>Risotto de calabaza y champiñones</li>
-                    <li>Pollo al salmorejo</li>
-                    <li>Ensalada de espinacas y mango</li>
-                </ol>
-            </article>
-
-            <article class="numeroRecetas">
-                <h3>nº de recetas</h3>
-                <p>El sitio contiene 1452 recetas diferentes</p>
-            </article>
-        </aside>    
+        </main>  
 
         <footer class="footer">
             <p>(C) 2020 Tecnologías Web | Mapa del sitio | Contacto</p>
