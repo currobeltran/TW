@@ -54,8 +54,6 @@ table {
 /*Reglas generales*/
 html{
     font-family: Arial, Helvetica, sans-serif;
-    /* display: flex;
-    flex-flow: row; */
 }
 
 ul li{
@@ -65,9 +63,11 @@ ul li{
 main{
     width: 70%;
     padding: 2%;
+    
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
+
     background-color: beige;
     line-height: 130%;
 }
@@ -75,6 +75,13 @@ main{
 aside{
     float: right;
     width: 25%;
+}
+
+/*Regla para una imagen*/
+
+img {
+    width: 100%;
+    height: auto;
 }
 
 /*Reglas para el encabezado*/
@@ -92,57 +99,46 @@ aside{
 .titulo h1{
     font-size: 320%;
     margin-left: 5%;
-    margin-top: 3%;
+    align-self: center;
 }
 
 /*Reglas para la barra de navegación*/
+
 .barraNavegacion{
     background-color:rgb(146, 207, 76);
-}
-
-.barraNavegacion ul{
-    width: 35%;
+    
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
-    padding: 0.75% 1%;
-    margin-top: 0.5%;
-}
 
-.barraNavegacion ul li{
+    margin-top: 0.5%;
+    padding: 0.5%;
+    
     font-weight: bold;
 }
 
-/*Reglas para imagenes*/
-
-.iconos{
-    width: 3%;
-}
-
-.fotosPasos{
-    width: 100%;
-}  
-
-#valoracion{
-    width: 10%;
-}
-
-#fotoFinal{
-    width: 30%;
+.barraNavegacion > *{
+    margin-left: 2%;
 }
 
 /*Reglas para la zona de la receta*/
 
-#cabeceraReceta{
+.cabeceraReceta{
     background-color: rgb(66, 170, 62);
     display: flex;
     flex-flow: row;
     justify-content: space-between;
-    padding: 1% 0.5%;
+
+    align-items: center;
     font-size: larger;
+
+    padding: 1% 0.5%;
 }
 
-#subcabecera{
+.cabeceraReceta > :last-child{
+    flex-basis: 10%;
+}
+
+.subcabecera{
     display: flex;
     flex-flow: row;
     justify-content: space-between;
@@ -150,24 +146,20 @@ aside{
     font-size: small;
     font-style: italic;
     
-    padding: 0% 1%;
     margin-bottom: 2%;
     width: 100%;
 }
 
-#descripcion{
+.descripcion{
     background-color: rgb(146, 207, 76);
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
-    align-items: flex-start;
 
     padding: 1%;
 }
 
-#descripcion p{
-    width: 70%;
-    margin-right: 2%;
+.descripcion > :last-child{
+    margin-left: 1%;
 }
 
 #preparacion{
@@ -293,6 +285,6 @@ aside{
     }
 
     .barraNavegacion ul{
-        text-emphasis: none;
+        
     }
 }
