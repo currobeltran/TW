@@ -293,6 +293,6 @@ aside{
     }
 
     .barraNavegacion ul{
-        
+        text-emphasis: none;
     }
 }
