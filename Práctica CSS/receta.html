@@ -6,6 +6,7 @@
     <head>
         <title>Risotto de calabaza y champiñones</title>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=800px">
         <link rel="stylesheet" href="style/receta.css">
     </head>
 
@@ -30,14 +31,8 @@
             <article class="lateral">
                 <h3>Login</h3>
                 <form action="script.php" method="POST" class="formulario">
-                    <div class="entrada">
-                        <label>Usuario <input type="text" name="Usuario"></label>
-                    </div>
-
-                    <div class="entrada">
-                        <label>Clave <input type="text" name="Clave"></label>
-                    </div>
-
+                    <label>Usuario <input type="text" name="Usuario"></label>
+                    <label>Clave <input type="text" name="Clave"></label>
                     <input type="submit" value="Login">
                 </form>
             </article>
@@ -59,15 +54,17 @@
         </aside>  
 
         <main>
-            <header class="cabeceraReceta">
-                <h2>Risotto de calabaza y champiñones</h2>
-                <img src="img/estrellas.png" alt="estrellas">
-            </header>
+            <header>
+                <div class="cabeceraReceta">
+                    <h2>Risotto de calabaza y champiñones</h2>
+                    <img src="img/estrellas.png" alt="estrellas">
+                </div>
 
-            <div class="subcabecera">
-                <h6>Arroz, Cena, Queso, Fácil</h6>
-                <h6>Autor: el cocinillas</h6>
-            </div>
+                <div class="subcabecera">
+                    <h6>Arroz, Cena, Queso, Fácil</h6>
+                    <h6>Autor: el cocinillas</h6>
+                </div>
+            </header>
 
             <article class="descripcion">
                 <p>El risotto es una técnica culinaria italiana que tiene su origen en el noroeste del país, concretamente en el Piamonte, donde tradicionalmente había abundancia de arroz. Cuando se cocina el risotto, el arroz cuece poco a poco con el resto de ingredientes del plato, no por separado. Verás como en este risotto de calabaza y champiñones uno de los distintivos es el queso parmesano, fundamental en cualquier variedad de risotto.</p>

@@ -197,7 +197,7 @@ ol > li{
 
 .comentario{
     background-color: lightcoral;
-    margin-bottom: 1%;
+    margin-top: 1%;
     padding: 0.5%;
     padding-left: 2%;
 }
@@ -210,6 +210,7 @@ ol > li{
     background-color:  rgb(66, 170, 62);
     display: flex;
     justify-content: flex-end;
+    margin-top: 1%;
 }
 
 .barraInferior > *{
@@ -224,6 +225,7 @@ ol > li{
 .lateral{
     background-color: rgb(248, 191, 199);
     margin-top: 5%;
+    width: 80%;
 }
 
 .lateral > * {
@@ -240,12 +242,11 @@ ol > li{
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    align-items: flex-start;
+    align-items: flex-end;
 }
 
-.entrada > :last-child{
-    margin-left: 0.25%;
-    
+.formulario > *{
+    margin-bottom: 2%;
 }
 
 .footer{
@@ -255,20 +256,103 @@ ol > li{
 }
 
 @media (max-width: 800px){
+
+    body{
+        display: flex;
+        flex-direction: column;
+    }
+
+    main{
+        width: auto;
+        padding: 2% 0.5%;
+    }
+
+    aside{
+        width: 100%;
+        margin-bottom: 1%;
+    }
+
+    aside > :not(:first-child){
+        display: none;
+    }
+
     .titulo{
         font-size: x-small;
         font-weight: normal;
         align-items: center;
     }
 
-    .titulo :nth-of-type(even){
-        width: 15%;
-    }
-    .titulo :nth-child(odd){
-        width: 0%;
+    .titulo > :nth-child(odd){
+        display: none;
     }
 
-    .ingredientes{
+    .lateral{
         width: 100%;
+    }
+
+    .lateral > h3{
+        display: none;
+    }
+
+    .formulario{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: -4%;
+        padding: 1%;
+    }
+
+    .formulario > *{
+        align-self: center;
+        margin: 0% 2%;
+    }
+
+    .cabeceraReceta > img{
+        display: none;
+    }
+
+    main > header{
+        display: flex;
+        align-items: center;
+
+        background-color: rgb(66, 170, 62);
+        margin-bottom: 2%;   
+        order: 0;
+    }  
+
+    .cabeceraReceta{
+        flex-basis: 70%;
+    }
+
+    .subcabecera{
+        flex-basis: 30%;
+        flex-direction: column-reverse;
+        margin-top: 1%;
+        align-items: flex-end;
+        padding-right: 1%;
+    }
+
+    .descripcion{
+        order: 1;
+    }
+
+    .preparacion{
+        order: 2;
+    }
+
+    .barraInferior{
+        order: 3;
+    }
+
+    .comentario{
+        order: 4;
+    }
+
+    .ingredientes > *{
+        padding: 1%;
+    }
+
+    .imagenesPasos > *{
+        flex-basis: 30%;
     }
 }
