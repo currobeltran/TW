@@ -2,7 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-
+/*CSS Reset*/
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -56,10 +56,6 @@ html{
     font-family: Arial, Helvetica, sans-serif;
 }
 
-ul li{
-    list-style: none;
-}
-
 main{
     width: 70%;
     padding: 2%;
@@ -76,14 +72,29 @@ aside{
     width: 25%;
 }
 
-/*Regla para una imagen*/
+/*Reglas para enlaces*/
+
+a:link{
+    color: black;
+    text-decoration: none;
+}
+
+a:visited{
+    color: black;
+}
+
+a:hover{
+    color:rgb(24, 94, 22);
+}
+
+/*Regla para una imagenes*/
 
 img {
     max-width: 100%;
     height: auto;
 }
 
-/*Regla para listas ordenadas*/
+/*Regla para listas*/
 
 ol > li{
     margin-bottom: 1%;
@@ -91,19 +102,23 @@ ol > li{
     list-style-position: inside;
 }
 
+li{
+    list-style: none;
+}
+
 /*Reglas para el encabezado*/
-.titulo{
+#titulo{
     background-color: rgb(66, 170, 62);
     display: flex;
     flex-direction: row;
     padding-left: 3%;
 }
 
-.titulo img{
-    width: 10%;
+#titulo > img{
+    flex-basis: 10%;
 }
 
-.titulo h1{
+#titulo > h1{
     font-size: 320%;
     margin-left: 5%;
     align-self: center;
@@ -111,7 +126,7 @@ ol > li{
 
 /*Reglas para la barra de navegación*/
 
-.barraNavegacion{
+#barraNavegacion{
     background-color:rgb(146, 207, 76);
     
     display: flex;
@@ -123,13 +138,13 @@ ol > li{
     font-weight: bold;
 }
 
-.barraNavegacion > *{
+#barraNavegacion > *{
     margin-left: 2%;
 }
 
 /*Reglas para la zona de la receta*/
 
-.cabeceraReceta{
+#cabeceraReceta{
     background-color: rgb(66, 170, 62);
     display: flex;
     flex-direction: row;
@@ -141,11 +156,11 @@ ol > li{
     padding: 1% 0.5%;
 }
 
-.cabeceraReceta > :last-child{
+#cabeceraReceta > :last-child{
     flex-basis: 10%;
 }
 
-.subcabecera{
+#subcabecera{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -157,7 +172,7 @@ ol > li{
     width: 100%;
 }
 
-.descripcion{
+#descripcion{
     background-color: rgb(146, 207, 76);
     display: flex;
     flex-direction: row;
@@ -166,23 +181,26 @@ ol > li{
 
     padding: 1%;
 }
- 
-.descripcion > :last-child{
-    margin-left: 1%;
-    flex-basis: 160%;
+
+#descripcion > p{
+    flex-basis: 58%;
+}
+
+#descripcion > img{
+    flex-basis: 40%;
 } 
 
-.preparacion{
+#preparacion{
     padding: 2% 0.5%;
 } 
 
-.ingredientes{
+#ingredientes{
     background-color:gainsboro;
     padding: 1%;
     margin-left: 2%;
 }
 
-.imagenesPasos{
+#imagenesPasos{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -190,7 +208,7 @@ ol > li{
     padding: 0% 2%;
 }
 
-.imagenesPasos > *{
+#imagenesPasos > *{
     flex-basis: 15%;
     margin: 1%;
 }
@@ -206,24 +224,24 @@ ol > li{
     color: blueviolet;
 }
 
-.barraInferior{
+#barraInferior{
     background-color:  rgb(66, 170, 62);
     display: flex;
     justify-content: flex-end;
     margin-top: 1%;
 }
 
-.barraInferior > *{
+#barraInferior > *{
     padding: 0.5%;
     flex-basis: 5%;
 }
 
-.barraInferior > :nth-child(5){
+#barraInferior > :nth-child(5){
     margin-right: 3%;
 }
 
 .lateral{
-    background-color: rgb(248, 191, 199);
+    background-color: rgb(255, 236, 129);
     margin-top: 5%;
     width: 80%;
 }
@@ -238,21 +256,31 @@ ol > li{
     font-size: larger;
 }
 
-.formulario{
+#formulario{
     display: flex;
     flex-direction: column;
     overflow: hidden;
     align-items: flex-end;
 }
 
-.formulario > *{
+#formulario > *{
     margin-bottom: 2%;
 }
 
-.footer{
+#footer{
+    display: flex;
+    flex-direction: row;
     background-color: rgb(66, 170, 62);
     padding: 1% 0%;
     padding-left: 2%;
+}
+
+#footer > :not(:last-child){
+    margin-right: 0.5%;
+}
+
+#footer > :not(:last-child)::after{
+    content: " | ";
 }
 
 @media (max-width: 800px){
@@ -267,6 +295,15 @@ ol > li{
         padding: 2% 0.5%;
     }
 
+    main > header{
+        display: flex;
+        align-items: center;
+
+        background-color: rgb(66, 170, 62);
+        margin-bottom: 2%;   
+        order: 0;
+    }
+    
     aside{
         width: 100%;
         margin-bottom: 1%;
@@ -276,13 +313,13 @@ ol > li{
         display: none;
     }
 
-    .titulo{
+    #titulo{
         font-size: x-small;
         font-weight: normal;
         align-items: center;
     }
 
-    .titulo > :nth-child(odd){
+    #titulo > :nth-child(odd){
         display: none;
     }
 
@@ -294,7 +331,7 @@ ol > li{
         display: none;
     }
 
-    .formulario{
+    #formulario{
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -302,29 +339,20 @@ ol > li{
         padding: 1%;
     }
 
-    .formulario > *{
+    #formulario > *{
         align-self: center;
         margin: 0% 2%;
     }
 
-    .cabeceraReceta > img{
+    #cabeceraReceta > img{
         display: none;
     }
-
-    main > header{
-        display: flex;
-        align-items: center;
-
-        background-color: rgb(66, 170, 62);
-        margin-bottom: 2%;   
-        order: 0;
-    }  
-
-    .cabeceraReceta{
+  
+    #cabeceraReceta{
         flex-basis: 70%;
     }
 
-    .subcabecera{
+    #subcabecera{
         flex-basis: 30%;
         flex-direction: column-reverse;
         margin-top: 1%;
@@ -332,27 +360,23 @@ ol > li{
         padding-right: 1%;
     }
 
-    .descripcion{
+    .comentario{
         order: 1;
     }
 
-    .preparacion{
-        order: 2;
-    }
-
-    .barraInferior{
-        order: 3;
-    }
-
-    .comentario{
-        order: 4;
-    }
-
-    .ingredientes > *{
+    #ingredientes > *{
         padding: 1%;
     }
 
-    .imagenesPasos > *{
+    #imagenesPasos > *{
         flex-basis: 30%;
+    }
+
+    #footer{
+        flex-direction: column;
+    }
+
+    #footer > :not(:last-child)::after{
+        content: none;
     }
 }

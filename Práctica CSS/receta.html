@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 
 <html lang="es">
-
-<html>
     <head>
         <title>Risotto de calabaza y champiñones</title>
         <meta charset="utf-8">
@@ -12,27 +10,27 @@
 
     <body>
 
-        <header class="titulo">
-            <img src="img/logoBurger.png" alt="logo Hamburguesa"></img>
-            <img src="img/logoBurger.png" alt="logo Hamburguesa"></img>
-            <img src="img/logoBurger.png" alt="logo Hamburguesa"></img>
+        <header id="titulo">
+            <img src="img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="img/logoBurger.png" alt="logo Hamburguesa">
             <h1>Comida sana para todos los días</h1>
         </header>
 
         <nav>
-            <ul class="barraNavegacion">
-                <li>Listado de recetas</li>
-                <li>Añadir nueva receta</li>
-                <li>Ver mis recetas</li>
+            <ul id="barraNavegacion">
+                <li><a href="">Listado de recetas</a></li>
+                <li><a href="">Añadir nueva receta</a></li>
+                <li><a href="">Ver mis recetas</a></li>
             </ul>
         </nav>
 
         <aside>
             <article class="lateral">
                 <h3>Login</h3>
-                <form action="script.php" method="POST" class="formulario">
+                <form action="script.php" method="POST" id="formulario">
                     <label>Usuario <input type="text" name="Usuario"></label>
-                    <label>Clave <input type="text" name="Clave"></label>
+                    <label>Clave <input type="password" name="Clave"></label>
                     <input type="submit" value="Login">
                 </form>
             </article>
@@ -41,9 +39,9 @@
                 <h3>+ valoradas</h3>
 
                 <ol>
-                    <li>Risotto de calabaza y champiñones</li>
-                    <li>Pollo al salmorejo</li>
-                    <li>Ensalada de espinacas y mango</li>
+                    <li><a href="">Risotto de calabaza y champiñones</a></li>
+                    <li><a href="">Pollo al salmorejo</a></li>
+                    <li><a href="">Ensalada de espinacas y mango</a></li>
                 </ol>
             </article>
 
@@ -55,25 +53,25 @@
 
         <main>
             <header>
-                <div class="cabeceraReceta">
+                <div id="cabeceraReceta">
                     <h2>Risotto de calabaza y champiñones</h2>
                     <img src="img/estrellas.png" alt="estrellas">
                 </div>
 
-                <div class="subcabecera">
+                <div id="subcabecera">
                     <h6>Arroz, Cena, Queso, Fácil</h6>
                     <h6>Autor: el cocinillas</h6>
                 </div>
             </header>
 
-            <article class="descripcion">
+            <article id="descripcion">
                 <p>El risotto es una técnica culinaria italiana que tiene su origen en el noroeste del país, concretamente en el Piamonte, donde tradicionalmente había abundancia de arroz. Cuando se cocina el risotto, el arroz cuece poco a poco con el resto de ingredientes del plato, no por separado. Verás como en este risotto de calabaza y champiñones uno de los distintivos es el queso parmesano, fundamental en cualquier variedad de risotto.</p>
                 <img src="img/risotto.jpg" alt="risotto">
             </article>
 
-            <article class="preparacion">
+            <article id="preparacion">
                     
-                <aside class="ingredientes">
+                <aside id="ingredientes">
                     <ul>
                         <li>1 kilogramo de calabaza</li>
                         <li>1 Cebolleta</li>
@@ -98,43 +96,50 @@
                     <li>Servimos el risotto de calabaza y champiñones con un poco más de parmesano rallado por encima.</li>
                 </ol>
             
-                <ul class="imagenesPasos">
-                    <li><img class="fotosPasos" src="img/paso1.jpg" alt="paso 1"></li>
-                    <li><img class="fotosPasos" src="img/paso2.jpg" alt="paso 2"></li>
-                    <li><img class="fotosPasos" src="img/paso3.jpg" alt="paso 3"></li>
-                    <li><img class="fotosPasos" src="img/paso4.jpg" alt="paso 4"></li>
-                    <li><img class="fotosPasos" src="img/paso5.jpg" alt="paso 5"></li>
-                    <li><img class="fotosPasos" src="img/paso6.jpg" alt="paso 6"></li>
-                    <li><img class="fotosPasos" src="img/paso7.jpg" alt="paso 7"></li>
-                    <li><img class="fotosPasos" src="img/paso8.jpg" alt="paso 8"></li>
+                <ul id="imagenesPasos">
+                    <li><img src="img/paso1.jpg" alt="paso 1"></li>
+                    <li><img src="img/paso2.jpg" alt="paso 2"></li>
+                    <li><img src="img/paso3.jpg" alt="paso 3"></li>
+                    <li><img src="img/paso4.jpg" alt="paso 4"></li>
+                    <li><img src="img/paso5.jpg" alt="paso 5"></li>
+                    <li><img src="img/paso6.jpg" alt="paso 6"></li>
+                    <li><img src="img/paso7.jpg" alt="paso 7"></li>
+                    <li><img src="img/paso8.jpg" alt="paso 8"></li>
                 </ul>
             </article>
 
             <article class="comentario">
-                <h4> <time>10/07/2020</time> Juanita Pérez </h4>
+                <h4>10-07-2020. Juanita Pérez </h4>
                 <p>Hmmm... ¡Qué buena pinta tiene!</p>
             </article>
 
             <article class="comentario">
-                <h4> <time>12/07/2020</time> Anónimo </h4>
+                <h4>12-07-2020. Anónimo </h4>
                 <p>Sí, mañana lo voy a probar y ya os contaré</p>
             </article>
 
-            <footer class="barraInferior">
-                <img src="img/numero1.png" alt="uno">
-                <img src="img/numero2.png" alt="dos">
-                <img src="img/numero3.png" alt="tres">
-                <img src="img/numero4.png" alt="cuatro">
-                <img src="img/numero5.png" alt="cinco">
-
-                <img src="img/lapiz.png" alt="editar">
-                <img src="img/comentario.png" alt="comentar">
-                <img src="img/cerrar.png" alt="cerrar">
+            <footer>
+                <ul id="barraInferior">
+                    <li><a href=""><img src="img/numero1.png" alt="uno"></a></li>
+                    <li><a href=""><img src="img/numero2.png" alt="dos"></a></li>
+                    <li><a href=""><img src="img/numero3.png" alt="tres"></a></li>
+                    <li><a href=""><img src="img/numero4.png" alt="cuatro"></a></li>
+                    <li><a href=""><img src="img/numero5.png" alt="cinco"></a></li>
+    
+                    <li><a href=""><img src="img/lapiz.png" alt="editar"></a></li>
+                    <li><a href=""><img src="img/comentario.png" alt="comentar"></a></li>
+                    <li><a href=""><img src="img/cerrar.png" alt="cerrar"></a></li>
+                </ul>
+                
             </footer>
         </main>  
 
-        <footer class="footer">
-            <p>(C) 2020 Tecnologías Web | Mapa del sitio | Contacto</p>
+        <footer>
+            <ul id="footer">
+                <li><a href="">(C) 2020 Tecnologías Web</a></li>
+                <li><a href="">Mapa del sitio</a></li>
+                <li><a href="">Contacto</a></li>
+            </ul>
         </footer>
 
     </body>
