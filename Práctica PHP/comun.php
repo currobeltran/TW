@@ -1,8 +1,19 @@
 <?php
 
-    global $identificado;
-
     function cabecera(){
+        if(isset($_POST["Usuario"],$_POST["Clave"])){
+            $usuario=$_POST["Usuario"];
+            $clave=$_POST["Clave"];
+
+            if($usuario=="admin" && $clave=="clave"){
+                $mysql=new mysqli('p:'."localhost",$usuario,$clave,"practicaPHP");
+                $_SESSION['bd']=true;
+                $_SESSION['mysql']=$mysql;
+
+            }
+
+        }
+
         echo <<< HTML
             <!DOCTYPE html>
 
@@ -32,7 +43,7 @@
                 <ul id="barraNavegacion">
         HTML;
         
-        if($identificado){
+        if($_SESSION['bd']==true){
             echo <<< HTML
                 <li><a href="index.php">Inicio</a></li>
                 <li><a href="">Listado de recetas</a></li>
@@ -62,21 +73,12 @@
                     <h3>Login</h3>
         HTML;
 
-        if(isset($_POST["Usuario"],$_POST["Clave"]) || $identificacion==true){
-            $usuario=$_POST["Usuario"];
-            $clave=$_POST["Clave"];
-
-            if(($usuario=="admin" && $clave=="clave") || $identificacion==true){
-                $identificado=true;
-                echo "<p>Estás logueado como </p>"+$usuario;
-            }
-            else{
-                $identificado=false;
-                echo "<p>Loguin incorrecto</p>";
-            }
-            return;
+        if($_SESSION['bd']==true){
+            echo "<p>Te has identificado como admin</p>
+                  <form action='".$_SERVER["SCRIPT_NAME"]."' method='POST' id='formulario'>
+                    <input type='submit' value='Logout' name='Logout'>
+                  </form>";
         }
-
         else{
             echo "<form action='".$_SERVER["SCRIPT_NAME"]."' method='POST' id='formulario'>
                     <label>Usuario <input type='text' name='Usuario'></label>
@@ -87,21 +89,28 @@
         
         echo "</article>";
 
+        if(isset($_SESSION['mysql'])){
+            $numeroRecetas=$_SESSION['mysql']->query("SELECT COUNT(*) FROM Datos");
+            $_SESSION['numerorecetas']=$numeroRecetas;
+        }
+
+        echo "<p>'".$_SESSION['numerorecetas']."'</p>";
+
         echo <<< HTML
-                <article class="lateral">
-                    <h3>+ valoradas</h3>
+            <article class="lateral">
+                <h3>+ valoradas</h3>
 
-                    <ol>
-                        <li><a href="">Risotto de calabaza y champiñones</a></li>
-                        <li><a href="">Pollo al salmorejo</a></li>
-                        <li><a href="">Ensalada de espinacas y mango</a></li>
-                    </ol>
-                </article>
+                <ol>
+                    <li><a href="">Risotto de calabaza y champiñones</a></li>
+                    <li><a href="">Pollo al salmorejo</a></li>
+                    <li><a href="">Ensalada de espinacas y mango</a></li>
+                </ol>
+            </article>
 
-                <article class="lateral">
-                    <h3>nº de recetas</h3>
-                    <p>El sitio contiene 1452 recetas diferentes</p>
-                </article>
+            <article class="lateral">
+                <h3>nº de recetas</h3>
+                <p>El sitio contiene recetas diferentes</p>
+            </article>
             </aside>
         HTML;
     }
