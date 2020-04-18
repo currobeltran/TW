@@ -1,18 +1,6 @@
 <?php
 
     function cabecera(){
-        if(isset($_POST["Usuario"],$_POST["Clave"])){
-            $usuario=$_POST["Usuario"];
-            $clave=$_POST["Clave"];
-
-            if($usuario=="admin" && $clave=="clave"){
-                $mysql=new mysqli('p:'."localhost",$usuario,$clave,"practicaPHP");
-                $_SESSION['bd']=true;
-                $_SESSION['mysql']=$mysql;
-
-            }
-
-        }
 
         echo <<< HTML
             <!DOCTYPE html>
@@ -50,6 +38,8 @@
                 <li><a href="">Añadir nueva receta</a></li>
                 <li><a href="">Contacto</a></li>
             HTML;
+
+            
         }
         
         else{
@@ -74,7 +64,7 @@
         HTML;
 
         if($_SESSION['bd']==true){
-            echo "<p>Te has identificado como admin</p>
+            echo "<p>Te has identificado como ".$_SESSION['usuario']."</p>
                   <form action='".$_SERVER["SCRIPT_NAME"]."' method='POST' id='formulario'>
                     <input type='submit' value='Logout' name='Logout'>
                   </form>";
@@ -89,12 +79,12 @@
         
         echo "</article>";
 
-        if(isset($_SESSION['mysql'])){
-            $numeroRecetas=$_SESSION['mysql']->query("SELECT COUNT(*) FROM Datos");
-            $_SESSION['numerorecetas']=$numeroRecetas;
-        }
+        $recetas=0;
 
-        echo "<p>'".$_SESSION['numerorecetas']."'</p>";
+        if(isset($_SESSION['mysql'])){
+            $consulta=$_SESSION['mysql']->query("SELECT * FROM Datos");
+            $recetas=$consulta->num_rows;
+        }
 
         echo <<< HTML
             <article class="lateral">
@@ -109,10 +99,14 @@
 
             <article class="lateral">
                 <h3>nº de recetas</h3>
-                <p>El sitio contiene recetas diferentes</p>
-            </article>
-            </aside>
+
         HTML;
+
+        echo "
+                <p>El sitio contiene ".$recetas." recetas diferentes</p>
+            </article>
+            </aside>";
+
     }
 
     function footer(){
