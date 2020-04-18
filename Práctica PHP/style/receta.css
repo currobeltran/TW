@@ -62,9 +62,12 @@ main{
     
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 
     background-color: beige;
     line-height: 130%;
+
+    margin-bottom: 5%;
 }
 
 aside{
@@ -106,6 +109,10 @@ li{
     list-style: none;
 }
 
+h2 {
+    font-size: larger;
+}
+
 /*Reglas para el encabezado*/
 #titulo{
     background-color: rgb(66, 170, 62);
@@ -142,13 +149,13 @@ li{
     margin-left: 2%;
 }
 
-/*Reglas para la zona de la receta*/
+/*Reglas para la zona principal*/
 
-#cabeceraReceta{
+#cabeceraReceta{ /*Cambiar nombre*/
     background-color: rgb(66, 170, 62);
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    width: 100%;
 
     align-items: center;
     font-size: larger;
@@ -156,9 +163,6 @@ li{
     padding: 1% 0.5%;
 }
 
-#cabeceraReceta > :last-child{
-    flex-basis: 10%;
-}
 
 #subcabecera{
     display: flex;
@@ -172,18 +176,19 @@ li{
     width: 100%;
 }
 
-#descripcion{
+#descripcion{ 
     background-color: rgb(146, 207, 76);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     overflow: hidden;
+    width: 100%;
 
-    padding: 1%;
+    padding: 1% 0.5%;
 }
 
 #descripcion > p{
-    flex-basis: 58%;
+    flex-basis: auto;
 }
 
 #descripcion > img{
@@ -191,8 +196,15 @@ li{
 } 
 
 #preparacion{
+    display: flex;
+    flex-flow: column;
+    align-self: center;
     padding: 2% 0.5%;
 } 
+
+#preparacion > h2{
+    align-self: center;
+}
 
 #ingredientes{
     background-color:gainsboro;
@@ -261,6 +273,8 @@ li{
     flex-direction: column;
     overflow: hidden;
     align-items: flex-end;
+
+    margin-top: 5%;
 }
 
 #formulario > *{
@@ -282,6 +296,7 @@ li{
 #footer > :not(:last-child)::after{
     content: " | ";
 }
+
 
 @media (max-width: 800px){
 
