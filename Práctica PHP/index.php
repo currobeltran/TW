@@ -1,12 +1,12 @@
 <?php
+    error_reporting(0);
 
     require "comun.php";
     require "contacto.php";
-
-    // $opc = 0;
-    
-    // if (isset($_GET["p"]) && ($_GET["p"]>=0 || $_GET["p"]<=3))
-    //     $opc = $_GET['p'];
+    require "inicio.php";
+    require "listado.php";
+    require "receta.php";
+    require "crear.php";
 
     if(isset($_POST["Logout"])){ 
         if($_POST["Logout"]==true){
@@ -22,7 +22,11 @@
     }
     else{
         session_start();
-        $_SESSION['opc']=3;
+        $_SESSION['opc']="inicio";
+    }
+
+    if(isset($_GET["p"])){
+        $_SESSION['opc']=$_GET["p"];
     }
 
     if(isset($_POST["Usuario"],$_POST["Clave"])){
@@ -32,7 +36,13 @@
     }
 
     if(isset($_SESSION['usuario'], $_SESSION['clave'])){
-        $_SESSION['mysql']=new mysqli("localhost",$_SESSION['usuario'],$_SESSION['clave'],"practicaPHP");
+        $_SESSION['mysql']=new mysqli("localhost","franciscobel1920","dbQlbQZG","franciscobel1920");
+    }
+
+    if(isset($_POST['anadir'])){
+        move_uploaded_file($_FILES['foto']['tmp_name'],'./subidos/'.$_FILES['foto']['name']);
+
+        anadirRecetaBBDD($_POST, $_FILES['foto']);
     }
 
     cabecera();
@@ -40,9 +50,14 @@
     lateral();
 
     switch($_SESSION['opc']){
-        case 3: paginaContacto(); 
+        case "inicio": inicio(); break;
+        case "contacto": paginaContacto(isset($_POST['nombre'])); break;
+        case "listado": listadoRecetas($_POST['tituloBusqueda'], $_POST['orden']); break;
+        case "ver": verReceta($_GET['id']); break;
+        case "anadir": crear(); break;
+        default: inicio(); break;
     }
-    
+
     footer();
     finalPagina();
 

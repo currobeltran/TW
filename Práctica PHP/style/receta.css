@@ -66,13 +66,22 @@ main{
 
     background-color: beige;
     line-height: 130%;
-
-    margin-bottom: 5%;
+    margin-bottom: 2%;
 }
 
 aside{
     float: right;
     width: 25%;
+}
+
+aside > :last-child{
+    margin-bottom: 16%;
+}
+
+h3{
+    font-size: xx-large;
+    width: 100%;
+    text-align: center;
 }
 
 /*Reglas para enlaces*/
@@ -97,6 +106,30 @@ img {
     height: auto;
 }
 
+td > img{
+    max-width: 30%;
+    height: auto;
+    vertical-align: bottom;
+}
+
+table{
+    margin-top: 2%;
+}
+
+th{
+    width: 10%;
+}
+
+td{
+    text-align: center;
+    vertical-align: middle;
+}
+
+td img{
+    align-self: center;
+    width: 50%;
+}
+
 /*Regla para listas*/
 
 ol > li{
@@ -111,6 +144,7 @@ li{
 
 h2 {
     font-size: larger;
+    /*margin-bottom: 2%;*/
 }
 
 /*Reglas para el encabezado*/
@@ -155,25 +189,17 @@ h2 {
     background-color: rgb(66, 170, 62);
     display: flex;
     flex-direction: row;
-    width: 100%;
-
-    align-items: center;
-    font-size: larger;
-
-    padding: 1% 0.5%;
-}
-
-
-#subcabecera{
-    display: flex;
-    flex-direction: row;
     justify-content: space-between;
 
-    font-size: small;
+    align-items: center;
+    width: 98%;
+
+    padding: 1% 2%;
+}
+
+#cabeceraReceta > h6{
     font-style: italic;
-    
-    margin-bottom: 2%;
-    width: 100%;
+    font-size: small;
 }
 
 #descripcion{ 
@@ -184,45 +210,28 @@ h2 {
     overflow: hidden;
     width: 100%;
 
-    padding: 1% 0.5%;
+    padding: 1%;
 }
 
 #descripcion > p{
-    flex-basis: auto;
+    flex-basis: 100%;
+    margin-right: 3%;
 }
 
 #descripcion > img{
-    flex-basis: 40%;
+    max-width: 100%;
+    height: auto;
 } 
 
 #preparacion{
-    display: flex;
-    flex-flow: column;
-    align-self: center;
     padding: 2% 0.5%;
-} 
-
-#preparacion > h2{
     align-self: center;
-}
+} 
 
 #ingredientes{
     background-color:gainsboro;
     padding: 1%;
     margin-left: 2%;
-}
-
-#imagenesPasos{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    
-    padding: 0% 2%;
-}
-
-#imagenesPasos > *{
-    flex-basis: 15%;
-    margin: 1%;
 }
 
 .comentario{
@@ -240,6 +249,7 @@ h2 {
     background-color:  rgb(66, 170, 62);
     display: flex;
     justify-content: flex-end;
+    width: 100%;
     margin-top: 1%;
 }
 
@@ -275,6 +285,7 @@ h2 {
     align-items: flex-end;
 
     margin-top: 5%;
+    margin-bottom: 2%;
 }
 
 #formulario > *{
@@ -287,6 +298,7 @@ h2 {
     background-color: rgb(66, 170, 62);
     padding: 1% 0%;
     padding-left: 2%;
+    width: 98%;
 }
 
 #footer > :not(:last-child){
@@ -297,6 +309,9 @@ h2 {
     content: " | ";
 }
 
+.icono{
+    width: 20%;
+}
 
 @media (max-width: 800px){
 
@@ -315,7 +330,6 @@ h2 {
         align-items: center;
 
         background-color: rgb(66, 170, 62);
-        margin-bottom: 2%;   
         order: 0;
     }
     

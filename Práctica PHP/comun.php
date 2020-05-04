@@ -2,7 +2,7 @@
 
     function cabecera(){
 
-        echo <<< HTML
+        echo '
             <!DOCTYPE html>
 
             <html lang="es">
@@ -21,56 +21,55 @@
                 <img src="img/logoBurger.png" alt="logo Hamburguesa">
                 <h1>Comida sana para todos los días</h1>
             </header>
-        HTML;
+        ';
     }
 
     function barraNav(){
-        echo <<< HTML
+        echo '
             <nav>
-
                 <ul id="barraNavegacion">
-        HTML;
+        ';
         
-        if($_SESSION['bd']==true){
-            echo <<< HTML
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="">Listado de recetas</a></li>
-                <li><a href="">Añadir nueva receta</a></li>
-                <li><a href="">Contacto</a></li>
-            HTML;
-
+        if($_SESSION[bd]){
+            echo '
+                <li><a href="index.php?p=inicio">Inicio</a></li>
+                <li><a href="index.php?p=listado">Listado de recetas</a></li>
+                <li><a href="index.php?p=anadir">Añadir nueva receta</a></li>
+                <li><a href="index.php?p=contacto">Contacto</a></li>
+                ';
+            
             
         }
         
         else{
-            echo <<< HTML
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="">Listado de recetas</a></li>
-                <li><a href="">Contacto</a></li>
-            HTML;
+            echo '
+                <li><a href="index.php?p=inicio">Inicio</a></li>
+                <li><a href="index.php?p=listado">Listado de recetas</a></li>
+                <li><a href="index.php?p=contacto">Contacto</a></li>
+                ';
         }
         
-        echo <<< HTML
+        echo '
                 </ul>
             </nav>
-        HTML;
+            ';
     }
 
     function lateral(){
-        echo <<< HTML
+        echo '
             <aside>
                 <article class="lateral">
-                    <h3>Login</h3>
-        HTML;
+                    <h4>Login</h4>
+            ';
 
         if($_SESSION['bd']==true){
-            echo "<p>Te has identificado como ".$_SESSION['usuario']."</p>
-                  <form action='".$_SERVER["SCRIPT_NAME"]."' method='POST' id='formulario'>
+            echo "<p>Te has identificado como ".$_SESSION[usuario]."</p>
+                  <form action='".$_SERVER[SCRIPT_NAME]."' method='POST' id='formulario'>
                     <input type='submit' value='Logout' name='Logout'>
                   </form>";
         }
         else{
-            echo "<form action='".$_SERVER["SCRIPT_NAME"]."' method='POST' id='formulario'>
+            echo "<form action='".$_SERVER[SCRIPT_NAME]."' method='POST' id='formulario'>
                     <label>Usuario <input type='text' name='Usuario'></label>
                     <label>Clave <input type='password' name='Clave'></label>
                     <input type='submit' value='Login'>
@@ -82,13 +81,19 @@
         $recetas=0;
 
         if(isset($_SESSION['mysql'])){
-            $consulta=$_SESSION['mysql']->query("SELECT * FROM Datos");
-            $recetas=$consulta->num_rows;
+            $consulta=mysqli_query($_SESSION['mysql'], "SELECT * FROM Datos");
+            $recetas=mysqli_num_rows($consulta);
+        }
+        else{
+            $database=new mysqli("localhost","admin","clave","practicaPHP");
+            $consulta=mysqli_query($database, "SELECT * FROM Datos");
+            $recetas=mysqli_num_rows($consulta);
+            mysqli_close($database);
         }
 
-        echo <<< HTML
+        echo '
             <article class="lateral">
-                <h3>+ valoradas</h3>
+                <h4>+ valoradas</h4>
 
                 <ol>
                     <li><a href="">Risotto de calabaza y champiñones</a></li>
@@ -98,9 +103,9 @@
             </article>
 
             <article class="lateral">
-                <h3>nº de recetas</h3>
+                <h4>nº de recetas</h4>
 
-        HTML;
+        ';
 
         echo "
                 <p>El sitio contiene ".$recetas." recetas diferentes</p>
@@ -110,7 +115,7 @@
     }
 
     function footer(){
-        echo <<< HTML
+        echo '
             <footer>
                 <ul id="footer">
                     <li><a href="">(C) 2020 Tecnologías Web</a></li>
@@ -118,14 +123,14 @@
                     <li><a href="">Contacto</a></li>
                 </ul>
             </footer>
-        HTML;   
+        ';   
     }
 
     function finalPagina(){
-        echo <<< HTML
+        echo '
             </body>
             </html>
-        HTML;
+        ';
     }
-
+    
 ?>
