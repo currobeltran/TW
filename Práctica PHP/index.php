@@ -7,6 +7,8 @@
     require "listado.php";
     require "receta.php";
     require "crear.php";
+    require "editarReceta.php";
+    require "eliminar.php";
 
     if(isset($_POST["Logout"])){ 
         if($_POST["Logout"]==true){
@@ -39,10 +41,16 @@
         $_SESSION['mysql']=new mysqli("localhost","franciscobel1920","dbQlbQZG","franciscobel1920");
     }
 
-    if(isset($_POST['anadir'])){
+    if(isset($_POST['confirmarCrear'])){
+        move_uploaded_file($_SESSION['foto']['tmp_name'],'./subidos/'.$_SESSION['foto']['name']);
+
+        $completada=anadirRecetaBBDD($_SESSION['nuevaEntrada'], $_SESSION['foto']);
+    }
+
+    if(isset($_POST['editar'])){
         move_uploaded_file($_FILES['foto']['tmp_name'],'./subidos/'.$_FILES['foto']['name']);
 
-        anadirRecetaBBDD($_POST, $_FILES['foto']);
+        editarRecetaBBDD($_POST, $_SESSION['recetaModificada'], $_FILES['foto']);
     }
 
     cabecera();
@@ -51,10 +59,12 @@
 
     switch($_SESSION['opc']){
         case "inicio": inicio(); break;
-        case "contacto": paginaContacto(isset($_POST['nombre'])); break;
+        case "contacto": paginaContacto($_POST); break;
         case "listado": listadoRecetas($_POST['tituloBusqueda'], $_POST['orden']); break;
         case "ver": verReceta($_GET['id']); break;
-        case "anadir": crear(); break;
+        case "anadir": crear($_POST, $_FILES['foto'], $completada); break;
+        case "editar": editar($_GET['id']); break;
+        case "eliminar": eliminarReceta($_GET['id'],$_POST['eliminar']); break;
         default: inicio(); break;
     }
 

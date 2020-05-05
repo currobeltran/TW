@@ -63,14 +63,22 @@
                         <td>'.$tupla[1].'</td>
                         <td>
                             <a href="index.php?p=ver&id='.$tupla[0].'">
-                            <img src="./img/visualizar.png" alt="visualizar"/>
+                            <img src="./img/visualizar.png" alt="visualizar class="icono"/>
                             </a>
                         </td>';
                 
                 if(isset($_SESSION['mysql'])){
                     echo '
-                            <td><img src="./img/lapiz.png" class="icono"/></td>
-                            <td><img src="./img/cerrar.png" class="icono"/></td>
+                            <td>
+                                <a href="index.php?p=editar&id='.$tupla[0].'">
+                                <img src="./img/lapiz.png" class="icono"/>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="index.php?p=eliminar&id='.$tupla[0].'">
+                                <img src="./img/cerrar.png" class="icono"/>
+                                </a>
+                            </td>
                         </tr>
                         ';
                 }

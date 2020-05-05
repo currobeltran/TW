@@ -85,7 +85,7 @@
             $recetas=mysqli_num_rows($consulta);
         }
         else{
-            $database=new mysqli("localhost","admin","clave","practicaPHP");
+            $database=new mysqli("localhost","franciscobel1920","dbQlbQZG","franciscobel1920");
             $consulta=mysqli_query($database, "SELECT * FROM Datos");
             $recetas=mysqli_num_rows($consulta);
             mysqli_close($database);
