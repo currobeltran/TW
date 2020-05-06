@@ -30,14 +30,13 @@
                 <ul id="barraNavegacion">
         ';
         
-        if($_SESSION[bd]){
+        if($_SESSION['bd']){
             echo '
                 <li><a href="index.php?p=inicio">Inicio</a></li>
                 <li><a href="index.php?p=listado">Listado de recetas</a></li>
                 <li><a href="index.php?p=anadir">Añadir nueva receta</a></li>
                 <li><a href="index.php?p=contacto">Contacto</a></li>
                 ';
-            
             
         }
         

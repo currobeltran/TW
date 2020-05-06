@@ -59,10 +59,10 @@
         if(mysqli_num_rows($res)>0){
             while($tupla=mysqli_fetch_array($res)){
                 echo '<tr>
-                        <td>'.$tupla[0].'</td>
-                        <td>'.$tupla[1].'</td>
+                        <td>'.htmlentities($tupla[0]).'</td>
+                        <td>'.htmlentities($tupla[1]).'</td>
                         <td>
-                            <a href="index.php?p=ver&id='.$tupla[0].'">
+                            <a href="index.php?p=ver&id='.urlencode($tupla[0]).'">
                             <img src="./img/visualizar.png" alt="visualizar class="icono"/>
                             </a>
                         </td>';
@@ -70,12 +70,12 @@
                 if(isset($_SESSION['mysql'])){
                     echo '
                             <td>
-                                <a href="index.php?p=editar&id='.$tupla[0].'">
+                                <a href="index.php?p=editar&id='.urlencode($tupla[0]).'">
                                 <img src="./img/lapiz.png" class="icono"/>
                                 </a>
                             </td>
                             <td>
-                                <a href="index.php?p=eliminar&id='.$tupla[0].'">
+                                <a href="index.php?p=eliminar&id='.urlencode($tupla[0]).'">
                                 <img src="./img/cerrar.png" class="icono"/>
                                 </a>
                             </td>

@@ -1,6 +1,8 @@
 <?php
 
     function verReceta($val){
+        $val=urldecode($val);
+
         if(!isset($_SESSION['mysql'])){
             $database=new mysqli("localhost","admin","clave","practicaPHP");
             $consulta=mysqli_prepare(
@@ -23,8 +25,8 @@
 
             ';
              
-        echo '<h2>'.$receta[0].'</h2>';
-        echo '<h6>Autor: '.$receta[1].'</h6>';
+        echo '<h2>'.htmlentities($receta[0]).'</h2>';
+        echo '<h6>Autor: '.htmlentities($receta[1]).'</h6>';
                         
         echo '
             </header>
@@ -32,7 +34,7 @@
             <article id="descripcion">
             ';
 
-        echo '<p>'.$receta[3].'</p>';
+        echo '<p>'.htmlentities($receta[3]).'</p>';
         echo '<img src="data:image/jpeg;base64,'.base64_encode($receta[6]).'"/>';
 
         echo '
@@ -43,7 +45,7 @@
                 <aside id="ingredientes">
                     <ul>
                     ';
-        $ingredientes=explode(";",$receta[4]);
+        $ingredientes=explode(";",htmlentities($receta[4]));
 
         for($i=0; $i<sizeof($ingredientes); $i++)
             echo '<li>'.$ingredientes[$i].'</li>';
@@ -55,7 +57,7 @@
                 <ol>
                 ';
 
-        $pasos=explode(";",$receta[5]);
+        $pasos=explode(";",htmlentities($receta[5]));
 
         for($i=0; $i<sizeof($pasos); $i++)
         echo '<li>'.$pasos[$i].'</li>';

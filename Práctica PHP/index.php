@@ -42,15 +42,11 @@
     }
 
     if(isset($_POST['confirmarCrear'])){
-        move_uploaded_file($_SESSION['foto']['tmp_name'],'./subidos/'.$_SESSION['foto']['name']);
-
         $completada=anadirRecetaBBDD($_SESSION['nuevaEntrada'], $_SESSION['foto']);
     }
 
-    if(isset($_POST['editar'])){
-        move_uploaded_file($_FILES['foto']['tmp_name'],'./subidos/'.$_FILES['foto']['name']);
-
-        editarRecetaBBDD($_POST, $_SESSION['recetaModificada'], $_FILES['foto']);
+    if(isset($_POST['confirmarEdicion'])){
+        $completada=editarRecetaBBDD($_SESSION['recetaEditada'],$_SESSION['recetaModificada'],$_SESSION['foto']);
     }
 
     cabecera();
@@ -63,7 +59,7 @@
         case "listado": listadoRecetas($_POST['tituloBusqueda'], $_POST['orden']); break;
         case "ver": verReceta($_GET['id']); break;
         case "anadir": crear($_POST, $_FILES['foto'], $completada); break;
-        case "editar": editar($_GET['id']); break;
+        case "editar": editar($_GET['id'], $_POST, $_FILES['foto'], $completada); break;
         case "eliminar": eliminarReceta($_GET['id'],$_POST['eliminar']); break;
         default: inicio(); break;
     }

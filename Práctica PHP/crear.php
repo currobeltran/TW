@@ -11,6 +11,22 @@
                 ';
 
             $_SESSION['nuevaEntrada']='';
+            $_SESSION['foto']='';
+
+            return;
+        }
+
+        else if(isset($completada) && !$completada){
+            echo '
+                <main>
+                    <h2>Error</h2>    
+                    <p>No se ha completado la inserción de '
+                    .$_SESSION['nuevaEntrada']['titulo'].', inténtelo de nuevo más tarde</p>           
+                </main>
+                ';
+
+            $_SESSION['nuevaEntrada']='';
+            $_SESSION['foto']='';
 
             return;
         }
@@ -232,12 +248,16 @@
                         </label>
 
                         <label> Fotografía 
-                            <input type="file" name="foto"';
-                            if(isset($datos['foto'])) 
-                                echo " value='".$datos['foto']['name']."'";
-                            echo   "' disabled/>";
-                            if(isset($hayerror['foto'])){
-                                echo $hayerror['foto'];
+                            <input type="file" name="foto" disabled>';
+                            if(filesize($img['tmp_name'])==0){
+                                echo 
+                                    '<img src="data:image/jpeg;base64,'.base64_encode($res[6]).'"/>';
+                            }
+                            else{
+                                $img2=file_get_contents($img['tmp_name']);
+                                $_SESSION['foto']=$img2;
+                                echo 
+                                    '<img src="data:image/jpeg;base64,'.base64_encode($img2).'"/>';
                             }
                             echo '
                         </label>
@@ -248,13 +268,11 @@
             ';
 
             $_SESSION['nuevaEntrada']=$datos;
-            $_SESSION['foto']=$img;
         }
     }
 
     function anadirRecetaBBDD($vars, $img){
-        $path="./subidos/".$img['name'];
-        $img2=addslashes(file_get_contents($path));
+        $img2=addslashes($img);
 
         if(isset($vars['titulo'],$vars['autor'],$vars['cat'],$vars['descripcion'],
         $vars['ingredientes'], $vars['preparacion'],$img2)){
