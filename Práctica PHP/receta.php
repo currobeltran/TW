@@ -44,7 +44,7 @@
                 <aside id="ingredientes">
                     <ul>
                     ';
-        $ingredientes=explode(";",htmlentities($receta[4]));
+        $ingredientes=explode("#",htmlentities($receta[4]));
 
         for($i=0; $i<sizeof($ingredientes); $i++)
             echo '<li>'.$ingredientes[$i].'</li>';
@@ -56,7 +56,7 @@
                 <ol>
                 ';
 
-        $pasos=explode(";",htmlentities($receta[5]));
+        $pasos=explode("#",htmlentities($receta[5]));
 
         for($i=0; $i<sizeof($pasos); $i++)
         echo '<li>'.$pasos[$i].'</li>';

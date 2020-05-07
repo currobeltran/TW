@@ -162,13 +162,9 @@ li{
 /*Reglas para los elementos laterales*/
 
 .lateral{
+    background-color: rgb(255, 236, 129);
     margin-top: 2%;
     text-align: center;
-}
-
-.lateral > * {
-    padding: 1%;
-    background-color: rgb(255, 236, 129);
 }
 
 .lateral #titulo{
@@ -182,10 +178,8 @@ li{
 .formulario{
     display: flex;
     flex-direction: column;
-    /* overflow: hidden;*/
     text-align: left;
     align-items: flex-start;
-    /* align-self: center; */
     padding: 2%;
 
     margin-top: 2%;
@@ -298,7 +292,7 @@ li{
 
 /*Reglas para el footer*/
 
-#footer{
+#footer ul{
     display: flex;
     flex-direction: column;
     background-color: rgb(66, 170, 62);
@@ -318,18 +312,21 @@ li{
 
 @media (min-width:800px){
     #titulo :not(:first-child):not(:last-child){
-        display: inline;
+        display: block;
     }
 
     #titulo img{
         max-width: 10%;
         height: auto;
     }
+
+    #titulo h1{
+        font-size: 270%;
+    }
     
     aside{
         float: right;
         width: 25%;
-        margin-bottom: 5%;
     }
 
     aside > *{
@@ -337,11 +334,60 @@ li{
     }
 
     aside > :not(:first-of-type){
-        display: inline;
+        display: block;
+    }
+
+    .lateral{
+        margin-bottom: 5%;
+    }
+
+    .lateral > *{
+        padding: 3%;
+    }
+
+    .lateral form{
+        display: flex;
+        flex-flow: column;
+    }
+
+    .lateral label{
+        display: flex;
+        justify-content: space-between;
+        margin: 2% 0%;
+    }
+
+    .lateral input{
+        width: 50%;
+        align-self: center;
     }
 
     main{
         width: 70%;
-        margin-bottom: 10%;
+        margin-bottom: 25%;
     }
+
+    #footer{
+        width: 100%;
+    }
+
+    #footer ul{
+        flex-flow: row;
+        margin-top: 10%;
+    }
+
+    #footer ul > *{
+        margin-left: 1%;
+    }
+
+    #footer ul > :not(:last-child)::after{
+        content: " | ";
+    }
+    
+    #ingredientes{
+        width: 20%;
+        text-align: center;
+        font-size: small;
+        margin-top: -1%;
+    }
+
 }

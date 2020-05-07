@@ -4,25 +4,25 @@
         if(isset($datos['telefono'])){
             if(preg_match('/^(\+[0-9]{2})?\s*[0-9]{3}\s*[0-9]{6}$/',$datos['telefono'])==0 &&
                 !empty($datos['telefono'])){
-                $hayerror['telefono']='<p>Número introducido incorrecto</p>';
+                $hayerror['telefono']='<p class="error">Número introducido incorrecto</p>';
             }  
         }
 
         if(isset($datos['nombre'])){
             if(empty($datos['nombre'])){
-                $hayerror['nombre']='<p>Debe introducir un nombre</p>';
+                $hayerror['nombre']='<p class="error">Debe introducir un nombre</p>';
             }
         }
 
         if(isset($datos['correo'])){
             if(empty($datos['correo'])){
-                $hayerror['correo']='<p>Debe introducir un correo</p>';
+                $hayerror['correo']='<p class="error">Debe introducir un correo</p>';
             }
         }
 
         if(isset($datos['comentario'])){
             if(empty($datos['comentario'])){
-                $hayerror['comentario']='<p>Debe introducir un comentario</p>';
+                $hayerror['comentario']='<p class="error">Debe introducir un comentario</p>';
             }
         }
 

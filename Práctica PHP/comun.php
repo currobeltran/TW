@@ -121,8 +121,8 @@
 
     function footer(){
         echo '
-            <footer>
-                <ul id="footer">
+            <footer id="footer">
+                <ul>
                     <li><a href="">(C) 2020 Tecnologías Web</a></li>
                     <li><a href="">Mapa del sitio</a></li>
                     <li><a href="">Contacto</a></li>
