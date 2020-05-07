@@ -2,8 +2,8 @@
     function listadoRecetas($val, $val2){
         $res;
         echo '
-            <main>
-                <form action="" method="POST" id="formulario"> 
+            <main class=central>
+                <form action="" method="POST" class="formulario"> 
                     <label>Nombre 
                         <input type="text" name="tituloBusqueda"/>
                     </label>
@@ -40,9 +40,9 @@
         $res = mysqli_stmt_get_result($consulta); 
 
         echo '
-            <h3>Listado de recetas</h3>
+            <h3 id="titulo">Listado de recetas</h3>
 
-            <table>
+            <table class="tabla">
                 <tr>
                     <th>Título</th>
                     <th>Autor</th>

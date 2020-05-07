@@ -58,17 +58,19 @@
         echo '
             <aside>
                 <article class="lateral">
-                    <h4>Login</h4>
+                    <header id="titulo">
+                        <h4>Login</h4>
+                    </header>
             ';
 
         if($_SESSION['bd']==true){
-            echo "<p>Te has identificado como ".$_SESSION[usuario]."</p>
-                  <form action='".$_SERVER[SCRIPT_NAME]."' method='POST' id='formulario'>
+            echo "<p>Te has identificado como ".$_SESSION['usuario']."</p>
+                  <form action='".$_SERVER['SCRIPT_NAME']."' method='POST'>
                     <input type='submit' value='Logout' name='Logout'>
                   </form>";
         }
         else{
-            echo "<form action='".$_SERVER[SCRIPT_NAME]."' method='POST' id='formulario'>
+            echo "<form action='".$_SERVER['SCRIPT_NAME']."' method='POST'>
                     <label>Usuario <input type='text' name='Usuario'></label>
                     <label>Clave <input type='password' name='Clave'></label>
                     <input type='submit' value='Login'>
@@ -92,8 +94,10 @@
 
         echo '
             <article class="lateral">
-                <h4>+ valoradas</h4>
-
+                <header id="titulo">
+                    <h4>+ valoradas</h4>
+                </header>
+                
                 <ol>
                     <li><a href="">Risotto de calabaza y champiñones</a></li>
                     <li><a href="">Pollo al salmorejo</a></li>
@@ -102,7 +106,9 @@
             </article>
 
             <article class="lateral">
-                <h4>nº de recetas</h4>
+                <header id="titulo">
+                    <h4>nº de recetas</h4>
+                </header>
 
         ';
 

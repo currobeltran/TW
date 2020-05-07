@@ -3,8 +3,8 @@
     function crear($datos, $img, $completada){
         if($completada){
             echo '
-                <main>
-                    <h2>Éxito</h2>    
+                <main class="central">
+                    <h2 id="titulo">Éxito</h2>    
                     <p>Se ha completado la inserción de la receta '
                     .$_SESSION['nuevaEntrada']['titulo'].'</p>           
                 </main>
@@ -18,8 +18,8 @@
 
         else if(isset($completada) && !$completada){
             echo '
-                <main>
-                    <h2>Error</h2>    
+                <main class="central">
+                    <h2 id="titulo">Error</h2>    
                     <p>No se ha completado la inserción de '
                     .$_SESSION['nuevaEntrada']['titulo'].', inténtelo de nuevo más tarde</p>           
                 </main>
@@ -33,8 +33,8 @@
 
         if(!isset($_SESSION['mysql'])){
             echo '
-                <main>
-                    <h2>Acceso no autorizado</h2>
+                <main class="central">
+                    <h2 id="titulo">Acceso no autorizado</h2>
                     <p>No esta autorizado a entrar aquí, registrese y vuelva a intentarlo</p>                
                 </main>
                 ';
@@ -44,54 +44,54 @@
 
         if(isset($datos['titulo'])){
             if(empty($datos['titulo'])){
-                $hayerror['titulo']='<p>Debe introducir un título</p>';
+                $hayerror['titulo']='<p class="error">Debe introducir un título</p>';
             }
         }
 
         if(isset($datos['autor'])){
             if(empty($datos['autor'])){
-                $hayerror['autor']='<p>Debe introducir un autor</p>';
+                $hayerror['autor']='<p class="error">Debe introducir un autor</p>';
             }
         }
 
         if(isset($datos['cat'])){
             if(empty($datos['cat'])){
-                $hayerror['cat']='<p>Debe introducir una categoría</p>';
+                $hayerror['cat']='<p class="error">Debe introducir una categoría</p>';
             }
         }
 
         if(isset($datos['descripcion'])){
             if(empty($datos['descripcion'])){
-                $hayerror['descripcion']='<p>Debe introducir una descripción</p>';
+                $hayerror['descripcion']='<p class="error">Debe introducir una descripción</p>';
             }
         }
 
         if(isset($datos['ingredientes'])){
             if(empty($datos['ingredientes'])){
-                $hayerror['ingredientes']='<p>Debe introducir uno o más ingredientes</p>';
+                $hayerror['ingredientes']='<p class="error">Debe introducir uno o más ingredientes</p>';
             }
         }
 
         if(isset($datos['preparacion'])){
             if(empty($datos['preparacion'])){
-                $hayerror['preparacion']='<p>Debe introducir uno o más pasos de preparación</p>';
+                $hayerror['preparacion']='<p class="error">Debe introducir uno o más pasos de preparación</p>';
             }
         }
 
         if(isset($img)){
             if(filesize($img['tmp_name'])==0)
-                $hayerror['foto']='<p>Debe introducir una fotografía</p>';
+                $hayerror['foto']='<p class="error">Debe introducir una fotografía</p>';
         }
 
         if(isset($hayerror) || !isset($datos['titulo'])){
             echo '
-                <main>
-                    <h2>Introduzca una nueva receta aquí<h2>
+                <main class="central">
+                    <h2 id="titulo">Introduzca una nueva receta aquí<h2>
                     <h6>Debe rellenar todos los campos del siguiente formulario</h6>
                     <h6>Para añadir elementos en formato de lista (por ejemplo, los ingredientes)
                     debe introducir ";" entre los distintos elementos</h6>
 
-                    <form action="" method="POST" id="formulario" enctype="multipart/form-data">
+                    <form action="" method="POST" class="formulario" enctype="multipart/form-data">
                         <label> Título 
                             <input type="text" name="titulo" ';
                             if(isset($datos['titulo'])) 
@@ -125,17 +125,6 @@
                             echo '
                         </label>
 
-                        <label> Ingredientes 
-                            <textarea name="ingredientes" cols="24">';
-                            if(isset($datos['ingredientes'])) 
-                                echo $datos['ingredientes'];
-                            echo '</textarea>';
-                            if(isset($hayerror['ingredientes'])){
-                                echo $hayerror['ingredientes'];
-                            }
-                            echo '
-                        </label>
-
                         <label> Descripción 
                             <textarea name="descripcion" cols="24">';
                             if(isset($datos['descripcion'])) 
@@ -143,6 +132,17 @@
                             echo '</textarea>';
                             if(isset($hayerror['descripcion'])){
                                 echo $hayerror['descripcion'];
+                            }
+                            echo '
+                        </label>
+
+                        <label> Ingredientes 
+                            <textarea name="ingredientes" cols="24">';
+                            if(isset($datos['ingredientes'])) 
+                                echo $datos['ingredientes'];
+                            echo '</textarea>';
+                            if(isset($hayerror['ingredientes'])){
+                                echo $hayerror['ingredientes'];
                             }
                             echo '
                         </label>
@@ -177,10 +177,10 @@
 
         else{
             echo '
-                <main>
-                    <h2>¿Desea confirmar la siguiente insercion?<h2>
+                <main class="central">
+                    <h2 id="titulo">¿Desea confirmar la siguiente insercion?<h2>
 
-                    <form action="" method="POST" id="formulario" enctype="multipart/form-data">
+                    <form action="" method="POST" class="formulario" enctype="multipart/form-data">
                         <label> Título 
                             <input type="text" name="titulo" ';
                             if(isset($datos['titulo'])) 
@@ -214,17 +214,6 @@
                             echo '
                         </label>
 
-                        <label> Ingredientes 
-                            <textarea name="ingredientes" cols="24" disabled>';
-                            if(isset($datos['ingredientes'])) 
-                                echo $datos['ingredientes'];
-                            echo '</textarea>';
-                            if(isset($hayerror['ingredientes'])){
-                                echo $hayerror['ingredientes'];
-                            }
-                            echo '
-                        </label>
-
                         <label> Descripción 
                             <textarea name="descripcion" cols="24" disabled>';
                             if(isset($datos['descripcion'])) 
@@ -232,6 +221,17 @@
                             echo '</textarea>';
                             if(isset($hayerror['descripcion'])){
                                 echo $hayerror['descripcion'];
+                            }
+                            echo '
+                        </label>
+                        
+                        <label> Ingredientes 
+                            <textarea name="ingredientes" cols="24" disabled>';
+                            if(isset($datos['ingredientes'])) 
+                                echo $datos['ingredientes'];
+                            echo '</textarea>';
+                            if(isset($hayerror['ingredientes'])){
+                                echo $hayerror['ingredientes'];
                             }
                             echo '
                         </label>
@@ -249,16 +249,10 @@
 
                         <label> Fotografía 
                             <input type="file" name="foto" disabled>';
-                            if(filesize($img['tmp_name'])==0){
-                                echo 
-                                    '<img src="data:image/jpeg;base64,'.base64_encode($res[6]).'"/>';
-                            }
-                            else{
-                                $img2=file_get_contents($img['tmp_name']);
-                                $_SESSION['foto']=$img2;
-                                echo 
-                                    '<img src="data:image/jpeg;base64,'.base64_encode($img2).'"/>';
-                            }
+                            $img2=file_get_contents($img['tmp_name']);
+                            $_SESSION['foto']=$img2;
+                            echo 
+                                '<img src="data:image/jpeg;base64,'.base64_encode($img2).'"/>';
                             echo '
                         </label>
 
@@ -272,29 +266,30 @@
     }
 
     function anadirRecetaBBDD($vars, $img){
-        $img2=addslashes($img);
-
         if(isset($vars['titulo'],$vars['autor'],$vars['cat'],$vars['descripcion'],
-        $vars['ingredientes'], $vars['preparacion'],$img2)){
-            
-            $titulo=$vars['titulo'];
-            $autor=$vars['autor'];
-            $cat=$vars['cat'];
-            $descripcion=$vars['descripcion'];
-            $ingredientes=$vars['ingredientes'];
-            $preparacion=$vars['preparacion'];
-
+        $vars['ingredientes'], $vars['preparacion'],$img)){
 
             $sql="INSERT INTO Datos 
             (Titulo, Autor, Categoria, Descripcion, Ingredientes, Preparacion, Fotografia)
-            VALUES ('$titulo', 
-            '$autor', '$cat', '$descripcion', '$ingredientes', 
-            '$preparacion', '$img2')";
+            VALUES (?,?,?,?,?,?,?)";
 
-            $query=mysqli_query($_SESSION['mysql'], $sql);
+            $query=mysqli_prepare($_SESSION['mysql'],$sql);
+            
+            mysqli_stmt_bind_param($query,'sssssss',$vars['titulo'],
+                    $vars['autor'],$vars['cat'],$vars['descripcion'],$vars['ingredientes'],
+                    $vars['preparacion'],$img);
+            
+            mysqli_execute($query);
+
+            if($query){
+                mysqli_stmt_close($query);
+                return true;
+            }
+            else{
+                mysqli_stmt_close($query);
+                return false;
+            }
         }
-
-        return $query;
     }
 
 ?>

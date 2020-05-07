@@ -4,7 +4,7 @@
         $val=urldecode($val);
 
         if(!isset($_SESSION['mysql'])){
-            $database=new mysqli("localhost","admin","clave","practicaPHP");
+            $database=new mysqli("localhost","franciscobel1920","dbQlbQZG","franciscobel1920");
             $consulta=mysqli_prepare(
                 $database, "SELECT * FROM Datos WHERE Titulo LIKE ?");
         }
@@ -18,10 +18,9 @@
         $res = mysqli_stmt_get_result($consulta); 
         $receta=mysqli_fetch_array($res);
 
-
         echo '
-        <main>
-            <header id="cabeceraReceta">
+        <main id="receta">
+            <header id="titulo">
 
             ';
              
@@ -65,12 +64,21 @@
         echo '
                 </ol>
                 
-                <footer>
-                    <ul id="barraInferior">
-                        <li><a href=""><img src="./img/lapiz.png"></a></li>
-                    </ul>
-                </footer>
             </article>
+            <footer>
+                <ul id="barraInferior">';
+
+                if(isset($_SESSION['mysql'])){
+                    echo '<li><a href="index.php?p=editar&id='.urlencode($val).'">
+                        <img src="./img/lapiz.png">
+                    </a></li>';
+                    echo '<li><a href="index.php?p=eliminar&id='.urlencode($val).'">
+                        <img src="./img/cerrar.png">
+                    </a></li>';
+                }
+        echo '  
+                </ul>
+            </footer>
         </main>
         ';
     }

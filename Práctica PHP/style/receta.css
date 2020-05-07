@@ -48,40 +48,14 @@ table {
 	border-spacing: 0;
 }
 
-/*  border-radius: 3%;
-    border: blue solid; */
-
 /*Reglas generales*/
+
 html{
     font-family: Arial, Helvetica, sans-serif;
 }
 
-main{
-    width: 70%;
-    padding: 2%;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    background-color: beige;
-    line-height: 130%;
-    margin-bottom: 2%;
-}
-
-aside{
-    float: right;
-    width: 25%;
-}
-
-aside > :last-child{
-    margin-bottom: 16%;
-}
-
-h3{
-    font-size: xx-large;
-    width: 100%;
-    text-align: center;
+aside > :not(:first-of-type){
+    display: none;
 }
 
 /*Reglas para enlaces*/
@@ -106,30 +80,6 @@ img {
     height: auto;
 }
 
-td > img{
-    max-width: 30%;
-    height: auto;
-    vertical-align: bottom;
-}
-
-table{
-    margin-top: 2%;
-}
-
-th{
-    width: 10%;
-}
-
-td{
-    text-align: center;
-    vertical-align: middle;
-}
-
-td img{
-    align-self: center;
-    width: 50%;
-}
-
 /*Regla para listas*/
 
 ol > li{
@@ -142,27 +92,38 @@ li{
     list-style: none;
 }
 
-h2 {
-    font-size: larger;
-    /*margin-bottom: 2%;*/
-}
-
-/*Reglas para el encabezado*/
+/*Reglas para titulo*/
 #titulo{
     background-color: rgb(66, 170, 62);
     display: flex;
     flex-direction: row;
-    padding-left: 3%;
+    padding:0% 2%;
 }
 
 #titulo > img{
-    flex-basis: 10%;
+    max-width: 20%;
+    height: auto;
 }
 
-#titulo > h1{
-    font-size: 320%;
+#titulo h1{
+    font-size: 220%;
     margin-left: 5%;
     align-self: center;
+}
+
+#titulo h2, #titulo h3{
+    font-size: 150%;
+    font-weight: bold;
+}
+
+#titulo h4, #titulo h5, #titulo h6{
+    font-size: 120%;
+    margin-left: 5%;
+    align-self: center;
+}
+
+#titulo :not(:first-child):not(:last-child){
+    display: none;
 }
 
 /*Reglas para la barra de navegación*/
@@ -183,258 +144,204 @@ h2 {
     margin-left: 2%;
 }
 
-/*Reglas para la zona principal*/
+/*Reglas para zona central*/
 
-#cabeceraReceta{ /*Cambiar nombre*/
-    background-color: rgb(66, 170, 62);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    align-items: center;
-    width: 98%;
-
-    padding: 1% 2%;
-}
-
-#cabeceraReceta > h6{
-    font-style: italic;
-    font-size: small;
-}
-
-#descripcion{ 
-    background-color: rgb(146, 207, 76);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    overflow: hidden;
-    width: 100%;
-
-    padding: 1%;
-}
-
-#descripcion > p{
-    flex-basis: 100%;
-    margin-right: 3%;
-}
-
-#descripcion > img{
-    max-width: 100%;
-    height: auto;
-} 
-
-#preparacion{
-    padding: 2% 0.5%;
-    align-self: center;
-} 
-
-#ingredientes{
-    background-color:gainsboro;
-    padding: 1%;
-    margin-left: 2%;
-}
-
-.comentario{
-    background-color: lightcoral;
-    margin-top: 1%;
-    padding: 0.5%;
-    padding-left: 2%;
-}
-
-.comentario > :first-child{
-    color: blueviolet;
-}
-
-#barraInferior{
-    background-color:  rgb(66, 170, 62);
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
+.central{
+    background-color: beige;
+    padding: 2%;
     margin-top: 1%;
 }
 
-#barraInferior > *{
-    padding: 0.5%;
-    flex-basis: 5%;
+.central #titulo{
+    background-color: beige;
+    margin-bottom: 2%;
+    font-size: larger;
+    font-weight: bold;
 }
 
-#barraInferior > :nth-child(5){
-    margin-right: 3%;
-}
+/*Reglas para los elementos laterales*/
 
 .lateral{
-    background-color: rgb(255, 236, 129);
-    margin-top: 5%;
-    width: 80%;
+    margin-top: 2%;
+    text-align: center;
 }
 
 .lateral > * {
-    padding: 3%;
+    padding: 1%;
+    background-color: rgb(255, 236, 129);
 }
 
-.lateral > :first-child{
-    background-color: gold;
+.lateral #titulo{
+    background-color: rgb(216, 186, 15);
+    padding: 1%;
     font-weight: bold;
-    font-size: larger;
 }
 
-#formulario{
+/*Reglas para formularios*/
+
+.formulario{
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /* overflow: hidden;*/
     text-align: left;
     align-items: flex-start;
-    align-self: center;
+    /* align-self: center; */
+    padding: 2%;
 
-    margin-top: 5%;
-    margin-bottom: 2%;
-
-    width: 90%;
+    margin-top: 2%;
 }
 
-label{
-    width: 45%;
+.formulario *{
+    margin-bottom: 1%;
 }
 
-input{
-    float: right;
-}
-
-textarea{
-    float: right;
+.formulario label{
     width: 60%;
+    font-weight: bold;
 }
 
-/* input{
-    border-radius: 3%;
-    border: blue solid;
-    width: 100%;
-
-}
-
-textarea{
+.formulario input{
     float: right;
-} */
-
-
-#formulario > *{
-    margin-bottom: 2%;
 }
 
-#footer{
-    display: flex;
-    flex-direction: row;
-    background-color: rgb(66, 170, 62);
-    padding: 1% 0%;
-    padding-left: 2%;
-    width: 98%;
+.formulario textarea{
+    float: right;
+    width: 50%;
 }
 
-#footer > :not(:last-child){
-    margin-right: 0.5%;
+/*Reglas para tablas*/
+
+.tabla{
+    margin-top: 2%;
 }
 
-#footer > :not(:last-child)::after{
-    content: " | ";
+.tabla th{
+    width: 10%;
+    font-size: large;
+    font-weight: bold;
 }
 
-.icono{
+.tabla td{
+    text-align: center;
+    font-style: italic;
+    vertical-align: middle;
+}
+
+.tabla img{
+    align-self: center;
     width: 20%;
 }
 
-@media (max-width: 800px){
+/*Reglas para receta*/
 
-    body{
-        display: flex;
-        flex-direction: column;
+#receta{
+    background-color: beige;
+    padding: 2%;
+    margin-top: 1%;
+}
+
+#receta #titulo{
+    padding: 1%;
+    justify-content: space-between;
+}
+
+#receta #titulo h2{
+    font-size: xx-large;
+}
+
+#receta #titulo h6{
+    font-weight: normal;
+    font-style: italic;
+    font-size: small;
+    justify-self: flex-end;
+}
+
+#receta article{
+    border: solid rgb(146, 207, 76);
+    border-width: 2px 2px;
+}
+
+#receta #descripcion{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    padding: 1%;
+    margin: 1%;
+}
+
+#receta #descripcion img{
+    max-width: 30%;
+    height: auto;
+}
+
+#receta #preparacion{
+    padding: 1%;
+    margin: 3% 1%;
+}
+
+#receta #ingredientes{
+    background-color: gainsboro;
+    margin-bottom: 1%;
+}
+
+#receta #barraInferior{
+    background-color: rgb(66, 170, 62);
+    display: flex;
+    flex-flow: row;
+    padding: 1%;
+    justify-content: flex-end;
+}
+
+#receta #barraInferior *{
+    flex-basis: 5%;
+}
+
+/*Reglas para el footer*/
+
+#footer{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(66, 170, 62);
+    padding: 1% 2%;
+    margin-top: 5%;
+}
+
+/*Reglas para mensajes de error*/
+
+.error{
+    font-style: italic;
+    font-size: small;
+    color: rgb(190, 52, 52);
+}
+
+/*Reglas para dispositivos grandes*/
+
+@media (min-width:800px){
+    #titulo :not(:first-child):not(:last-child){
+        display: inline;
     }
 
-    main{
-        width: auto;
-        padding: 2% 0.5%;
-    }
-
-    main > header{
-        display: flex;
-        align-items: center;
-
-        background-color: rgb(66, 170, 62);
-        order: 0;
+    #titulo img{
+        max-width: 10%;
+        height: auto;
     }
     
     aside{
-        width: 100%;
-        margin-bottom: 1%;
+        float: right;
+        width: 25%;
+        margin-bottom: 5%;
     }
 
-    aside > :not(:first-child){
-        display: none;
+    aside > *{
+        margin-top: 5%;
     }
 
-    #titulo{
-        font-size: x-small;
-        font-weight: normal;
-        align-items: center;
+    aside > :not(:first-of-type){
+        display: inline;
     }
 
-    #titulo > :nth-child(odd){
-        display: none;
-    }
-
-    .lateral{
-        width: 100%;
-    }
-
-    .lateral > h3{
-        display: none;
-    }
-
-    #formulario{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        margin-top: -4%;
-        padding: 1%;
-    }
-
-    #formulario > *{
-        align-self: center;
-        margin: 0% 2%;
-    }
-
-    #cabeceraReceta > img{
-        display: none;
-    }
-  
-    #cabeceraReceta{
-        flex-basis: 70%;
-    }
-
-    #subcabecera{
-        flex-basis: 30%;
-        flex-direction: column-reverse;
-        margin-top: 1%;
-        align-items: flex-end;
-        padding-right: 1%;
-    }
-
-    .comentario{
-        order: 1;
-    }
-
-    #ingredientes > *{
-        padding: 1%;
-    }
-
-    #imagenesPasos > *{
-        flex-basis: 30%;
-    }
-
-    #footer{
-        flex-direction: column;
-    }
-
-    #footer > :not(:last-child)::after{
-        content: none;
+    main{
+        width: 70%;
+        margin-bottom: 10%;
     }
 }

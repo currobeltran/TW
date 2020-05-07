@@ -4,31 +4,33 @@
         $nombre=urldecode($nombre);
 
         if($accion=="Si"){
-            $sql="DELETE FROM Datos WHERE Titulo LIKE '$nombre'";
-            $query=mysqli_query($_SESSION['mysql'], $sql);
-            
+            $sql="DELETE FROM Datos WHERE Titulo LIKE ?";
+            $query=mysqli_prepare($_SESSION['mysql'], $sql);
+            mysqli_stmt_bind_param($query,'s',$nombre);
+            mysqli_execute($query);
+
             echo '
-                <main>
-                    <h2>Receta eliminada</h2>
+                <main class="central">
+                    <h2 id="titulo">Receta eliminada</h2>
                 </main>
             ';
         }
 
         else if($accion=="No"){
             echo '
-                <main>
-                    <h2>Accion cancelada</h2>
+                <main class="central">
+                    <h2 id="titulo">Accion cancelada</h2>
                 </main>
             ';
         }
 
         else{
             echo '
-                <main>
-                    <h2>Eliminar receta '.htmlentities($nombre).'.</h2> 
+                <main class="central">
+                    <h2 id="titulo">Eliminar receta '.htmlentities($nombre).'.</h2> 
                     <h6>¿Está seguro de realizar la siguiente acción?</h6>
 
-                    <form action="" method="POST" id="formulario">
+                    <form action="" method="POST" class="formulario">
                         <label>Si
                             <input type="radio" name="eliminar" value="Si"/>
                         </label>

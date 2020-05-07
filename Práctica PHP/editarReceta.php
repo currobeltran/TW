@@ -5,8 +5,8 @@
 
         if(isset($completada) && $completada){
             echo '
-                <main>
-                    <h2>Éxito</h2>    
+                <main class="central">
+                    <h2 id="titulo">Éxito</h2>    
                     <p>Se ha completado la actualización de la receta '
                     .htmlentities($_SESSION['recetaEditada']['titulo']).'</p>           
                 </main>
@@ -19,18 +19,19 @@
         }
         else if(isset($completada) && !$completada){
             echo '
-                <main>
-                    <h2>Error</h2>    
+                <main class="central">
+                    <h2 id="titulo">Error</h2>    
                     <p>No se ejecutó correctamente la actualización de '
-                    .htmlentities($_SESSION['recetaEditada']['titulo']).', vuelva a intentarlo más tarde</p>           
+                    .htmlentities($_SESSION['recetaEditada']['titulo']).', vuelva a intentarlo más 
+                    tarde</p>           
                 </main>
                 ';
         }
         
         if(!isset($_SESSION['mysql'])){
             echo '
-                <main>
-                    <h2>Acceso no autorizado</h2>
+                <main class="central">
+                    <h2 id="titulo">Acceso no autorizado</h2>
                     <p>No esta autorizado a entrar aquí, registrese y vuelva a intentarlo</p>                
                 </main>
                 ';
@@ -38,20 +39,22 @@
             return;
         }
         
-        $query=mysqli_prepare($_SESSION['mysql'], "SELECT * FROM Datos WHERE Titulo LIKE '$nombreReceta'");
+        $query=mysqli_prepare($_SESSION['mysql'], "SELECT * FROM Datos WHERE Titulo LIKE ?");
+        mysqli_stmt_bind_param($query,'s',$nombreReceta);
         mysqli_execute($query);
         $receta=mysqli_stmt_get_result($query);
         $res=mysqli_fetch_array($receta);
+
         $_SESSION['recetaModificada']=$nombreReceta;
 
         if($datos['editar']==false){
             echo'
-                <main>
-                    <h2>Editor de recetas</h2>
+                <main class="central">
+                    <h2 id="titulo">Editor de recetas</h2>
                     <h6>Este es el formulario para editar la receta '.htmlentities($res[0]).'</h6>
                     <h6>Introduzca la información a modificar en los campos correspondientes</h6>
 
-                    <form action="" method=POST id=formulario enctype="multipart/form-data">
+                    <form action="" method=POST class=formulario enctype="multipart/form-data">
                         <label> Autor 
                             <input type="text" name="autor" value="'.htmlentities($res[1]).'"/>
                         </label>
@@ -60,14 +63,14 @@
                             <input type="text" name="cat" value="'.htmlentities($res[2]).'"/>
                         </label>
 
-                        <label> Ingredientes 
-                            <textarea name="ingredientes" cols="24">'
+                        <label> Descripción 
+                            <textarea name="descripcion" cols="24">'
                             .htmlentities($res[3]).
                             '</textarea>
                         </label>
 
-                        <label> Descripción 
-                            <textarea name="descripcion" cols="24">'
+                        <label> Ingredientes 
+                            <textarea name="ingredientes" cols="24">'
                             .htmlentities($res[4]).
                             '</textarea>
                         </label>
@@ -91,10 +94,10 @@
 
         else{
             echo'
-                <main>
-                    <h2>¿Desea editar la receta '.htmlentities($nombreReceta).'?</h2>
+                <main class="central">
+                    <h2 id="titulo">¿Desea editar la receta '.htmlentities($nombreReceta).'?</h2>
 
-                    <form action="" method=POST id=formulario enctype="multipart/form-data">
+                    <form action="" method=POST class=formulario enctype="multipart/form-data">
                         <label> Autor 
                             <input type="text" name="autor" value="'.htmlentities($datos['autor']).'" disabled/>
                         </label>
@@ -103,15 +106,15 @@
                             <input type="text" name="cat" value="'.htmlentities($datos['cat']).'" disabled/>
                         </label>
 
-                        <label> Ingredientes 
-                            <textarea name="ingredientes" cols="24" disabled>'
-                            .htmlentities($datos['ingredientes']).
-                            '</textarea>
-                        </label>
-
                         <label> Descripción 
                             <textarea name="descripcion" cols="24" disabled>'
                             .htmlentities($datos['descripcion']).
+                            '</textarea>
+                        </label>
+
+                        <label> Ingredientes 
+                            <textarea name="ingredientes" cols="24" disabled>'
+                            .htmlentities($datos['ingredientes']).
                             '</textarea>
                         </label>
 
@@ -124,6 +127,7 @@
                         <label> Fotografía 
                             <input type="file" name="foto" disabled/>';
                             if(filesize($img['tmp_name'])==0){
+                                $_SESSION['foto']=$res[6];
                                 echo 
                                     '<img src="data:image/jpeg;base64,'.base64_encode($res[6]).'"/>';
                             }
@@ -143,33 +147,27 @@
         }
     }
 
-    function editarRecetaBBDD($vars, $nombreReceta, $foto){
-        if(strlen(trim($foto))){
-            $img2=addslashes($foto);
-            $sql="UPDATE Datos SET Fotografia='$img2' WHERE Titulo LIKE '{$nombreReceta}'";
-            mysqli_query($_SESSION['mysql'], $sql);
-        }
+    function editarRecetaBBDD($vars, $nombreReceta, $img){
+        $sql="UPDATE Datos SET 
+            Autor=?, Categoria=?, Descripcion=?, Ingredientes=?, Preparacion=?, Fotografia=?
+            WHERE Titulo='$nombreReceta'";
 
-        $variables=[$vars['autor'],$vars['cat'],$vars['ingredientes'],$vars['descripcion'],
-        $vars['preparacion']];
-        $nombres=['Autor','Categoria','Ingredientes','Descripcion','Preparacion'];
+            $query=mysqli_prepare($_SESSION['mysql'],$sql);
+            
+            mysqli_stmt_bind_param($query,'ssssss',
+                    $vars['autor'],$vars['cat'],$vars['descripcion'],$vars['ingredientes'],
+                    $vars['preparacion'],$img);
+            
+            mysqli_execute($query);
 
-        for($i=0; $i<sizeof($vars); $i++){
-            $sql="UPDATE Datos SET ".$nombres[$i]."=? WHERE Titulo LIKE '{$nombreReceta}'";
-            if(strlen(trim($variables[$i]))){
-                $query=mysqli_prepare($_SESSION['mysql'], $sql);
-                if(!$query){
-                    return false;
-                }
-                
-                mysqli_stmt_bind_param($query,'s',$variables[$i]);
-                
-                mysqli_stmt_execute($query);
-
+            if($query){
+                mysqli_stmt_close($query);
+                return true;
             }
-        }
-
-        return true;
+            else{
+                mysqli_stmt_close($query);
+                return false;
+            }
     }
 
 ?>

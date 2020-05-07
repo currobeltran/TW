@@ -3,7 +3,7 @@
     function paginaContacto($datos){
         if(isset($datos['telefono'])){
             if(preg_match('/^(\+[0-9]{2})?\s*[0-9]{3}\s*[0-9]{6}$/',$datos['telefono'])==0 &&
-                strlen(trim($datos['telefono']))){
+                !empty($datos['telefono'])){
                 $hayerror['telefono']='<p>Número introducido incorrecto</p>';
             }  
         }
@@ -26,7 +26,7 @@
             }
         }
 
-        echo '<main>';
+        echo '<main class="central">';
         if(!isset($hayerror) && isset($datos['Enviar'])){
             
             echo '
@@ -37,15 +37,13 @@
         }
         else{
             echo '
-                <header id="cabeceraReceta">
-                    <h2>Página de contacto</h2>
-                </header>
+                <article>
+                    <h2 id="titulo">Página de contacto</h2>
 
-                <article id="descripcion">
                     <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
                 </article>
 
-                    <form action="" method="POST" id="formulario">
+                    <form action="" method="POST" class="formulario">
                         <label>Nombre
                             <input type="text" name="nombre"';
                                 if(isset($datos['nombre'])) 
