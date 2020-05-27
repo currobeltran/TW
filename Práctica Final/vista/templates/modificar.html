@@ -1,0 +1,60 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    <h2 id="titulo">Modificacion de la receta {{ nombrereceta }}<h2>
+    <h6>Deben estar rellenos todos los campos del siguiente formulario</h6>
+    <h6>Para añadir elementos en formato de lista (por ejemplo, los ingredientes)
+    debe introducir ";" entre los distintos elementos</h6>
+
+    <form action="" method="POST" class="formulario">
+        <label> Título 
+            <input type="text" name="titulo" value='{{ datostitulo }}'/>
+        </label>
+
+        <label> Categoría 
+            {% for tipo in tipos %}
+                <label>{{ tipo }}<input type="checkbox" name={{ tipo }}/></label>
+            {% endfor %}
+        </label>
+
+        <label> Descripción 
+            <textarea name="ingredientes" cols="24">
+                {{ datosdescripcion }}
+            </textarea>
+        </label>
+
+        <label> Ingredientes 
+            <textarea name="ingredientes" cols="24">
+                {{ datosingredientes }}
+            </textarea>
+        </label>
+
+        <label> Preparación 
+            <textarea name="ingredientes" cols="24">
+                {{ datospreparacion }}
+            </textarea>
+        </label>
+
+        <input type="submit" name="modificar" value="Modificar"/>
+    </form>
+
+    <h2 id="titulo">Fotografías adjuntas<h2>
+        <h6>La primera fotografia se usará en la cabecera de la receta y el resto al
+            final de la misma.
+        </h6>
+    
+    <form action="" method="POST" class="formulario">
+        {% for foto in fotos %}
+
+            <img src='{{ foto }}' class="iconos"/>
+            <input type="submit" name="borrar" value="Borrar"/>
+
+        {% endfor %}
+        <label> Fotografía 
+            <input type="file" name="foto" value='{{ datosfoto }}'/>
+        </label>
+
+        <input type="submit" name="enviar" value="Añadir fotografía(s)"/>
+    </form>
+        

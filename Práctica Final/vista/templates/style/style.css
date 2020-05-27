@@ -1,0 +1,409 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+/*CSS Reset*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*Reglas generales*/
+
+html{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+aside > :not(:first-of-type){
+    display: none;
+}
+
+/*Reglas para enlaces*/
+
+a:link{
+    color: black;
+    text-decoration: none;
+}
+
+a:visited{
+    color: black;
+}
+
+a:hover{
+    color:rgb(24, 94, 22);
+}
+
+/*Regla para una imagenes*/
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/*Regla para listas*/
+
+ol > li{
+    margin-bottom: 1%;
+    list-style: decimal;
+    list-style-position: inside;
+}
+
+li{
+    list-style: none;
+}
+
+/*Reglas para titulo*/
+#titulo{
+    background-color: rgb(66, 170, 62);
+    display: flex;
+    flex-direction: row;
+    padding:0% 2%;
+}
+
+#titulo > img{
+    max-width: 20%;
+    height: auto;
+}
+
+#titulo h1{
+    font-size: 220%;
+    margin-left: 5%;
+    align-self: center;
+}
+
+#titulo h2, #titulo h3{
+    font-size: 150%;
+    font-weight: bold;
+}
+
+#titulo h4, #titulo h5, #titulo h6{
+    font-size: 100%;
+    margin-left: 5%;
+    align-self: center;
+}
+
+#titulo :not(:first-child):not(:last-child){
+    display: none;
+}
+
+/*Reglas para la barra de navegación*/
+
+#barraNavegacion{
+    background-color:rgb(146, 207, 76);
+    
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 0.5%;
+    padding: 0.5%;
+    
+    font-weight: bold;
+    text-align: center;
+}
+
+#barraNavegacion > *{
+    margin-top: 0.5%;
+}
+
+/*Reglas para zona central*/
+
+.central{
+    background-color: beige;
+    padding: 2%;
+    margin-top: 1%;
+}
+
+.central #titulo{
+    background-color: beige;
+    margin-bottom: 2%;
+    font-size: larger;
+    font-weight: bold;
+}
+
+/*Reglas para los elementos laterales*/
+
+.lateral{
+    background-color: rgb(255, 236, 129);
+    margin-top: 2%;
+    text-align: center;
+}
+
+.lateral #titulo{
+    background-color: rgb(216, 186, 15);
+    padding: 1%;
+    font-weight: bold;
+}
+
+/*Reglas para formularios*/
+
+.formulario{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    align-items: flex-start;
+    padding: 2%;
+
+    margin-top: 2%;
+}
+
+.formulario *{
+    margin-bottom: 1%;
+}
+
+.formulario label{
+    width: 60%;
+    font-weight: bold;
+}
+
+.formulario input{
+    float: right;
+}
+
+.formulario textarea{
+    float: right;
+    width: 50%;
+}
+
+/*Reglas para tablas*/
+
+.tabla{
+    margin-top: 2%;
+}
+
+.tabla th{
+    width: 10%;
+    font-size: large;
+    font-weight: bold;
+}
+
+.tabla td{
+    text-align: center;
+    font-style: italic;
+    vertical-align: middle;
+}
+
+.tabla img{
+    align-self: center;
+    width: 20%;
+}
+
+/*Reglas para receta*/
+
+#receta{
+    background-color: beige;
+    padding: 2%;
+    margin-top: 1%;
+}
+
+#receta #titulo{
+    padding: 1%;
+    justify-content: space-between;
+}
+
+#receta #titulo h2{
+    font-size: xx-large;
+}
+
+#receta #titulo h6{
+    font-weight: normal;
+    font-style: italic;
+    font-size: small;
+    justify-self: flex-end;
+}
+
+#receta article{
+    border: solid rgb(146, 207, 76);
+    border-width: 2px 2px;
+}
+
+#receta #descripcion{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    padding: 1%;
+    margin: 1%;
+}
+
+#receta #descripcion img{
+    max-width: 30%;
+    height: auto;
+}
+
+#receta #preparacion{
+    padding: 1%;
+    margin: 3% 1%;
+}
+
+#receta #ingredientes{
+    background-color: gainsboro;
+    margin-bottom: 1%;
+}
+
+#receta #barraInferior{
+    background-color: rgb(66, 170, 62);
+    display: flex;
+    flex-flow: row;
+    padding: 1%;
+    justify-content: flex-end;
+}
+
+#receta #barraInferior *{
+    flex-basis: 5%;
+}
+
+/*Reglas para el footer*/
+
+#footer ul{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(66, 170, 62);
+    padding: 1% 2%;
+    margin-top: 5%;
+}
+
+/*Reglas para mensajes de error*/
+
+.error{
+    font-style: italic;
+    font-size: small;
+    color: rgb(190, 52, 52);
+}
+
+/*Reglas para imagenes chicas*/
+
+.iconos{
+    max-width: 50%;
+    height: auto;
+}
+
+/*Reglas para dispositivos grandes*/
+
+@media (min-width:800px){
+    #titulo :not(:first-child):not(:last-child){
+        display: block;
+    }
+
+    #titulo img{
+        max-width: 10%;
+        height: auto;
+    }
+
+    #titulo h1{
+        font-size: 270%;
+    }
+
+    #barraNavegacion{
+        flex-flow: row;
+    }
+
+    #barraNavegacion > *{
+        margin-left: 2%;
+    }
+    
+    aside{
+        float: right;
+        width: 25%;
+    }
+
+    aside > *{
+        margin-top: 5%;
+    }
+
+    aside > :not(:first-of-type){
+        display: block;
+    }
+
+    .lateral{
+        margin-bottom: 5%;
+    }
+
+    .lateral > *{
+        padding: 3%;
+    }
+
+    .lateral form{
+        display: flex;
+        flex-flow: column;
+    }
+
+    .lateral label{
+        display: flex;
+        justify-content: space-between;
+        margin: 2% 0%;
+    }
+
+    .lateral input{
+        width: 50%;
+        align-self: center;
+    }
+
+    main{
+        width: 70%;
+        margin-bottom: 25%;
+    }
+
+    #footer{
+        width: 100%;
+    }
+
+    #footer ul{
+        flex-flow: row;
+        margin-top: 10%;
+    }
+
+    #footer ul > *{
+        margin-left: 1%;
+    }
+
+    #footer ul > :not(:last-child)::after{
+        content: " | ";
+    }
+    
+    #ingredientes{
+        width: 20%;
+        text-align: center;
+        font-size: small;
+        margin-top: -1%;
+    }
+
+}

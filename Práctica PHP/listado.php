@@ -63,7 +63,7 @@
                         <td>'.htmlentities($tupla[1]).'</td>
                         <td>
                             <a href="index.php?p=ver&id='.urlencode($tupla[0]).'">
-                            <img src="./img/visualizar.png" alt="visualizar class="icono"/>
+                            <img src="./img/visualizar.png" alt="visualizar" class="icono"/>
                             </a>
                         </td>';
                 

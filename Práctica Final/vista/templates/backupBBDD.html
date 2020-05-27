@@ -1,0 +1,22 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    <form action="" method="POST" class="formulario">
+
+        <h2 id="titulo">Gestión de Base de Datos</h2>
+        
+        <label>Obtener copia de la Base de Datos
+            <input type="submit" name="copia"/>
+        </label>
+
+        <label>Restaurar copia de la Base de Datos
+            <input type="submit" name="restaurar"/>
+        </label>
+
+        <label>Eliminar Base de Datos
+            <input type="submit" name="eliminar"/>
+        </label>
+
+    </form>
+{% endblock %}

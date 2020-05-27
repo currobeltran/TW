@@ -1,0 +1,79 @@
+{% extends "gestion.html" %}
+
+{% block seleccion %}
+    
+    {% if request == false %}
+
+    <form action="" method="POST" class="formulario">
+
+        <h2 id="titulo">Añadir nuevo usuario</h2>
+        
+        <label> Fotografía 
+            <input type="file" name="foto" value='{{ datosfoto }}'/>
+        </label>
+
+        <label> Nombre 
+            <input type="text" name="nombre" value='{{ datosnombre }}'/>
+        </label>
+
+        <label> Apellidos 
+            <input type="text" name="apellidos" value='{{ datosapellidos }}'/>
+        </label>
+
+        <label> Email 
+            <input type="email" name="correo" value='{{ datoscorreo }}'/>
+        </label>
+
+        <label> Clave 
+            <input type="password" name="clave"/> <input type="password" name="clave"/>
+        </label>
+
+        <label>Tipo
+            <select name="tipo">
+                <option value="Colab">Colaborador</option>
+                <option value="Admin">Administrador</option>
+            </select>
+        </label>
+
+        <input type="submit" name="anadir" value="Añadir user"/>
+    </form>
+
+    {% else %}
+
+    <form action="" method="POST" class="formulario">
+
+        <h2 id="titulo">¿Esta seguro que desea añadir la siguiente información?</h2>
+        
+        <label> Fotografía 
+            <input type="file" name="foto" value='{{ datosfoto }}'/>
+        </label>
+
+        <label> Nombre 
+            <input type="text" name="nombre" value='{{ datosnombre }}'/>
+        </label>
+
+        <label> Apellidos 
+            <input type="text" name="apellidos" value='{{ datosapellidos }}'/>
+        </label>
+
+        <label> Email 
+            <input type="email" name="correo" value='{{ datoscorreo }}'/>
+        </label>
+
+        <label> Clave 
+            <input type="password" name="clave"/> <input type="password" name="clave"/>
+        </label>
+
+        <label>Tipo
+            <select name="tipo">
+                <option value="Colab">Colaborador</option>
+                <option value="Admin">Administrador</option>
+            </select>
+        </label>
+
+        <input type="submit" name="confirmar" value="Confirmar"/>
+    </form>
+
+    {% endif %}
+
+{% endblock %}

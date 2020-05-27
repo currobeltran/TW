@@ -1,0 +1,14 @@
+{% extends "gestion.html" %}
+
+{% block seleccion %}   
+    <h2 id="titulo">Lista de usuarios</h2>
+    <ul>
+        {% for usuario in usuarios %}
+
+            <li>
+                {{ usuario.nombre }}
+            </li>
+
+        {% endfor %}
+    </ul>
+{% endblock %}

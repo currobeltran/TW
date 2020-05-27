@@ -1,0 +1,13 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    <h2 id="titulo">Log del sistema</h2>
+
+    <ol>
+        {% for item in log %}
+            <li>{{ item.fecha }} {{ item.evento }}</li>
+        {% endfor %}
+    </ol>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    <form action="" method="POST" class="formulario"> 
+        <label>Buscar por nombre de receta 
+            <input type="text" name="tituloBusqueda"/>
+        </label>
+        <label>Buscar por contenido de receta 
+            <input type="text" name="contenidoBusqueda"/>
+        </label>
+        
+        <h3>Categorias</h3>
+        {% for tipo in tipos %}
+            <label>{{ tipo }}<input type="checkbox" name={{ tipo }}/></label>
+        {% endfor %}
+
+        <label>Orden alfabético ascendente
+            <input type="radio" name="orden" value="ASC"/>
+        </label>
+
+        <label>Orden alfabético descendente
+            <input type="radio" name="orden" value="DESC"/>
+        </label>
+        
+        <label>Mas a menos comentadas
+            <input type="radio" name="orden" value="MASCOM"/>
+        </label>
+        
+        <label>Mas a menos valoradas
+            <input type="radio" name="orden" value="MASVAL"/>
+        </label>
+        
+        <label>Numero de recetas por página
+            <select name="recetasxpagina">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+        </label>
+
+        <input type="submit" name="Filtrar" value="Filtrar"/>
+    </form>
+
+    <h3 id="titulo">Listado de recetas</h3>
+
+    <table class="tabla">
+        <tr>
+            <th>Título</th>
+            <th>Ver</th>
+            {% if permisos >= 1 %}
+                <th>Editar</th>
+                <th>Borrar</th>
+            {% endif %}
+        </tr>
+
+        {% for receta in recetas %}
+            <tr>
+                <td>{{ receta.nombre }}</td>
+                <td>
+                    <a href={{ receta.visurl }}>
+                    <img src="/vista/templates/img/visualizar.png" alt="visualizar" class="icono"/>
+                    </a>
+                </td>
+
+                {% if permisos >= 1 %}
+                <td>
+                    <a href={{ receta.edurl }}>
+                    <img src="/vista/templates/img/lapiz.png" alt="editar" class="icono"/>
+                    </a>
+                </td>
+                <td>
+                    <a href={{ receta.elurl }}>
+                    <img src="/vista/templates/img/cerrar.png" alt="eliminar" class="icono"/>
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        
+    </table>
+
+
+
+{% endblock %}

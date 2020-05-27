@@ -1,0 +1,81 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    {% if request == false %}
+
+    <h2>Edición del usuario</h2>
+
+    <form action="" method="POST" class="formulario">
+        <label> Fotografía 
+            <input type="file" name="foto" value='{{ datosfoto }}'/>
+        </label>
+
+        <label> Nombre 
+            <input type="text" name="nombre" value='{{ datosnombre }}'/>
+        </label>
+
+        <label> Apellidos 
+            <input type="text" name="apellidos" value='{{ datosapellidos }}'/>
+        </label>
+
+        <label> Email 
+            <input type="email" name="correo" value='{{ datoscorreo }}'/>
+        </label>
+
+        <label> Clave 
+            <input type="password" name="clave"/> <input type="password" name="clave"/>
+        </label>
+
+        {% if permisos == 2 %} 
+        
+            <label>Tipo
+                <select name="tipo">
+                    <option value="Colab">Colaborador</option>
+                    <option value="Admin">Administrador</option>
+                </select>
+            </label>
+
+        {% endif %}
+        
+        <input type="submit" name="editar" value="Editar"/>
+    </form>
+
+    {% endif %}
+
+    {% if request == true %}
+        <h2>Edición del usuario</h2>
+        <h6>¿Seguro que desea introducir estos datos?</h6>
+
+        <form action="" method="POST" class="formulario">
+            <label> Fotografía 
+                <input type="file" name="foto" value='{{ datosfoto }}' disabled/>
+            </label>
+
+            <label> Nombre 
+                <input type="text" name="nombre" value='{{ datosnombre }}' disabled/>
+            </label>
+
+            <label> Apellidos 
+                <input type="text" name="apellidos" value='{{ datosapellidos }}' disabled/>
+            </label>
+
+            <label> Email 
+                <input type="email" name="correo" value='{{ datoscorreo }}' disabled/>
+            </label>
+
+            {% if permisos == 2 %} 
+            
+                <label>Tipo
+                    <select name="tipo">
+                        <option value="Colab" disabled>Colaborador</option>
+                        <option value="Admin" disabled>Administrador</option>
+                    </select>
+                </label>
+
+            {% endif %}
+
+            <input type="submit" name="editar" value="Editar"/>
+        </form>
+    {% endif %}
+{% endblock %}

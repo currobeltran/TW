@@ -1,0 +1,18 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    <header>
+        <h2 id="titulo">Gestión de usuarios</h2>
+        <h6 id="titulo">Indique la accion a realizar</h6>    
+    </header>
+    
+    <nav id="barraNavegacion">
+        <a href="index.php?p=listauser">Listado</a>
+        <a href="index.php?p=anadiruser">Añadir nuevo usuario</a>
+    </nav>
+
+    {% block seleccion %}
+
+    {% endblock %}
+{% endblock %}

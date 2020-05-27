@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="es">
+    <head>
+        <title>Inicio</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=800px">
+        <link rel="stylesheet" href="/vista/templates/style/style.css">
+    </head>
+
+    <body>
+
+        <header id="titulo">
+            <img src="/vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="/vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="/vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
+            <h1>Comida sana para todos los días</h1>
+        </header>
+
+        <nav>
+            <ul id="barraNavegacion">
+                <li><a href="index.php?p=inicio">Inicio</a></li>
+                <li><a href="index.php?p=listado">Ver listado de recetas</a></li>
+
+                {% if permisos >= 1 %}
+                <li><a href="index.php?p=anadir">Añadir nueva receta</a></li>
+                <li><a href="index.php?p=milistado">Ver mis recetas</a></li>
+                {% endif %}
+
+                {% if permisos >= 2 %}
+                <li><a href="index.php?p=gestionar">Gestión de usuarios</a></li>
+                <li><a href="index.php?p=log">Ver log</a></li>
+                <li><a href="index.php?p=basedatos">Gestión de la BBDD</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        <aside>
+            <article class="lateral">
+                <header id="titulo">
+                    <h4>Login</h4>
+                </header>
+
+                {% if permisos >= 1 %}
+                    <p>Te has identificado como {{ usuario }}</p>
+                    <img src="/vista/templates/img/numero1.png" class="iconos">
+
+                    <form action='' method='POST'>
+                        <input type='submit' value='Logout' name='Logout'>
+                    </form>
+
+                    <form action='' method='GET'>
+                        <input type='submit' value='Editar Usuario' name='p'>
+                    </form>
+                {% endif %}
+
+                {% if permisos < 1 %}
+                    <form action='' method='POST'>
+                        <label>Usuario <input type='text' name='Usuario'></label>
+                        <label>Clave <input type='password' name='Clave'></label>
+                        <input type='submit' value='Login'>
+                    </form>
+                {% endif %}
+            </article>
+
+            <article class="lateral">
+                <header id="titulo">
+                    <h4>+ valoradas</h4>
+                </header>
+                
+                <ol>
+                    <li><a href="">Risotto de calabaza y champiñones</a></li>
+                    <li><a href="">Pollo al salmorejo</a></li>
+                    <li><a href="">Ensalada de espinacas y mango</a></li>
+                </ol>
+            </article>
+
+            <article class="lateral">
+                <header id="titulo">
+                    <h4>nº de recetas</h4>
+                </header>
+
+                <p>El sitio contiene {{ nrecetas }} recetas diferentes</p>
+            </article>
+        </aside>
+
+        <main class="central">
+            {% block central %}
+                <h2 id="titulo">Bienvenido a Comida sana para todos los dias</h2>
+                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+            {% endblock %}
+        </main>
+
+        <footer id="footer">
+            <ul>
+                <li><a href="">(C) 2020 Tecnologías Web</a></li>
+                <li><a href="">Mapa del sitio</a></li>
+                <li><a href="">Contacto</a></li>
+            </ul>
+        </footer>
+</html>
