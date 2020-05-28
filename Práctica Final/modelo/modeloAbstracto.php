@@ -66,8 +66,34 @@ class ModeloRecetas extends AbstractModel{
         return $result;
     }
 
-    public function getListaRecetas($seleccion){
-        $select="SELECT $seleccion FROM recetas";
+    public function getListaRecetas(){
+        $select="SELECT * FROM recetas";
+        $result=$this->query($select);
+        return $result;
+    }
+
+    public function countRecetas(){
+        $result=$this->getListaRecetas();
+        $recetas=[];
+        while(($receta=mysqli_fetch_array($result))){
+            array_push($recetas, $receta[nombre]);
+        }
+        return count($recetas);
+    }
+}
+
+class ModeloListaCategorias extends AbstractModel{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    public function query($select,$params=[],$type=''){
+        $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    public function getListaCategorias(){
+        $select="SELECT * FROM listacategorias";
         $result=$this->query($select);
         return $result;
     }

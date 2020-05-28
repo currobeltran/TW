@@ -23,8 +23,9 @@ class VistaAdministrador extends AbstractView{
     }
 
     public function render($params) {
-        $args=['permisos'=>2];
-        parent::render($args);
+        $permiso=['permisos'=>2];
+        $params+=$permiso;
+        parent::render($params);
     }
 }
 
@@ -35,8 +36,20 @@ class VistaColaborador extends AbstractView{
 
     // ***** Método principal: devuelve un string con el contenido HTML de toda la página
     public function render() {
-        $args=['permisos'=>1];
-        parent::render($args);
+        $permiso=['permisos'=>1];
+        parent::render($permiso);
+    }
+}
+
+class VistaVisitante extends AbstractView{
+    public function __construct($pag){
+        parent::__construct($pag);
+    }
+
+    // ***** Método principal: devuelve un string con el contenido HTML de toda la página
+    public function render() {
+        $permiso=['permisos'=>0];
+        parent::render($permiso);
     }
 }
 ?>

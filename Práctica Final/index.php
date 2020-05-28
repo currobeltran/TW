@@ -39,11 +39,17 @@ if(isset($_GET['p'])){
 
 // echo $resultado[email];
 
-// $controladorUsuario=new ControladorRecetas();
+$controladorReceta=new ControladorRecetas();
+// $controladorReceta->listarRecetas();
+
+// $mrecetas=new ModeloRecetas();
+// $tupla=$mrecetas->getListaRecetas();
+// $resultado=mysqli_fetch_array($tupla);
+// echo $resultado[id];
 
 switch($_SESSION['opc']){
     case 'inicio': $view=new VistaAdministrador('comun.html'); break; 
-    // case 'listado': $controladorUsuario->listarRecetas(); break;
+    case 'listado': $controladorReceta->listarRecetas(); break;
     case 'milistado': $view=new VistaAdministrador('listado.html'); break;
     case 'anadir': $view=new VistaAdministrador('anadir.html'); break;
     case 'Editar Usuario': $view=new VistaAdministrador('editaruser.html'); break;
@@ -55,6 +61,6 @@ switch($_SESSION['opc']){
     default: $view=new VistaAdministrador('comun.html'); break;
 }
 
-$view->render(null);
+$view->render([]);
 
 ?>

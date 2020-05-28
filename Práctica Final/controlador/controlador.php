@@ -35,17 +35,41 @@ class ControladorRecetas extends AbstractController{
     }
 
     public function listarRecetas(){
-        $result=$this->$mrecetas->getListaRecetas("nombre");
+        //Obtenemos los modelos necesarios
+        $modelo=new ModeloRecetas();
+        $listacat=new ModeloListaCategorias();
+
+        //Obtenemos lista de recetas
+        $result=$modelo->getListaRecetas();
+        
+        $params=[];
         $recetas=[];
-        for($i=0; $i<count($result); $i++){
-            $receta=mysqli_fetch_array($result);
-            $receta=['nombre'=>$receta];
-            array_push($recetas,$receta);
+        while(($receta=mysqli_fetch_array($result))){
+            array_push($recetas, $receta[nombre]);
         }
-        $vrecetas->render($recetas);
+
+        //Obtenemos lista de categorias
+        $result2=$listacat->getListaCategorias();
+        $categorias=[];
+        while(($categoria=mysqli_fetch_array($result2))){
+            array_push($categorias, $categoria[nombre]);
+        }
+
+        //Obtenemos el numero de recetas
+        $result3=$modelo->countRecetas();
+
+        //Añadimos todo al vector de parametros
+        $params+=['recetas'=>$recetas];
+        $params+=['tipos'=>$categorias];
+        $params+=['nrecetas'=>$result3];
+
+        //Generamos la pagina
+        $this->$vrecetas->render($params);
     }
 
+    public function countRecetas(){
 
+    }
 }
 
 ?>

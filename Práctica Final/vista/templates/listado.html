@@ -44,9 +44,8 @@
 
         <input type="submit" name="Filtrar" value="Filtrar"/>
     </form>
-
+    
     <h3 id="titulo">Listado de recetas</h3>
-
     <table class="tabla">
         <tr>
             <th>Título</th>
@@ -59,7 +58,7 @@
 
         {% for receta in recetas %}
             <tr>
-                <td>{{ receta.nombre }}</td>
+                <td>{{ receta }}</td>
                 <td>
                     <a href={{ receta.visurl }}>
                     <img src="/vista/templates/img/visualizar.png" alt="visualizar" class="icono"/>
