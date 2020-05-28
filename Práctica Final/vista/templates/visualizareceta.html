@@ -1,0 +1,52 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+<div id="receta">
+    <header id="titulo">
+        <h2>{{ nombre }}</h2>
+        <h6>{{ autor }}</h6>
+    </header>
+
+    <article id="descripcion">
+        <p>{{ descripcion }}</p>
+        <img src={{ imagen }} />
+    </article>
+
+    <article id="preparacion">
+                
+        <aside id="ingredientes">
+            <ul>
+                {% for ingrediente in ingredientes %}
+                    <li>{{ ingrediente }}</li>
+                {% endfor %}
+            </ul>
+        </aside>
+    
+        <ol>
+            {% for paso in pasos %}
+                <li>{{ paso }}</li>
+            {% endfor %}
+        </ol>
+    </article>
+
+    <footer>
+        <ul id="barraInferior">
+            {% if permisos >=2 %}
+                <li>
+                    <a href={{ recetaedurl }}>
+                    <img src="/vista/templates/img/lapiz.png" alt="editar" class="icono"/>
+                    </a>
+                </li>
+
+                <li>
+                    <a href={{ recetaelurl }}>
+                    <img src="/vista/templates/img/cerrar.png" alt="eliminar" class="icono"/>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </footer>
+</div>
+
+{% endblock %}

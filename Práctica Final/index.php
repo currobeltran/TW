@@ -25,21 +25,19 @@ if(isset($_GET['p'])){
     $_SESSION['opc']=$_GET['p'];
 }
 
-// $muser=new ModeloUsuario();
+if(!isset($_SESSION['pagina'])){
+    $_SESSION['pagina']=0;
+}
 
-// $parametros=['c','c','c@c.com','c','c','Colaborador'];
+// $musuario=new ModeloUsuario();
 
-// $muser->insertUsuario($parametros);
+// $tupla=$musuario->insertUsuario(["d","d","adhusa@fna.com","d","d","Colaborador"]);
 
-// // $tupla=$muser->getUsuarioByEmail("admin@admin.com");
-
-// // $tupla=$muser->getListaUsuarios();
+// $tupla=$musuario->getUsuarioByEmail("admin@admin.com");
 
 // $resultado=mysqli_fetch_array($tupla);
+// echo $resultado[id];
 
-// echo $resultado[email];
-
-$controladorReceta=new ControladorRecetas();
 // $controladorReceta->listarRecetas();
 
 // $mrecetas=new ModeloRecetas();
@@ -49,9 +47,44 @@ $controladorReceta=new ControladorRecetas();
 
 switch($_SESSION['opc']){
     case 'inicio': $view=new VistaAdministrador('comun.html'); break; 
-    case 'listado': $controladorReceta->listarRecetas(); break;
+    
+    case 'listado': 
+        $controladorReceta=new ControladorRecetas("listado.html");
+        $controladorReceta->listarRecetas($_POST['tituloBusqueda'], 
+        $_POST['contenidoBusqueda'], $_POST['recetasxpagina'], $_SESSION['pagina']); 
+    break;
+
+    case 'visualizar': 
+        $controladorReceta=new ControladorRecetas("visualizareceta.html");
+        $controladorReceta->verReceta($_GET['id']); 
+    break;
+    
     case 'milistado': $view=new VistaAdministrador('listado.html'); break;
-    case 'anadir': $view=new VistaAdministrador('anadir.html'); break;
+    
+    case 'anadir': 
+        $controladorReceta=new ControladorRecetas("anadir.html");
+        $datos=[];
+
+        if(isset($_POST['titulo'])){ 
+            $datos+=['titulo'=>$_POST['titulo']];
+        }
+
+        if(isset($_POST['descripcion'])){ 
+            $datos+=['descripcion'=>$_POST['descripcion']];
+        }
+
+        if(isset($_POST['ingredientes'])){
+            $datos+=['ingredientes'=>$_POST['ingredientes']];
+        }
+
+        if(isset($_POST['preparacion'])){
+            $datos+=['preparacion'=>$_POST['preparacion']];
+        }
+
+        $controladorReceta->anadirReceta($datos, isset($_POST['anadir']), 
+        isset($_POST['confirmar']));
+
+    break;
     case 'Editar Usuario': $view=new VistaAdministrador('editaruser.html'); break;
     case 'gestionar': $view=new VistaAdministrador('gestion.html'); break;
     case 'listauser': $view=new VistaAdministrador('listauser.html'); break;

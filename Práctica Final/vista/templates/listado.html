@@ -58,7 +58,7 @@
 
         {% for receta in recetas %}
             <tr>
-                <td>{{ receta }}</td>
+                <td>{{ receta.nombre }}</td>
                 <td>
                     <a href={{ receta.visurl }}>
                     <img src="/vista/templates/img/visualizar.png" alt="visualizar" class="icono"/>
@@ -82,6 +82,15 @@
         
     </table>
 
+    {% if pagina > 0 %}
 
+        {% set anterior = "index.php?p=listado&pag=#{pagina - 1}" %}
+
+    {% endif %}
+
+    <footer class="flecha">
+        <a href={{ anterior }}><img src="/vista/templates/img/flechaIzq.svg" class="icono"></a>
+        <a href={{ "index.php?p=listado&pag=#{pagina + 1}" }}><img src="/vista/templates/img/flechaDer.png" class="icono"></a>
+    </footer>
 
 {% endblock %}

@@ -316,6 +316,20 @@ li{
     height: auto;
 }
 
+.flecha{
+    display: flex;
+    max-width: 100%;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    margin-top: 2%;
+    justify-content: center;
+}
+
+.flecha *{
+    flex-basis: 10%;
+    margin-right: 5%;
+}
+
 /*Reglas para dispositivos grandes*/
 
 @media (min-width:800px){
