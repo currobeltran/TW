@@ -9,13 +9,14 @@ CREATE TABLE usuarios(
     PRIMARY KEY (id, email));
 
 CREATE TABLE recetas(
-    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id INT NOT NULL AUTO_INCREMENT,
     idAutor INT NOT NULL,
     nombre VARCHAR(200) NOT NULL,
     descripcion TEXT NOT NULL,
     ingredientes TEXT NOT NULL,
     preparacion TEXT NOT NULL,
-    FOREIGN KEY(idAutor) REFERENCES usuarios(id));
+    FOREIGN KEY(idAutor) REFERENCES usuarios(id),
+    PRIMARY KEY (id));
 
 CREATE TABLE fotos(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,

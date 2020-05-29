@@ -6,20 +6,23 @@ abstract class AbstractModel{ // Clase abstracta
     protected $db;    // Recurso asociado a la BBDD
     
     public function __construct() {
-        $this->$db = Conexion::getInstance();// Conexión a la BBDD usando singleton
+        $this->db = Conexion::getInstance();// Conexión a la BBDD usando singleton
     }
     
     public function query($select,$params=[],$type='') {  // Consulta que debe devolver 1 tupla
         
         if (empty($params)){// Si no lleva parámetros -> consulta normal
-            $result = $this->$db->query($select);
+            $result = $this->db->query($select);
         }
         
         else {// Si lleva parámetros -> consulta preparada
-            $pq = $this->$db->prepare($select);
+            $pq = $this->db->prepare($select);
 
-            if(count($params)>1)
+            
+            if(count($params)>1){
+                echo implode(",", $params);
                 $pq->bind_param($type,...$params);
+            }
             else{
                 $pq->bind_param($type,$params);
             }
@@ -81,7 +84,36 @@ class ModeloRecetas extends AbstractModel{
     }
 
     //Genera la lista de recetas
-    public function getListaRecetas($titulo='',$contenido=''){
+    public function getListaRecetas($titulo='',$contenido='',$categoria=[]){
+        if($titulo==''){
+            $titulo="%";
+        }
+
+        if($contenido==''){
+            $contenido="%";
+        }
+        
+        if($categoria==[]){
+            $select="SELECT id, nombre FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
+            (descripcion LIKE '%".$contenido."%' OR 
+            ingredientes LIKE '%".$contenido."%' OR
+            preparacion LIKE '%".$contenido."%')";
+        }
+        else{
+            $select="SELECT recetas.id, recetas.nombre FROM recetas LEFT JOIN categorias
+            ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE '%".$titulo."%' AND 
+            (recetas.descripcion LIKE '%".$contenido."%' OR 
+            recetas.ingredientes LIKE '%".$contenido."%' OR
+            recetas.preparacion LIKE '%".$contenido."%') AND categorias.idCategoria IN 
+            (".implode(",", $categoria).")";
+        }
+
+        $result=$this->query($select);
+        return $result;
+    }
+
+    //Genera la lista de recetas de un usuario
+    public function getListaRecetasUsuario($titulo='',$contenido='', $idAutor){
         if($titulo==''){
             $titulo="%";
         }
@@ -93,7 +125,7 @@ class ModeloRecetas extends AbstractModel{
         $select="SELECT * FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
         (descripcion LIKE '%".$contenido."%' OR 
         ingredientes LIKE '%".$contenido."%' OR
-        preparacion LIKE '%".$contenido."%')";
+        preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor."";
 
         $result=$this->query($select);
         return $result;
@@ -113,6 +145,24 @@ class ModeloRecetas extends AbstractModel{
     public function getRecetaById($id){
         $select="SELECT * FROM recetas WHERE id LIKE ?";
         $result=$this->query($select,$id,'i');
+        return $result;
+    }
+
+    //Añadir nueva receta
+    public function insertReceta($params){
+        $select="INSERT INTO recetas (idAutor, nombre, descripcion, 
+        ingredientes, preparacion) VALUES (?,?,?,?,?)";
+        $this->query($select,$params,'issss'); 
+        $result=$this->db->insert_id;
+        return $result;
+    }
+
+    //Editar receta
+    public function editarRecetaById($params){
+        $select="UPDATE recetas SET titulo = ?, descripcion = ?, 
+        ingredientes = ?, preparacion = ? WHERE id = ?";
+        $this->query($select,$params,'ssssi');
+        $result=$this->db->insert_id;
         return $result;
     }
 }
@@ -150,6 +200,37 @@ class ModeloFotos extends AbstractModel{
         $select="SELECT * FROM fotos WHERE idReceta LIKE ?";
         $result=$this->query($select,$id,'i');
         return $result;
+    }
+}
+
+class ModeloCategorias extends AbstractModel{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    //Peticion
+    public function query($select,$params=[],$type=''){
+        $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    public function insertCategoria($idRec, $idCat){
+        $select="INSERT INTO categorias (idReceta, idCategoria) VALUES (?,?)";
+        $params=[$idRec,$idCat];
+        $result=$this->query($select,$params,'ii'); 
+        return $result;
+    }
+
+    public function getCategoriasByIdReceta($idRec){
+        $select="SELECT * FROM categorias WHERE idReceta LIKE ?";
+        $result=$this->query($select,$idRec,'i');
+        return $result; 
+    }
+
+    public function deleteCategoria($idReceta){
+        $select="DELETE FROM categorias WHERE idReceta LIKE ?";
+        $result=$this->query($select,$idReceta,'i');
+        return $result; 
     }
 }
 ?>

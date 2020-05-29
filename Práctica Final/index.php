@@ -21,12 +21,17 @@ else{
     $_SESSION['opc']="inicio";
 }
 
+
 if(isset($_GET['p'])){
     $_SESSION['opc']=$_GET['p'];
 }
 
 if(!isset($_SESSION['pagina'])){
     $_SESSION['pagina']=0;
+}
+
+if(!isset ($_SESSION['usuario'])){
+    $_SESSION['usuario']=1;
 }
 
 // $musuario=new ModeloUsuario();
@@ -50,8 +55,23 @@ switch($_SESSION['opc']){
     
     case 'listado': 
         $controladorReceta=new ControladorRecetas("listado.html");
+
+        $categoria=[];
+        $datos=[];
+
+        foreach($_POST as $entrada){
+            if(strpos($entrada,"categoria") !== false){
+                $entrada=explode("#", $entrada);
+                array_push($categoria,$entrada[1]);
+            }
+        }
+        
+        if($categoria[0]!=null){
+            $datos+=['categorias'=>$categoria];
+        }
+
         $controladorReceta->listarRecetas($_POST['tituloBusqueda'], 
-        $_POST['contenidoBusqueda'], $_POST['recetasxpagina'], $_SESSION['pagina']); 
+        $_POST['contenidoBusqueda'], $_POST['recetasxpagina'], $_SESSION['pagina'], $datos['categorias']); 
     break;
 
     case 'visualizar': 
@@ -59,11 +79,22 @@ switch($_SESSION['opc']){
         $controladorReceta->verReceta($_GET['id']); 
     break;
     
-    case 'milistado': $view=new VistaAdministrador('listado.html'); break;
+    case 'milistado': 
+        $controladorReceta=new ControladorRecetas("listado.html");
+        $controladorReceta->listarRecetasByUser($_POST['tituloBusqueda'], 
+        $_POST['contenidoBusqueda'], $_SESSION['usuario'], $_POST['recetasxpagina'], 
+        $_SESSION['pagina']);  
+    break;
     
     case 'anadir': 
         $controladorReceta=new ControladorRecetas("anadir.html");
-        $datos=[];
+        if(isset($_POST['confirmar'])){
+            $datos=$_SESSION['datos'];
+        }
+        else{
+            $datos=[];
+        }
+        $categoria=[];
 
         if(isset($_POST['titulo'])){ 
             $datos+=['titulo'=>$_POST['titulo']];
@@ -81,10 +112,56 @@ switch($_SESSION['opc']){
             $datos+=['preparacion'=>$_POST['preparacion']];
         }
 
-        $controladorReceta->anadirReceta($datos, isset($_POST['anadir']), 
+        if(isset($_SESSION['usuario'])){
+            $datos+=['autor'=>$_SESSION['usuario']];
+        }
+
+        foreach($_POST as $entrada){
+            if(strpos($entrada,"categoria") !== false){
+                $entrada=explode("#", $entrada);
+                array_push($categoria,$entrada[1]);
+            }
+        }
+        
+        if($categoria[0]!=null){
+            $datos+=['categorias'=>$categoria];
+        }
+
+        $_SESSION['datos']=$controladorReceta->anadirReceta($datos, isset($_POST['anadir']), 
         isset($_POST['confirmar']));
 
     break;
+
+    case 'editareceta': 
+        $controladorReceta=new ControladorRecetas("editareceta.html");
+
+        if(isset($_POST['confirmar'])){
+            $datos=$_SESSION['datos'];
+        }
+        else{
+            $datos=[];
+        }
+
+        if(isset($_POST['titulo'])){ 
+            $datos+=['titulo'=>$_POST['titulo']];
+        }
+
+        if(isset($_POST['descripcion'])){ 
+            $datos+=['descripcion'=>$_POST['descripcion']];
+        }
+
+        if(isset($_POST['ingredientes'])){
+            $datos+=['ingredientes'=>$_POST['ingredientes']];
+        }
+
+        if(isset($_POST['preparacion'])){
+            $datos+=['preparacion'=>$_POST['preparacion']];
+        }
+
+        $_SESSION['datos']=$controladorReceta->editarReceta($_GET['id'],$datos,
+        isset($_POST['anadir']), isset($_POST['confirmar']));
+    break;
+
     case 'Editar Usuario': $view=new VistaAdministrador('editaruser.html'); break;
     case 'gestionar': $view=new VistaAdministrador('gestion.html'); break;
     case 'listauser': $view=new VistaAdministrador('listauser.html'); break;

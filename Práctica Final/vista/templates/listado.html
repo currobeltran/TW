@@ -12,7 +12,8 @@
         
         <h3>Categorias</h3>
         {% for tipo in tipos %}
-            <label>{{ tipo }}<input type="checkbox" name={{ tipo }}/></label>
+            <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
+                value="categoria#{{ tipo.id }}"/></label>
         {% endfor %}
 
         <label>Orden alfabético ascendente

@@ -15,7 +15,8 @@
 
             <h3> Categoría </h3 >
                 {% for tipo in tipos %}
-                    <label>{{ tipo }}<input type="checkbox" name="categoria#{{ tipo }}"/></label>
+                    <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
+                        value="categoria#{{ tipo.id }}"/></label>
                 {% endfor %}
 
             <label> Descripción 
@@ -49,7 +50,14 @@
 
             <h3> Categoría </h3 >
                 {% for tipo in tipos %}
-                    <label>{{ tipo }}<input type="checkbox" name="categoria#{{ tipo }}"/></label>
+                    <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
+                        value="categoria#{{ tipo.id }}" 
+                        {% for aux in datos.categorias %}
+                            {% if tipo.id == aux %}
+                                checked
+                            {% endif %}
+                        {% endfor %}
+                        /></label>
                 {% endfor %}
 
             <label> Descripción 
@@ -94,7 +102,14 @@
 
             <h3> Categoría </h3 >
                 {% for tipo in tipos %}
-                    <label>{{ tipo }}<input type="checkbox" name="categoria#{{ tipo }}" disabled/></label>
+                    <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}" 
+                        value="categoria#{{ tipo.id }}" 
+                        {% for aux in datos.categorias %}
+                            {% if tipo.id == aux %}
+                                checked
+                            {% endif %}
+                        {% endfor %} disabled
+                        /></label>
                 {% endfor %}
 
             <label> Descripción 
