@@ -1,0 +1,18 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    {% if confirmacion == false %}
+        <h2 id="titulo">¿Esta seguro?</h2>
+        <h6>Va a confirmar la eliminación de la receta {{ nombre }}, 
+            si desea realizar esta acción pulse el botón para continuar.
+        </h6>
+        
+        <form action="" method="POST" class="formulario">
+            <input type="submit" name="Confirmar" value="Confirmar"/>
+        </form>
+    {% else %}
+        <h2>Receta eliminada</h2>
+    {% endif %}
+
+{% endblock %}

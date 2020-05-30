@@ -39,9 +39,9 @@ class ControladorRecetas extends AbstractController{
     }
 
     //**************QUEDA HACER LO DE LAS PAGINAS
-    public function listarRecetas($titulo='', $contenido='', $numeroxPag=1, $pag=1, $categoria=[]){
+    public function listarRecetas($titulo='', $contenido='', $numeroxPag=1, $pag=1, $categoria=[], $orden){
         //Obtenemos lista de recetas
-        $result=$this->mrecetas->getListaRecetas($titulo,$contenido,$categoria);
+        $result=$this->mrecetas->getListaRecetas($titulo,$contenido,$categoria, $orden);
 
         $recetas=[];
         $i=0;
@@ -63,9 +63,9 @@ class ControladorRecetas extends AbstractController{
         $this->vrecetas->render($this->params);
     }
 
-    public function listarRecetasByUser($titulo,$contenido,$idAutor, $numeroxPag=1, $pag){
+    public function listarRecetasByUser($titulo,$contenido,$idAutor, $numeroxPag=1, $pag=1, $categoria=[], $orden){
         //Obtenemos lista de recetas
-        $result=$this->mrecetas->getListaRecetasUsuario($titulo,$contenido,$idAutor);
+        $result=$this->mrecetas->getListaRecetasUsuario($titulo,$contenido,$idAutor,$categoria, $orden);
         $recetas=[];
         $i=0;
         while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $i<$numeroxPag)){
@@ -187,8 +187,10 @@ class ControladorRecetas extends AbstractController{
         $hayerror=[];
         $cats=[];
         $datos=[];
+        $fot=[];
 
         $modeloCategorias=new ModeloCategorias();
+        $modeloFotos=new ModeloFotos();
 
         if($confirmado==false){
             if(empty($entrada['titulo'])){
@@ -219,31 +221,44 @@ class ControladorRecetas extends AbstractController{
                 //Obtenemos las categorias
                 $result2=$modeloCategorias->getCategoriasByIdReceta($id);
                 $categoria=mysqli_fetch_array($result2);
-    
+
                 do{
                     array_push($cats, $categoria[idCategoria]);
                 }while($categoria=mysqli_fetch_array($result2));
+                
+                //Si se ha eliminado alguna imagen, se procesa la orden
+                $modeloFotos=new ModeloFotos();
+
+                if(isset($entrada['fotos'])){
+                    if($entrada['fotos']!=0){
+                        $modeloFotos->eliminaFotoById($entrada['fotos']);
+                    }
+                }
+
+                //Si se ha añadido alguna, la introducimos
+                if(isset($entrada['rutanuevafoto'])){
+                    $modeloFotos->insertFotoInReceta($id,$entrada['rutanuevafoto']);
+                }
+
+                //Obtenemos las fotos
+                $result3=$modeloFotos->getFotoByIdReceta($id);
+
+                while($fotos=mysqli_fetch_array($result3)){
+                    array_push($fot, ['id'=>$fotos[id], 'fichero'=>$fotos[fichero]]);
+                }
+                
             }
             
             else{
                 $datos=$entrada;
-
-                //NO DETECTA LOS TIPOS CORRECTAMENTE
-                foreach($entrada as $tipo){
-                    if(strpos($tipo,"categoria") !== false){
-                        $tipo=explode("#", $tipo);
-                        array_push($categoria,$tipo[1]);
-                    }
-                }
-                
-                if($categoria[0]!=null){
-                    $datos+=['categorias'=>$categoria];
-                }
             }
                 
         }
         else{
-            $params=[
+            //Guardamos las categorias
+            $categorias=$entrada['categorias'];
+
+            $datos=[
                 $entrada['titulo'], 
                 $entrada['descripcion'],
                 $entrada['ingredientes'],
@@ -252,25 +267,17 @@ class ControladorRecetas extends AbstractController{
             ];
 
             //Llamamos a editarReceta
-            $this->mrecetas->editarRecetaById($params);
-
-            //Obtenemos las categorias
-            foreach($entrada as $tipo){
-                if(strpos($tipo,"categoria") !== false){
-                    $tipo=explode("#", $tipo);
-                    array_push($cats,$tipo[1]);
-                }
-            }
+            $this->mrecetas->editarRecetaById($datos);
 
             //Si existe, añadimos las categorias correspondientes
             $modeloCategorias=new ModeloCategorias();
 
             //Eliminamos las categorias antiguas
-            $modeloCategorias->deleteCategorias($id);
+            $modeloCategorias->deleteCategoria($id);
 
             //Añadimos las nuevas
-            if($cats!=[]){
-                foreach($cats as $cat){
+            if($categorias!=null){
+                foreach($categorias as $cat){
                     $modeloCategorias->insertCategoria($id,$cat);
                 }
             }
@@ -281,10 +288,37 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['datos'=>$datos];
         $this->params+=['confirmado'=>$confirmado];
         $this->params+=['categorias'=>$cats];
+        if($fot!=[])
+            $this->params+=['fotos'=>$fot];
 
         $this->vrecetas->render($this->params);
 
         return $datos;
+    }
+
+    public function eliminarReceta($id, $confirmado=false){
+        if($confirmado){
+            //Eliminar categorias
+            $modeloCategorias=new ModeloCategorias();
+            $modeloCategorias->deleteCategoria($id);
+
+            //Eliminar fotos
+            $modeloFotos=new ModeloFotos();
+            $modeloFotos->eliminaFotoByIdReceta($id);
+
+            //Por último, eliminamos la receta
+            $this->mrecetas->eliminaReceta($id);
+        }
+        else{
+            $result=$this->mrecetas->getRecetaById($id);
+            $datos=mysqli_fetch_array($result);
+
+            $this->params+=['nombre'=>$datos['nombre']];
+        }
+
+        $this->params+=['confirmacion'=>$confirmado];
+
+        $this->vrecetas->render($this->params);
     }
 
 }
@@ -293,11 +327,34 @@ class ControladorUsuario extends AbstractController{
     public function __construct($webpage){
         parent::__construct();
         $this->musuario=new ModeloUsuario();
-        $this->vrecetas=new VistaAdministrador($webpage);
+        $this->vusuario=new VistaAdministrador($webpage);
     }
 
-    public function editarUsuario($datos){
+    public function editarUsuario($id, $entrada=[], $envio=false, $confirmado=false){
+        
+        if($confirmado==false){
+            // if(empty($entrada['titulo'])){
+            //     $hayerror+=[ 'titulo' => "Debe introducir un título" ];
+            // }
 
+            // if(!strlen(trim($entrada['descripcion']))){
+            //     $hayerror+=[ 'descripcion' => "Debe introducir una descripción" ];
+            // }
+            
+            
+            // if(!strlen(trim($entrada['ingredientes']))){
+            //     $hayerror+=['ingredientes' => "Debe introducir uno o más ingredientes"];
+            // }
+            
+            
+            // if(!strlen(trim($entrada['preparacion']))){
+            //     $hayerror+=[ 'preparacion' => "Debe introducir uno o más pasos de preparación" ];
+            // }
+    
+            // $hayerror+=[ 'numeroelementos' => count($hayerror) ];
+        }
+
+        $this->vusuario->render($this->params);
     }
 }
 

@@ -17,10 +17,8 @@ abstract class AbstractModel{ // Clase abstracta
         
         else {// Si lleva parámetros -> consulta preparada
             $pq = $this->db->prepare($select);
-
             
             if(count($params)>1){
-                echo implode(",", $params);
                 $pq->bind_param($type,...$params);
             }
             else{
@@ -84,7 +82,7 @@ class ModeloRecetas extends AbstractModel{
     }
 
     //Genera la lista de recetas
-    public function getListaRecetas($titulo='',$contenido='',$categoria=[]){
+    public function getListaRecetas($titulo='',$contenido='',$categoria=[], $orden=''){
         if($titulo==''){
             $titulo="%";
         }
@@ -92,12 +90,19 @@ class ModeloRecetas extends AbstractModel{
         if($contenido==''){
             $contenido="%";
         }
+
+        if($orden=='ASC' || $orden=='DESC'){
+            $parametroOrden="ORDER BY nombre ".$orden;
+        }
+        else{ //Hay que cambiarlo para comentarios y valoraciones
+            $parametroOrden="ORDER BY nombre";
+        }
         
         if($categoria==[]){
             $select="SELECT id, nombre FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
             (descripcion LIKE '%".$contenido."%' OR 
             ingredientes LIKE '%".$contenido."%' OR
-            preparacion LIKE '%".$contenido."%')";
+            preparacion LIKE '%".$contenido."%') ".$parametroOrden;
         }
         else{
             $select="SELECT recetas.id, recetas.nombre FROM recetas LEFT JOIN categorias
@@ -105,7 +110,7 @@ class ModeloRecetas extends AbstractModel{
             (recetas.descripcion LIKE '%".$contenido."%' OR 
             recetas.ingredientes LIKE '%".$contenido."%' OR
             recetas.preparacion LIKE '%".$contenido."%') AND categorias.idCategoria IN 
-            (".implode(",", $categoria).")";
+            (".implode(",", $categoria).") ".$parametroOrden;
         }
 
         $result=$this->query($select);
@@ -113,7 +118,7 @@ class ModeloRecetas extends AbstractModel{
     }
 
     //Genera la lista de recetas de un usuario
-    public function getListaRecetasUsuario($titulo='',$contenido='', $idAutor){
+    public function getListaRecetasUsuario($titulo='',$contenido='', $idAutor='',$categoria=[], $orden=''){
         if($titulo==''){
             $titulo="%";
         }
@@ -122,10 +127,27 @@ class ModeloRecetas extends AbstractModel{
             $contenido="%";
         }
 
-        $select="SELECT * FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
-        (descripcion LIKE '%".$contenido."%' OR 
-        ingredientes LIKE '%".$contenido."%' OR
-        preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor."";
+        if($orden=='ASC' || $orden=='DESC'){
+            $parametroOrden="ORDER BY nombre ".$orden;
+        }
+        else{ //Hay que cambiarlo para comentarios y valoraciones
+            $parametroOrden="ORDER BY nombre";
+        } 
+
+        if($categoria==[]){
+            $select="SELECT * FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
+            (descripcion LIKE '%".$contenido."%' OR 
+            ingredientes LIKE '%".$contenido."%' OR
+            preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor." ".$parametroOrden;
+        }
+        else{
+            $select="SELECT recetas.id, recetas.nombre FROM recetas LEFT JOIN categorias
+            ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE '%".$titulo."%' AND 
+            (recetas.descripcion LIKE '%".$contenido."%' OR 
+            recetas.ingredientes LIKE '%".$contenido."%' OR
+            recetas.preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor."
+            AND categorias.idCategoria IN (".implode(",", $categoria).") ".$parametroOrden;
+        }
 
         $result=$this->query($select);
         return $result;
@@ -159,11 +181,17 @@ class ModeloRecetas extends AbstractModel{
 
     //Editar receta
     public function editarRecetaById($params){
-        $select="UPDATE recetas SET titulo = ?, descripcion = ?, 
+        $select="UPDATE recetas SET nombre = ?, descripcion = ?, 
         ingredientes = ?, preparacion = ? WHERE id = ?";
         $this->query($select,$params,'ssssi');
         $result=$this->db->insert_id;
         return $result;
+    }
+
+    //Elimina una receta
+    public function eliminaReceta($id){
+        $select="DELETE FROM recetas WHERE id = ?";
+        $this->query($select,$id,'i');
     }
 }
 
@@ -201,6 +229,24 @@ class ModeloFotos extends AbstractModel{
         $result=$this->query($select,$id,'i');
         return $result;
     }
+
+    //Insertar nueva foto en receta
+    public function insertFotoInReceta($idReceta, $fichero){
+        $select="INSERT INTO fotos (idReceta, fichero) VALUES (?,?)";
+        $this->query($select, [$idReceta,$fichero], 'is');
+    }
+
+    //Elimina una foto concreta de la tabla
+    public function eliminaFotoById($id){
+        $select="DELETE FROM fotos WHERE id LIKE ?";
+        $this->query($select,$id,'i');
+    }
+
+    //Eliminar foto a traves del id de la receta
+    public function eliminaFotoByIdReceta($id){
+        $select="DELETE FROM fotos WHERE idReceta LIKE ?";
+        $this->query($select,$id,'i');
+    }
 }
 
 class ModeloCategorias extends AbstractModel{
@@ -229,8 +275,7 @@ class ModeloCategorias extends AbstractModel{
 
     public function deleteCategoria($idReceta){
         $select="DELETE FROM categorias WHERE idReceta LIKE ?";
-        $result=$this->query($select,$idReceta,'i');
-        return $result; 
+        $this->query($select,$idReceta,'i');
     }
 }
 ?>

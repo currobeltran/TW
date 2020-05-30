@@ -47,6 +47,28 @@
         <input type="submit" name="anadir"/>
     </form>
 
+    <h2 id="titulo">Añada las fotos que desee aquí</h2>
+    <h6>La primera foto corresponderá a la cabecera, y las demás a fotos de 
+        los distintos pasos.
+    </h6>
+
+    <ul>
+        {% for foto in fotos %}
+        
+            <li>
+                <img src="{{ foto.fichero }}" class="iconos"/>
+                <form action="" method="POST" class="formulario">
+                    <input type="submit" name="eliminafoto#{{foto.id}}" value="Borrar"/>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form action="" method="POST" class="formulario" enctype="multipart/form-data">
+        <input type="file" name='foto'/>
+        <input type="submit" value="Añadir foto seleccionada" name="anadirfoto"/>
+    </form>
+
     {% elseif hayerror.numeroelementos > 0 %}
     
     <h2 id="titulo">Datos erroneos<h2>

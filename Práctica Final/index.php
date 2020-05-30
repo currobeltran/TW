@@ -34,22 +34,6 @@ if(!isset ($_SESSION['usuario'])){
     $_SESSION['usuario']=1;
 }
 
-// $musuario=new ModeloUsuario();
-
-// $tupla=$musuario->insertUsuario(["d","d","adhusa@fna.com","d","d","Colaborador"]);
-
-// $tupla=$musuario->getUsuarioByEmail("admin@admin.com");
-
-// $resultado=mysqli_fetch_array($tupla);
-// echo $resultado[id];
-
-// $controladorReceta->listarRecetas();
-
-// $mrecetas=new ModeloRecetas();
-// $tupla=$mrecetas->getListaRecetas();
-// $resultado=mysqli_fetch_array($tupla);
-// echo $resultado[id];
-
 switch($_SESSION['opc']){
     case 'inicio': $view=new VistaAdministrador('comun.html'); break; 
     
@@ -57,7 +41,6 @@ switch($_SESSION['opc']){
         $controladorReceta=new ControladorRecetas("listado.html");
 
         $categoria=[];
-        $datos=[];
 
         foreach($_POST as $entrada){
             if(strpos($entrada,"categoria") !== false){
@@ -65,13 +48,10 @@ switch($_SESSION['opc']){
                 array_push($categoria,$entrada[1]);
             }
         }
-        
-        if($categoria[0]!=null){
-            $datos+=['categorias'=>$categoria];
-        }
 
         $controladorReceta->listarRecetas($_POST['tituloBusqueda'], 
-        $_POST['contenidoBusqueda'], $_POST['recetasxpagina'], $_SESSION['pagina'], $datos['categorias']); 
+        $_POST['contenidoBusqueda'], $_POST['recetasxpagina'], 
+        $_SESSION['pagina'], $categoria, $_POST['orden']); 
     break;
 
     case 'visualizar': 
@@ -81,9 +61,19 @@ switch($_SESSION['opc']){
     
     case 'milistado': 
         $controladorReceta=new ControladorRecetas("listado.html");
+
+        $categoria=[];
+
+        foreach($_POST as $entrada){
+            if(strpos($entrada,"categoria") !== false){
+                $entrada=explode("#", $entrada);
+                array_push($categoria,$entrada[1]);
+            }
+        }
+
         $controladorReceta->listarRecetasByUser($_POST['tituloBusqueda'], 
         $_POST['contenidoBusqueda'], $_SESSION['usuario'], $_POST['recetasxpagina'], 
-        $_SESSION['pagina']);  
+        $_SESSION['pagina'], $categoria, $_POST['orden']);  
     break;
     
     case 'anadir': 
@@ -132,7 +122,7 @@ switch($_SESSION['opc']){
 
     break;
 
-    case 'editareceta': 
+    case 'editareceta': //Controlar permisos //Al entrar desde ver receta no se ven los datos
         $controladorReceta=new ControladorRecetas("editareceta.html");
 
         if(isset($_POST['confirmar'])){
@@ -140,6 +130,28 @@ switch($_SESSION['opc']){
         }
         else{
             $datos=[];
+            $categoria=[];
+            $fotos=0;
+            
+            foreach($_POST as $tipo){
+                if(strpos($tipo,"categoria") !== false){
+                    $tipo=explode("#", $tipo);
+                    array_push($categoria,$tipo[1]);
+                }
+            }
+    
+            for($i=0; $i<count(key($_POST)); $i++){
+                if(strpos(key($_POST),"eliminafoto") !== false){
+                    $idFoto=explode("#", key($_POST));
+                    $fotos=$idFoto[1];
+                }
+            }
+
+            if($categoria[0]!=null){
+                $datos+=['categorias'=>$categoria];
+            }
+
+            $datos+=['fotos'=>$fotos];
         }
 
         if(isset($_POST['titulo'])){ 
@@ -158,17 +170,45 @@ switch($_SESSION['opc']){
             $datos+=['preparacion'=>$_POST['preparacion']];
         }
 
+        if(isset($_POST['anadirfoto'])){ 
+            if(move_uploaded_file($_FILES['foto']['tmp_name'], 
+            "imagenes/".$_FILES['foto']['name'])){
+                echo "a";
+                $datos+=['rutanuevafoto'=>"imagenes/".$_FILES['foto']['name']];
+            }
+        }
+
         $_SESSION['datos']=$controladorReceta->editarReceta($_GET['id'],$datos,
         isset($_POST['anadir']), isset($_POST['confirmar']));
     break;
 
-    case 'Editar Usuario': $view=new VistaAdministrador('editaruser.html'); break;
+    case 'eliminareceta': //Controlar permisos //Al entrar desde ver receta no se ven los datos
+        $controladorReceta=new ControladorRecetas("eliminareceta.html");
+
+        $confirmado=isset($_POST['Confirmar']);
+
+        $controladorReceta->eliminarReceta($_GET['id'],$confirmado);
+    break;
+
+    case 'Editar Usuario': 
+        $controladorUsuario=new ControladorUsuario("editaruser.html");
+
+        if(!isset($_GET['id'])){ 
+            $idUsuario=$_SESSION['usuario'];
+        }
+        else{//Aqui solo puede acceder el administrador, cambiar
+            $idUsuario=$_GET['id'];
+        }
+
+        $controladorUsuario->editarUsuario($idUsuario);
+    break;
     case 'gestionar': $view=new VistaAdministrador('gestion.html'); break;
     case 'listauser': $view=new VistaAdministrador('listauser.html'); break;
     case 'anadiruser': $view=new VistaAdministrador('anadiruser.html'); break;
     case 'basedatos': $view=new VistaAdministrador('backupBBDD.html'); break;
     case 'log': $view=new VistaAdministrador('log.html'); break;
-    default: $view=new VistaAdministrador('comun.html'); break;
+    // default: $view=new VistaAdministrador('comun.html'); break;
+    default: phpinfo();
 }
 
 $view->render([]);
