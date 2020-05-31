@@ -204,6 +204,10 @@ li{
     width: 50%;
 }
 
+.formulario img{
+    float: right;
+}
+
 /*Reglas para tablas*/
 
 .tabla{
@@ -328,6 +332,22 @@ li{
 .flecha *{
     flex-basis: 10%;
     margin-right: 5%;
+}
+
+.liusuario{
+    max-width: 100%;
+    margin: 2%;
+    display: flex;
+    flex-flow: row;
+    
+}
+
+.liusuario *{
+    flex-basis: 30%;
+}
+
+.liusuario :first-child{
+    flex-basis: 50%;
 }
 
 /*Reglas para dispositivos grandes*/

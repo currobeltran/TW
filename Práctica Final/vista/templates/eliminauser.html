@@ -1,0 +1,19 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    {% if confirmado == false %}
+    <h2 id="titulo">¿Está seguro?</h2>
+    <h6>Se va a eliminar al usuario {{ nombre }}. Pulse el botón para confirmar</h6>
+
+    <form action="" method="POST" class="formulario">
+        <input type="submit" value="Confirmar" name="confirmado"/>
+    </form>
+
+    {% else %}
+
+    <h2 id="titulo">Eliminación realizada correctamente</h2>
+
+    {% endif %}
+
+{% endblock %}

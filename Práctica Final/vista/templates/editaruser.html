@@ -2,81 +2,161 @@
 
 {% block central %}
 
-    {% if request == false %}
+    {% if envio == confirmado %}
 
-    <h2>Edición del usuario</h2>
+    <h2 id="titulo">Edición del usuario</h2>
 
-    <form action="" method="POST" class="formulario">
+    <form action="" method="POST" class="formulario" enctype="multipart/form-data">
         <label> Fotografía 
-            <img src='{{ datosfoto }}'/>
-            <input type="file" name="foto"/>
+            <img src="data:image/jpeg;base64,{{ datos.foto }}" width="250"/>
+            <input type="file" name='foto'/>
         </label>
 
         <label> Nombre 
-            <input type="text" name="nombre" value='{{ datosnombre }}'/>
+            <input type="text" name="nombre" value='{{ datos.nombre }}'/>
         </label>
 
         <label> Apellidos 
-            <input type="text" name="apellidos" value='{{ datosapellidos }}'/>
+            <input type="text" name="apellidos" value='{{ datos.apellidos }}'/>
         </label>
 
         <label> Email 
-            <input type="email" name="correo" value='{{ datoscorreo }}'/>
+            <input type="email" name="email" value='{{ datos.email }}'/>
         </label>
 
         <label> Clave 
-            <input type="password" name="clave"/> <input type="password" name="clave"/>
+            <input type="password" name="clave"/> <input type="password" name="clave2"/>
         </label>
 
         {% if permisos == 2 %} 
         
             <label>Tipo
                 <select name="tipo">
-                    <option value="Colab">Colaborador</option>
-                    <option value="Admin">Administrador</option>
+                    <option value="Colaborador"
+                    {% if datos.tipo == "Colaborador" %}
+                        selected
+                    {% endif %}
+                    >Colaborador</option>
+                    
+                    <option value="Administrador" 
+                    {% if datos.tipo == "Administrador" %}
+                        selected
+                    {% endif %}
+                    >Administrador</option>
                 </select>
             </label>
 
         {% endif %}
         
-        <input type="submit" name="editar" value="Editar"/>
+        <input type="submit" name="envio" value="Editar"/>
     </form>
 
-    {% endif %}
+    {% elseif hayerror.numeroelementos > 0 %}
+        <h2 id="titulo">Datos erroneos</h2>
+        <h6>Corrija los errores señalados</h6>
 
-    {% if request == true %}
-        <h2>Edición del usuario</h2>
-        <h6>¿Seguro que desea introducir estos datos?</h6>
-
-        <form action="" method="POST" class="formulario">
+        <form action="" method="POST" class="formulario" enctype="multipart/form-data">
             <label> Fotografía 
-                <input type="file" name="foto" value='{{ datosfoto }}' disabled/>
+                <img src="data:image/jpeg;base64,{{ datos.foto }}" width="250"/>
+                <input type="file" name="foto"/>
             </label>
 
             <label> Nombre 
-                <input type="text" name="nombre" value='{{ datosnombre }}' disabled/>
+                <p class="error">{{ hayerror.nombre }}</p>
+                <input type="text" name="nombre" value='{{ datos.nombre }}'/>
             </label>
 
             <label> Apellidos 
-                <input type="text" name="apellidos" value='{{ datosapellidos }}' disabled/>
+                <p class="error">{{ hayerror.apellidos }}</p>
+                <input type="text" name="apellidos" value='{{ datos.apellidos }}'/>
             </label>
 
             <label> Email 
-                <input type="email" name="correo" value='{{ datoscorreo }}' disabled/>
+                <p class="error">{{ hayerror.email }}</p>
+                <input type="email" name="email" value='{{ datos.email }}'/>
+            </label>
+
+            <label> Clave 
+                <p class="error">{{ hayerror.clave }}</p>
+                <input type="password" name="clave"/> <input type="password" name="clave2"/>
             </label>
 
             {% if permisos == 2 %} 
             
                 <label>Tipo
                     <select name="tipo">
-                        <option value="Colab" disabled>Colaborador</option>
-                        <option value="Admin" disabled>Administrador</option>
+                        <option value="Colaborador"
+                        {% if datos.tipo == "Colaborador" %}
+                            selected
+                        {% endif %}
+                        >Colaborador</option>
+
+                        <option value="Administrador" 
+                        {% if datos.tipo == "Administrador" %}
+                            selected
+                        {% endif %}
+                        >Administrador</option>
                     </select>
                 </label>
 
             {% endif %}
 
-            <input type="submit" name="editar" value="Editar"/>
+            <input type="submit" name="envio" value="Editar"/>
         </form>
+
+    {% elseif hayerror.numeroelementos == 0 %}
+
+        {% if confirmado == true %}
+
+            <h2 id="titulo">Envío realizado con éxito</h2>
+        
+        {% else %}
+
+            <h2 id="titulo">¿Está seguro de que desea añadir la siguiente información?</h2>
+
+            <form action="" method="POST" class="formulario" enctype="multipart/form-data">
+                <label> Fotografía 
+                    <img src="data:image/jpeg;base64,{{ datos.foto }}" width="250"/>
+                    <input type="file" name="foto" disabled/>
+                </label>
+
+                <label> Nombre 
+                    <p class="error">{{ hayerror.nombre }}</p>
+                    <input type="text" name="nombre" value='{{ datos.nombre }}' disabled/>
+                </label>
+
+                <label> Apellidos 
+                    <p class="error">{{ hayerror.apellidos }}</p>
+                    <input type="text" name="apellidos" value='{{ datos.apellidos }}' disabled/>
+                </label>
+
+                <label> Email 
+                    <p class="error">{{ hayerror.email }}</p>
+                    <input type="email" name="email" value='{{ datos.email }}' disabled/>
+                </label>
+
+                {% if permisos == 2 %} 
+                
+                    <label>Tipo
+                        <select name="tipo" disabled>
+                            <option value="Colaborador"
+                            {% if datos.tipo == "Colaborador" %}
+                                selected
+                            {% endif %}
+                            >Colaborador</option>
+
+                            <option value="Administrador" 
+                            {% if datos.tipo == "Administrador" %}
+                                selected
+                            {% endif %}
+                            >Administrador</option>
+                        </select>
+                    </label>
+
+                {% endif %}
+
+                <input type="submit" name="confirmado" value="Confirmar"/>
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}

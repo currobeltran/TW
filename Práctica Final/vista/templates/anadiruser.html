@@ -2,77 +2,145 @@
 
 {% block seleccion %}
     
-    {% if request == false %}
+    {% if envio == confirmado %}
 
-    <form action="" method="POST" class="formulario">
+    <form action="" method="POST" class="formulario" enctype="multipart/form-data">
 
         <h2 id="titulo">Añadir nuevo usuario</h2>
         
         <label> Fotografía 
-            <input type="file" name="foto" value='{{ datosfoto }}'/>
+            <input type="file" name="foto"/>
         </label>
 
         <label> Nombre 
-            <input type="text" name="nombre" value='{{ datosnombre }}'/>
+            <input type="text" name="nombre"/>
         </label>
 
         <label> Apellidos 
-            <input type="text" name="apellidos" value='{{ datosapellidos }}'/>
+            <input type="text" name="apellidos"/>
         </label>
 
         <label> Email 
-            <input type="email" name="correo" value='{{ datoscorreo }}'/>
+            <input type="email" name="email"/>
         </label>
 
         <label> Clave 
-            <input type="password" name="clave"/> <input type="password" name="clave"/>
+            <input type="password" name="clave"/> 
+            <input type="password" name="clave2"/>
         </label>
 
         <label>Tipo
             <select name="tipo">
-                <option value="Colab">Colaborador</option>
-                <option value="Admin">Administrador</option>
+                <option value="Colaborador">Colaborador</option>
+                <option value="Administrador">Administrador</option>
             </select>
         </label>
 
-        <input type="submit" name="anadir" value="Añadir user"/>
+        <input type="submit" name="anadir" value="Añadir usuario"/>
     </form>
 
-    {% else %}
+    {% elseif hayerror.numeroelementos > 0 %}
 
-    <form action="" method="POST" class="formulario">
+    <form action="" method="POST" class="formulario" enctype="multipart/form-data">
 
-        <h2 id="titulo">¿Esta seguro que desea añadir la siguiente información?</h2>
+        <h2 id="titulo">Datos erroneos</h2>
         
         <label> Fotografía 
-            <input type="file" name="foto" value='{{ datosfoto }}'/>
+            <input type="file" name="foto"/>
         </label>
 
         <label> Nombre 
-            <input type="text" name="nombre" value='{{ datosnombre }}'/>
+            <p class="error">{{ hayerror.nombre }}</p>
+            <input type="text" name="nombre" value='{{ datos.nombre }}'/>
         </label>
 
         <label> Apellidos 
-            <input type="text" name="apellidos" value='{{ datosapellidos }}'/>
+            <p class="error">{{ hayerror.apellidos }}</p>
+            <input type="text" name="apellidos" value='{{ datos.apellidos }}'/>
         </label>
 
         <label> Email 
-            <input type="email" name="correo" value='{{ datoscorreo }}'/>
+            <p class="error">{{ hayerror.email }}</p>
+            <input type="email" name="email" value='{{ datos.email }}'/>
         </label>
 
         <label> Clave 
-            <input type="password" name="clave"/> <input type="password" name="clave"/>
+            <p class="error">{{ hayerror.clave }}</p>
+            <input type="password" name="clave" value="{{ datos.clave }}"/> 
+            <input type="password" name="clave2" value="{{ datos.clave2 }}"/>
         </label>
 
         <label>Tipo
             <select name="tipo">
-                <option value="Colab">Colaborador</option>
-                <option value="Admin">Administrador</option>
+                <option value="Colaborador"
+                {% if datos.tipo == "Colaborador" %}
+                    selected
+                {% endif %}
+                >Colaborador</option>
+
+                <option value="Administrador" 
+                {% if datos.tipo == "Administrador" %}
+                    selected
+                {% endif %}
+                >Administrador</option>
             </select>
         </label>
 
-        <input type="submit" name="confirmar" value="Confirmar"/>
+        <input type="submit" name="anadir" value="Añadir usuario"/>
     </form>
+
+    {% elseif hayerror.numeroelementos == 0 %}
+
+        {% if confirmado == true %}
+
+        <h2 id="titulo">Envío realizado correctamente</h2>
+
+        {% else %}
+
+        <form action="" method="POST" class="formulario" enctype="multipart/form-data">
+
+            <h2 id="titulo">¿Esta seguro que desea añadir la siguiente información?</h2>
+            
+            <label> Fotografía 
+                <img src="data:image/jpeg;base64,{{ datos.foto }}" width="250"/>
+            </label>
+
+            <label> Nombre 
+                <input type="text" name="nombre" value='{{ datos.nombre }}' disabled/>
+            </label>
+
+            <label> Apellidos 
+                <input type="text" name="apellidos" value='{{ datos.apellidos }}' disabled/>
+            </label>
+
+            <label> Email 
+                <input type="email" name="email" value='{{ datos.email }}' disabled/>
+            </label>
+
+            <label> Clave 
+                <input type="password" name="clave" value="{{ datos.clave }}" disabled/> 
+            </label>
+
+            <label>Tipo
+                <select name="tipo" disabled>
+                    <option value="Colaborador"
+                    {% if datos.tipo == "Colaborador" %}
+                        selected
+                    {% endif %}
+                    >Colaborador</option>
+
+                    <option value="Administrador" 
+                    {% if datos.tipo == "Administrador" %}
+                        selected
+                    {% endif %}
+                    >Administrador</option>
+                </select>
+            </label>
+
+            <input type="submit" name="confirmar" value="Confirmar"/>
+        </form>
+        
+        {% endif %}
 
     {% endif %}
 

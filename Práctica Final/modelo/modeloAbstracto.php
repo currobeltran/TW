@@ -68,6 +68,17 @@ class ModeloUsuario extends AbstractModel{
         $result=$this->query($select,$params,'ssssss'); 
         return $result;
     }
+
+    public function editarUsuario($params){
+        $select="UPDATE usuarios SET nombre = ?, apellidos = ?, 
+        email = ?, passwd = ?, foto = ? ,tipo = ? WHERE id = ?";
+        $this->query($select,$params,'ssssssi'); 
+    }
+
+    public function eliminarUsuarioById($id){
+        $select="DELETE FROM usuarios WHERE id = ?";
+        $this->query($select,$id,'i');
+    }
 }
 
 class ModeloRecetas extends AbstractModel{
@@ -78,6 +89,13 @@ class ModeloRecetas extends AbstractModel{
     //Peticion
     public function query($select,$params=[],$type=''){
         $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    //Devuelve todas las recetas
+    public function getAllRecetas(){
+        $select="SELECT * FROM recetas";
+        $result=$this->query($select);
         return $result;
     }
 

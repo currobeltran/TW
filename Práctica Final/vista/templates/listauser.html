@@ -5,8 +5,10 @@
     <ul>
         {% for usuario in usuarios %}
 
-            <li>
-                {{ usuario.nombre }}
+            <li class="liusuario">
+                <p>{{ usuario.nombre }}</p>
+                <a href="{{ usuario.editar }}">Edición</a>
+                <a href="{{ usuario.eliminar }}">Eliminación</a>
             </li>
 
         {% endfor %}

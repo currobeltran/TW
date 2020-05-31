@@ -56,7 +56,7 @@
         {% for foto in fotos %}
         
             <li>
-                <img src="{{ foto.fichero }}" class="iconos"/>
+                <img src="{{ foto.fichero }}" width="250"/>
                 <form action="" method="POST" class="formulario">
                     <input type="submit" name="eliminafoto#{{foto.id}}" value="Borrar"/>
                 </form>

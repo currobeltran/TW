@@ -106,8 +106,8 @@ class ControladorRecetas extends AbstractController{
         //Generar datos para ser procesados correctamente
         $ingredientes=explode("#",$receta[ingredientes]);
         $preparacion=explode("#",$receta[preparacion]);
-        $recetaedurl="index.php?p=editareceta&id".$receta[id];
-        $recetaelurl="index.php?p=eliminareceta&id".$receta[id];
+        $recetaedurl="index.php?p=editareceta&id=".$receta[id];
+        $recetaelurl="index.php?p=eliminareceta&id=".$receta[id];
 
         //Introducir datos en el mismo vector
         $this->params+=['nombre'=>$receta[nombre]];
@@ -213,7 +213,7 @@ class ControladorRecetas extends AbstractController{
     
             $hayerror+=[ 'numeroelementos' => count($hayerror) ];
 
-            if($hayerror['numeroelementos'] > 0){
+            if($hayerror['numeroelementos'] > 0 || $entrada==[]){
                 //Obtener la receta
                 $result=$this->mrecetas->getRecetaById($id);
                 $datos=mysqli_fetch_array($result);
@@ -321,6 +321,18 @@ class ControladorRecetas extends AbstractController{
         $this->vrecetas->render($this->params);
     }
 
+    public function getRecetaAleatoria(){
+        $result=$this->mrecetas->getAllRecetas();
+
+        $recetas=[];
+        while($receta=mysqli_fetch_array($result)){
+            array_push($recetas,$receta[id]);
+        }
+
+        $selec=rand(0, count($recetas)-1);
+
+        return $recetas[$selec];
+    }
 }
 
 class ControladorUsuario extends AbstractController{
@@ -331,30 +343,160 @@ class ControladorUsuario extends AbstractController{
     }
 
     public function editarUsuario($id, $entrada=[], $envio=false, $confirmado=false){
-        
-        if($confirmado==false){
-            // if(empty($entrada['titulo'])){
-            //     $hayerror+=[ 'titulo' => "Debe introducir un título" ];
-            // }
+        $hayerror=[];
+        $datosUser=[];
 
-            // if(!strlen(trim($entrada['descripcion']))){
-            //     $hayerror+=[ 'descripcion' => "Debe introducir una descripción" ];
-            // }
+        if($confirmado==false){
+            if(empty($entrada['nombre'])){
+                $hayerror+=[ 'nombre' => "Debe introducir un nombre" ];
+            }
+
+            if(empty($entrada['apellidos'])){
+                $hayerror+=[ 'apellidos' => "Debe introducir unos apellidos" ];
+            }
             
+            if(empty($entrada['email'])){
+                $hayerror+=['email' => "Debe introducir un email"];
+            }
             
-            // if(!strlen(trim($entrada['ingredientes']))){
-            //     $hayerror+=['ingredientes' => "Debe introducir uno o más ingredientes"];
-            // }
-            
-            
-            // if(!strlen(trim($entrada['preparacion']))){
-            //     $hayerror+=[ 'preparacion' => "Debe introducir uno o más pasos de preparación" ];
-            // }
-    
-            // $hayerror+=[ 'numeroelementos' => count($hayerror) ];
+            if(empty($entrada['clave']) && empty($entrada['clave2'])){
+                $hayerror+=[ 'clave' => "Debe introducir su nueva contraseña" ];
+            }
+            elseif(strcmp($entrada['clave'], $entrada['clave2'])!==0){
+                $hayerror+=[ 'clave' => "Las contraseñas deben coincidir" ];
+            }
+
+            $hayerror+=[ 'numeroelementos' => count($hayerror) ];
+
+            if($hayerror['numeroelementos']>0){
+                //Obtenemos datos del usuario
+                $usuario=$this->musuario->getUsuarioById($id);
+                $datosUser=mysqli_fetch_array($usuario);
+
+                //Codificamos la foto para que pueda ser visualizada
+                if(isset($datosUser['foto'])){
+                    $datosUser['foto']=base64_encode($datosUser['foto']);
+                }
+            }
+            else{
+                $datosUser=$entrada;
+
+                $datosUser['foto']=base64_encode($datosUser['foto']);
+            }
+        }
+        else{
+            $datosUser=[
+                $entrada['nombre'],
+                $entrada['apellidos'],
+                $entrada['email'],
+                $entrada['clave'],
+                base64_decode($entrada['foto']),
+                $entrada['tipo'],
+                $id
+            ];
+
+            //Modificamos el usuario
+            $this->musuario->editarUsuario($datosUser);
+        }
+        
+        $this->params+=['envio'=>$envio];
+        $this->params+=['hayerror'=>$hayerror];
+        $this->params+=['datos'=>$datosUser];
+        $this->params+=['confirmado'=>$confirmado];
+        
+        $this->vusuario->render($this->params);
+
+        return $datosUser;
+    }
+
+    public function listarUsuarios(){
+        $usuarios=[];
+
+        //Obtener la lista completa de usuarios
+        $result=$this->musuario->getListaUsuarios();
+        
+        while($usuario=mysqli_fetch_array($result)){
+            array_push($usuarios,[
+                'nombre'=>$usuario[nombre],
+                'editar'=>"index.php?p=Editar+Usuario&id=".$usuario[id],
+                'eliminar'=>"index.php?p=eliminauser&id=".$usuario[id]
+            ]);
         }
 
+        $this->params+=['usuarios'=>$usuarios];
+
         $this->vusuario->render($this->params);
+    }
+
+    public function eliminaUsuario($id, $confirmado){ //Controlar las eliminaciones de administradores
+        if($confirmado){
+            //Eliminamos el usuario en cuestion
+            $this->musuario->eliminarUsuarioById($id);
+        }
+
+        else{
+            //Obtenemos el nombre del usuario
+            $result=$this->musuario->getUsuarioById($id);
+            $tupla=mysqli_fetch_array($result);
+
+            $this->params+=['nombre'=>$tupla['nombre']];
+        }
+
+        $this->params+=['confirmado'=>$confirmado];
+
+        $this->vusuario->render($this->params);
+    }
+
+    public function anadirUsuario($entrada, $anadir, $confirmar){
+        $hayerror=[];
+
+        if($confirmar == false){
+            if(empty($entrada['nombre'])){
+                $hayerror+=['nombre'=>"Debe introducirse un nombre"];
+            }
+    
+            if(empty($entrada['apellidos'])){
+                $hayerror+=['apellidos'=>"Deben introducirse unos apellidos"];
+            }
+    
+            if(empty($entrada['email'])){
+                $hayerror+=['email'=>"Debe introducirse un email"];
+            }
+    
+            if(empty($entrada['clave']) && empty($entrada['clave2'])){
+                $hayerror+=['clave'=>"Debe introducirse una contraseña y su confirmación"];
+            }
+            elseif(strcmp($entrada['clave'], $entrada['clave2'])!==0){
+                $hayerror+=['clave'=>"La contraseña y su confirmación deben coincidir"];
+            }
+
+            $hayerror+=['numeroelementos'=>count($hayerror)];
+
+            $entrada['foto']=base64_encode($entrada['foto']);
+        }
+
+        else{
+            //Insertamos el nuevo usuario
+            $entrada=[
+                $entrada['nombre'],
+                $entrada['apellidos'],
+                $entrada['email'],
+                base64_decode($entrada['foto']),
+                $entrada['clave'],
+                $entrada['tipo']
+            ];
+
+            $this->musuario->insertUsuario($entrada);
+        }
+
+        $this->params+=['envio'=>$anadir];
+        $this->params+=['confirmado'=>$confirmar];
+        $this->params+=['datos'=>$entrada];
+        $this->params+=['hayerror'=>$hayerror];
+
+        $this->vusuario->render($this->params);
+
+        return $entrada;
     }
 }
 

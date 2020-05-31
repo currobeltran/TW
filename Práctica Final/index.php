@@ -16,9 +16,24 @@ if(isset($_POST["Logout"])){
         session_destroy();
     } 
 }
-else{
+else{ //No funcionan las cookies
+    //Iniciamos sesion
     session_start();
     $_SESSION['opc']="inicio";
+
+    //Iniciamos cookie de pagina si no lo está 
+    if(!isset($_COOKIE["ultimaPagina"]) && !isset($_GET['p'])){
+        $controladorReceta=new ControladorRecetas();
+        $result=$controladorReceta->getRecetaAleatoria();
+
+        setcookie("ultimaPagina", $result, time()+2592000);
+    }
+
+    //Establecemos el valor de la última receta visitada
+    if(isset($_COOKIE["ultimaPagina"]) && isset($_GET['p']) && strcmp($_GET['p'], "visualizar")===0){
+        $_COOKIE['ultimaPagina']=$_GET['id'];
+    }
+
 }
 
 
@@ -131,7 +146,7 @@ switch($_SESSION['opc']){
         else{
             $datos=[];
             $categoria=[];
-            $fotos=0;
+            $fotos=null;
             
             foreach($_POST as $tipo){
                 if(strpos($tipo,"categoria") !== false){
@@ -151,7 +166,10 @@ switch($_SESSION['opc']){
                 $datos+=['categorias'=>$categoria];
             }
 
-            $datos+=['fotos'=>$fotos];
+            if($fotos!=null){
+                $datos+=['fotos'=>$fotos];
+            }
+
         }
 
         if(isset($_POST['titulo'])){ 
@@ -170,10 +188,13 @@ switch($_SESSION['opc']){
             $datos+=['preparacion'=>$_POST['preparacion']];
         }
 
-        if(isset($_POST['anadirfoto'])){ 
+        if(isset($_POST['anadirfoto']) && in_array($_FILES['foto']['type'], 
+        ["image/jpeg","image/gif","image/png"])){ 
+            
+            $_FILES['foto']['name']="img".rand();
+
             if(move_uploaded_file($_FILES['foto']['tmp_name'], 
             "imagenes/".$_FILES['foto']['name'])){
-                echo "a";
                 $datos+=['rutanuevafoto'=>"imagenes/".$_FILES['foto']['name']];
             }
         }
@@ -193,22 +214,119 @@ switch($_SESSION['opc']){
     case 'Editar Usuario': 
         $controladorUsuario=new ControladorUsuario("editaruser.html");
 
+        if(isset($_POST['confirmado'])){
+            $datos=$_SESSION['datos'];
+        }
+        else{
+            $datos=[];
+        }
+
         if(!isset($_GET['id'])){ 
             $idUsuario=$_SESSION['usuario'];
         }
         else{//Aqui solo puede acceder el administrador, cambiar
             $idUsuario=$_GET['id'];
         }
+        
+        if(isset($_POST['nombre'])){ 
+            $datos+=['nombre'=>$_POST['nombre']];
+        }
 
-        $controladorUsuario->editarUsuario($idUsuario);
+        if(isset($_POST['apellidos'])){ 
+            $datos+=['apellidos'=>$_POST['apellidos']];
+        }
+
+        if(isset($_POST['email'])){
+            $datos+=['email'=>$_POST['email']];
+        }
+
+        if(isset($_POST['clave'])){
+            $datos+=['clave'=>$_POST['clave']];
+        }
+
+        if(isset($_POST['clave2'])){
+            $datos+=['clave2'=>$_POST['clave2']];
+        }
+
+        if(isset($_POST['tipo'])){
+            $datos+=['tipo'=>$_POST['tipo']];
+        }
+
+        if(isset($_FILES['foto']) && in_array($_FILES['foto']['type'], 
+            ["image/jpeg","image/gif","image/png"])){
+            $datos+=['foto'=>file_get_contents($_FILES['foto']['tmp_name'])];
+            
+        }
+
+        $_SESSION['datos']=$controladorUsuario->editarUsuario($idUsuario, $datos, 
+        isset($_POST['envio']), isset($_POST['confirmado']));
     break;
-    case 'gestionar': $view=new VistaAdministrador('gestion.html'); break;
-    case 'listauser': $view=new VistaAdministrador('listauser.html'); break;
-    case 'anadiruser': $view=new VistaAdministrador('anadiruser.html'); break;
+
+    case 'gestionar':  
+        $view=new VistaAdministrador('gestion.html');
+    break;
+
+    case 'listauser': 
+        $controladorUsuario=new ControladorUsuario('listauser.html');
+        $controladorUsuario->listarUsuarios(); 
+    break;
+    
+    case 'anadiruser': 
+        $controladorUsuario=new ControladorUsuario('anadiruser.html');
+
+        if(isset($_POST['confirmar'])){
+            $datos=$_SESSION['datos'];
+        }
+        else{
+            $datos=[];
+        }
+
+        if(isset($_POST['nombre'])){
+            $datos+=['nombre'=>$_POST['nombre']];
+        }
+
+        if(isset($_POST['apellidos'])){
+            $datos+=['apellidos'=>$_POST['apellidos']];
+        }
+
+        if(isset($_POST['email'])){
+            $datos+=['email'=>$_POST['email']];
+        }
+
+        if(isset($_POST['clave'])){
+            $datos+=['clave'=>$_POST['clave']];
+        }
+
+        if(isset($_POST['clave2'])){
+            $datos+=['clave2'=>$_POST['clave2']];
+        }
+
+        if(isset($_FILES['foto']) && in_array($_FILES['foto']['type'], 
+            ["image/jpeg","image/gif","image/png"])){
+            $datos+=['foto'=>file_get_contents($_FILES['foto']['tmp_name'])];
+        }
+
+        $datos+=['tipo'=>$_POST['tipo']];
+
+        $_SESSION['datos']=$controladorUsuario->anadirUsuario($datos, 
+        isset($_POST['anadir']), isset($_POST['confirmar']));
+
+    break;
+
     case 'basedatos': $view=new VistaAdministrador('backupBBDD.html'); break;
     case 'log': $view=new VistaAdministrador('log.html'); break;
-    // default: $view=new VistaAdministrador('comun.html'); break;
-    default: phpinfo();
+    
+    case 'eliminauser': 
+        $controladorUsuario=new ControladorUsuario('eliminauser.html');
+
+        $controladorUsuario->eliminaUsuario($_GET['id'], isset($_POST['confirmado']));
+
+    break;
+    
+    default: 
+        $controladorReceta=new ControladorRecetas("visualizareceta.html");
+        $controladorReceta->verReceta($_COOKIE['ultimaPagina']);
+    break;
 }
 
 $view->render([]);
