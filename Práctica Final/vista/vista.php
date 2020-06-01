@@ -5,7 +5,7 @@ require "vendor/autoload.php";
 class AbstractView {
     protected $loader, $twig, $template;
     
-    public function __construct($pag) { // Crear estructura web básica
+    public function __construct($pag='') { // Crear estructura web básica
         $this->$loader = new \Twig\Loader\FilesystemLoader('vista/templates');
         $this->$twig = new \Twig\Environment($this->$loader);
         $this->$template=$this->$twig->load($pag);
@@ -34,10 +34,10 @@ class VistaColaborador extends AbstractView{
         parent::__construct($pag);
     }
 
-    // ***** Método principal: devuelve un string con el contenido HTML de toda la página
-    public function render() {
+    public function render($params) {
         $permiso=['permisos'=>1];
-        parent::render($permiso);
+        $params+=$permiso;
+        parent::render($params);
     }
 }
 
@@ -46,10 +46,10 @@ class VistaVisitante extends AbstractView{
         parent::__construct($pag);
     }
 
-    // ***** Método principal: devuelve un string con el contenido HTML de toda la página
-    public function render() {
+    public function render($params) {
         $permiso=['permisos'=>0];
-        parent::render($permiso);
+        $params+=$permiso;
+        parent::render($params);
     }
 }
 ?>

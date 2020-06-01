@@ -6,8 +6,9 @@ require_once "vista/vista.php";
 abstract class AbstractController{
 
     protected $params;
+    protected $vista;
 
-    public function __construct(){
+    public function __construct($permisos=0, $webpage='', $user=[]){
         $modeloRecetas=new ModeloRecetas(); 
         $modeloListaCategorias=new ModeloListaCategorias();
         $this->params=[];
@@ -25,17 +26,29 @@ abstract class AbstractController{
 
         $this->params+=['nrecetas'=>$conteoReceta];
         $this->params+=['tipos'=>$categorias];
+
+        if($webpage!=''){
+            switch($permisos){
+                case 0: $this->vista=new VistaVisitante($webpage); break;
+                case 1: $this->vista=new VistaColaborador($webpage); break;
+                case 2: $this->vista=new VistaAdministrador($webpage); break;
+                default: $this->vista=new VistaVisitante($webpage); break;
+            }
+        }
+
+        if($user!=[]){
+            $this->params+=['usuario'=>$user['nombre']];
+            $this->params+=['foto'=>$user['foto']];
+        }
     }
 }
 
 class ControladorRecetas extends AbstractController{
     protected $mrecetas;
-    protected $vrecetas;
 
-    public function __construct($webpage){
-        parent::__construct();
+    public function __construct($permisos=0,$webpage='',$user=[]){
+        parent::__construct($permisos,$webpage,$user);
         $this->mrecetas=new ModeloRecetas();
-        $this->vrecetas=new VistaAdministrador($webpage);
     }
 
     //**************QUEDA HACER LO DE LAS PAGINAS
@@ -60,7 +73,7 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['pagina'=>$pag];
 
         //Generamos la pagina
-        $this->vrecetas->render($this->params);
+        $this->vista->render($this->params);
     }
 
     public function listarRecetasByUser($titulo,$contenido,$idAutor, $numeroxPag=1, $pag=1, $categoria=[], $orden){
@@ -83,7 +96,7 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['pagina'=>$pag];
 
         //Generamos la pagina
-        $this->vrecetas->render($this->params);
+        $this->vista->render($this->params);
     }
 
     public function verReceta($id){
@@ -119,7 +132,7 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['recetaedurl'=>$recetaedurl];
         $this->params+=['recetaelurl'=>$recetaelurl];
 
-        $this->vrecetas->render($this->params);
+        $this->vista->render($this->params);
     }
 
     public function anadirReceta($datos=[], $envio=false, $confirmado=false){
@@ -178,7 +191,7 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['datos'=>$datos];
         $this->params+=['confirmado'=>$confirmado];
 
-        $this->vrecetas->render($this->params);
+        $this->vista->render($this->params);
 
         return $datos;
     }
@@ -291,7 +304,7 @@ class ControladorRecetas extends AbstractController{
         if($fot!=[])
             $this->params+=['fotos'=>$fot];
 
-        $this->vrecetas->render($this->params);
+        $this->vista->render($this->params);
 
         return $datos;
     }
@@ -318,7 +331,7 @@ class ControladorRecetas extends AbstractController{
 
         $this->params+=['confirmacion'=>$confirmado];
 
-        $this->vrecetas->render($this->params);
+        $this->vista->render($this->params);
     }
 
     public function getRecetaAleatoria(){
@@ -333,13 +346,18 @@ class ControladorRecetas extends AbstractController{
 
         return $recetas[$selec];
     }
+
+    public function displayError(){
+        $this->vista->render($this->params);
+    }
 }
 
 class ControladorUsuario extends AbstractController{
-    public function __construct($webpage){
-        parent::__construct();
+    protected $musuario;
+    
+    public function __construct($permisos=0,$webpage='',$user=[]){
+        parent::__construct($permisos,$webpage,$user);
         $this->musuario=new ModeloUsuario();
-        $this->vusuario=new VistaAdministrador($webpage);
     }
 
     public function editarUsuario($id, $entrada=[], $envio=false, $confirmado=false){
@@ -404,7 +422,7 @@ class ControladorUsuario extends AbstractController{
         $this->params+=['datos'=>$datosUser];
         $this->params+=['confirmado'=>$confirmado];
         
-        $this->vusuario->render($this->params);
+        $this->vista->render($this->params);
 
         return $datosUser;
     }
@@ -425,7 +443,7 @@ class ControladorUsuario extends AbstractController{
 
         $this->params+=['usuarios'=>$usuarios];
 
-        $this->vusuario->render($this->params);
+        $this->vista->render($this->params);
     }
 
     public function eliminaUsuario($id, $confirmado){ //Controlar las eliminaciones de administradores
@@ -444,7 +462,7 @@ class ControladorUsuario extends AbstractController{
 
         $this->params+=['confirmado'=>$confirmado];
 
-        $this->vusuario->render($this->params);
+        $this->vista->render($this->params);
     }
 
     public function anadirUsuario($entrada, $anadir, $confirmar){
@@ -494,9 +512,15 @@ class ControladorUsuario extends AbstractController{
         $this->params+=['datos'=>$entrada];
         $this->params+=['hayerror'=>$hayerror];
 
-        $this->vusuario->render($this->params);
+        $this->vista->render($this->params);
 
         return $entrada;
+    }
+
+    public function comprobarCredenciales($email, $clave){
+        $params=[$email, $clave];
+        $result=$this->musuario->comprobarCredenciales($params);
+        return $result;
     }
 }
 

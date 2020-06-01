@@ -43,7 +43,7 @@
 
                 {% if permisos >= 1 %}
                     <p>Te has identificado como {{ usuario }}</p>
-                    <img src="/vista/templates/img/numero1.png" class="iconos">
+                    <img src="data:image/jpeg;base64,{{ foto }}" class="iconos">
 
                     <form action='' method='POST'>
                         <input type='submit' value='Logout' name='Logout'>
@@ -56,9 +56,9 @@
 
                 {% if permisos < 1 %}
                     <form action='' method='POST'>
-                        <label>Usuario <input type='text' name='Usuario'></label>
-                        <label>Clave <input type='password' name='Clave'></label>
-                        <input type='submit' value='Login'>
+                        <label>Correo <input type='text' name='email'></label>
+                        <label>Clave <input type='password' name='clave'></label>
+                        <input type='submit' value='Login' name='Login'>
                     </form>
                 {% endif %}
             </article>

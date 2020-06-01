@@ -4,6 +4,20 @@ require_once "vista/vista.php";
 require_once "modelo/modeloAbstracto.php";
 require_once "controlador/controlador.php";
 
+if(!isset($_COOKIE["ultimaPagina"]) && !isset($_GET['p'])){
+    $aux=new ControladorRecetas();
+    // Establecemos esta variable como global para la primera vez que
+    // el usuario se meta en la página si no tiene cookies
+    global $idRecetaInicio;
+    $idRecetaInicio=$aux->getRecetaAleatoria();
+    setcookie("ultimaPagina", $idRecetaInicio, time()+2592000);
+}
+
+//Establecemos el valor de la última receta visitada
+if(isset($_COOKIE["ultimaPagina"]) && isset($_GET['p']) && strcmp($_GET['p'], "visualizar")===0){
+    setcookie("ultimaPagina", $_GET['id'], time()+2592000);
+}
+
 if(isset($_POST["Logout"])){ 
     if($_POST["Logout"]==true){
         session_unset(); 
@@ -16,27 +30,13 @@ if(isset($_POST["Logout"])){
         session_destroy();
     } 
 }
-else{ //No funcionan las cookies
+else{
     //Iniciamos sesion
     session_start();
     $_SESSION['opc']="inicio";
-
-    //Iniciamos cookie de pagina si no lo está 
-    if(!isset($_COOKIE["ultimaPagina"]) && !isset($_GET['p'])){
-        $controladorReceta=new ControladorRecetas();
-        $result=$controladorReceta->getRecetaAleatoria();
-
-        setcookie("ultimaPagina", $result, time()+2592000);
-    }
-
-    //Establecemos el valor de la última receta visitada
-    if(isset($_COOKIE["ultimaPagina"]) && isset($_GET['p']) && strcmp($_GET['p'], "visualizar")===0){
-        $_COOKIE['ultimaPagina']=$_GET['id'];
-    }
-
 }
 
-
+//Iniciamos variables de sesion si no estan aun establecidas
 if(isset($_GET['p'])){
     $_SESSION['opc']=$_GET['p'];
 }
@@ -45,15 +45,53 @@ if(!isset($_SESSION['pagina'])){
     $_SESSION['pagina']=0;
 }
 
-if(!isset ($_SESSION['usuario'])){
-    $_SESSION['usuario']=1;
+if(!isset($_SESSION['permisos'])){
+    $_SESSION['permisos']=0;
+}
+
+//Comprobamos si el usuario ha intentado loguearse
+//Si es todo correcto, se guardan las credenciales en $_SESSION
+if(isset($_POST['Login'])){
+    $mu=new ControladorUsuario();
+    $resultado=$mu->comprobarCredenciales($_POST['email'], $_POST['clave']);
+    
+    if($tupla=mysqli_fetch_array($resultado)){
+        $_SESSION['usuario']=$tupla;
+        // $_SESSION['usuario']+=['nombre'=>$tupla['nombre']];
+        $_SESSION['usuario']['foto']=base64_encode($tupla['foto']);
+        // $_SESSION['usuario']+=['id'=>$tupla['id']];
+
+        switch($tupla['tipo']){
+            case 'Administrador': $_SESSION['permisos']=2; break;
+            case 'Colaborador': $_SESSION['permisos']=1; break;
+        }
+    }
 }
 
 switch($_SESSION['opc']){
-    case 'inicio': $view=new VistaAdministrador('comun.html'); break; 
+    
+    case 'inicio': 
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
+        $_SESSION['usuario']);
+
+        // if(!isset($_COOKIE["ultimaPagina"])){
+        //     $id=$controladorReceta->getRecetaAleatoria();
+        //     setcookie("ultimaPagina", $id, time()+2592000);
+        // }
+        // else{
+        //     $id=$_COOKIE["ultimaPagina"];
+        // }
+
+        if(isset($_COOKIE["ultimaPagina"])){
+            $idRecetaInicio=$_COOKIE["ultimaPagina"];
+        }
+
+        $controladorReceta->verReceta($idRecetaInicio); 
+    break; 
     
     case 'listado': 
-        $controladorReceta=new ControladorRecetas("listado.html");
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"listado.html",
+        $_SESSION['usuario']);
 
         $categoria=[];
 
@@ -70,12 +108,23 @@ switch($_SESSION['opc']){
     break;
 
     case 'visualizar': 
-        $controladorReceta=new ControladorRecetas("visualizareceta.html");
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
+        $_SESSION['usuario']);
         $controladorReceta->verReceta($_GET['id']); 
     break;
     
     case 'milistado': 
-        $controladorReceta=new ControladorRecetas("listado.html");
+        if($_SESSION['permisos']==0){
+            $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
+            $_SESSION['usuario']);
+            
+            $controladorReceta->displayError();
+
+            break; 
+        }
+
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"listado.html",
+        $_SESSION['usuario']);
 
         $categoria=[];
 
@@ -92,7 +141,17 @@ switch($_SESSION['opc']){
     break;
     
     case 'anadir': 
-        $controladorReceta=new ControladorRecetas("anadir.html");
+        if($_SESSION['permisos']==0){
+            $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
+            $_SESSION['usuario']);
+            
+            $controladorReceta->displayError();
+
+            break; 
+        }
+
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"anadir.html",
+        $_SESSION['usuario']);
         if(isset($_POST['confirmar'])){
             $datos=$_SESSION['datos'];
         }
@@ -138,7 +197,20 @@ switch($_SESSION['opc']){
     break;
 
     case 'editareceta': //Controlar permisos //Al entrar desde ver receta no se ven los datos
-        $controladorReceta=new ControladorRecetas("editareceta.html");
+        if(
+        ($_SESSION['permisos']==0) || 
+        ($_SESSION['permisos']==1 ) //Condicion para comprobar que el usuario tiene la receta
+        ){
+            $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
+            $_SESSION['usuario']);
+            
+            $controladorReceta->displayError();
+
+            break; 
+        }
+        
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"editareceta.html",
+        $_SESSION['usuario']);
 
         if(isset($_POST['confirmar'])){
             $datos=$_SESSION['datos'];
@@ -204,7 +276,8 @@ switch($_SESSION['opc']){
     break;
 
     case 'eliminareceta': //Controlar permisos //Al entrar desde ver receta no se ven los datos
-        $controladorReceta=new ControladorRecetas("eliminareceta.html");
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"eliminareceta.html",
+        $_SESSION['usuario']);
 
         $confirmado=isset($_POST['Confirmar']);
 
@@ -212,17 +285,18 @@ switch($_SESSION['opc']){
     break;
 
     case 'Editar Usuario': 
-        $controladorUsuario=new ControladorUsuario("editaruser.html");
+        $controladorUsuario=new ControladorUsuario($_SESSION['permisos'],"editaruser.html",
+        $_SESSION['usuario']);
 
         if(isset($_POST['confirmado'])){
             $datos=$_SESSION['datos'];
         }
         else{
-            $datos=[];
+            $datos=$_SESSION['usuario'];
         }
 
         if(!isset($_GET['id'])){ 
-            $idUsuario=$_SESSION['usuario'];
+            $idUsuario=$_SESSION['usuario']['id'];
         }
         else{//Aqui solo puede acceder el administrador, cambiar
             $idUsuario=$_GET['id'];
@@ -267,12 +341,14 @@ switch($_SESSION['opc']){
     break;
 
     case 'listauser': 
-        $controladorUsuario=new ControladorUsuario('listauser.html');
+        $controladorUsuario=new ControladorUsuario($_SESSION['permisos'],'listauser.html',
+        $_SESSION['usuario']);
         $controladorUsuario->listarUsuarios(); 
     break;
     
     case 'anadiruser': 
-        $controladorUsuario=new ControladorUsuario('anadiruser.html');
+        $controladorUsuario=new ControladorUsuario($_SESSION['permisos'],'anadiruser.html',
+        $_SESSION['usuario']);
 
         if(isset($_POST['confirmar'])){
             $datos=$_SESSION['datos'];
@@ -317,15 +393,17 @@ switch($_SESSION['opc']){
     case 'log': $view=new VistaAdministrador('log.html'); break;
     
     case 'eliminauser': 
-        $controladorUsuario=new ControladorUsuario('eliminauser.html');
+        $controladorUsuario=new ControladorUsuario($_SESSION['permisos'],'eliminauser.html',
+        $_SESSION['usuario']);
 
         $controladorUsuario->eliminaUsuario($_GET['id'], isset($_POST['confirmado']));
 
     break;
     
     default: 
-        $controladorReceta=new ControladorRecetas("visualizareceta.html");
-        $controladorReceta->verReceta($_COOKIE['ultimaPagina']);
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
+        $_SESSION['usuario']);
+        $controladorReceta->verReceta($_COOKIE["ultimaPagina"]);
     break;
 }
 

@@ -79,6 +79,12 @@ class ModeloUsuario extends AbstractModel{
         $select="DELETE FROM usuarios WHERE id = ?";
         $this->query($select,$id,'i');
     }
+
+    public function comprobarCredenciales($params){
+        $select="SELECT * FROM usuarios WHERE email = ? AND passwd = ?";
+        $result=$this->query($select,$params,'ss');
+        return $result;
+    }
 }
 
 class ModeloRecetas extends AbstractModel{
