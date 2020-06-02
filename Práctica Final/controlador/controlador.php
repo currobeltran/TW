@@ -51,49 +51,67 @@ class ControladorRecetas extends AbstractController{
         $this->mrecetas=new ModeloRecetas();
     }
 
-    //**************QUEDA HACER LO DE LAS PAGINAS
     public function listarRecetas($titulo='', $contenido='', $numeroxPag=1, $pag=1, $categoria=[], $orden){
         //Obtenemos lista de recetas
         $result=$this->mrecetas->getListaRecetas($titulo,$contenido,$categoria, $orden);
-
         $recetas=[];
-        $i=0;
-        while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $i<$numeroxPag)){
+
+        for($i=0; $i<($pag*$numeroxPag); $i++){
+            $receta=mysqli_fetch_array($result);
+        }
+
+        $j=0;
+        while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $j<$numeroxPag)){
             $visurl="index.php?p=visualizar&id=".$receta[id];
             $edurl="index.php?p=editareceta&id=".$receta[id];
             $elurl="index.php?p=eliminareceta&id=".$receta[id];
 
             array_push($recetas, ['nombre'=>$receta[nombre], 
             'visurl'=>$visurl,'edurl'=>$edurl,'elurl'=>$elurl]);
-            $i++;
+            $j++;
         }
 
         //Añadimos todo al vector de parametros
         $this->params+=['recetas'=>$recetas];
         $this->params+=['pagina'=>$pag];
+        $this->params+=['nombre'=>$titulo];
+        $this->params+=['contenido'=>$contenido];
+        $this->params+=['categorias'=>$categoria];
+        $this->params+=['orden'=>$orden];
+        $this->params+=['numerorecetas'=>$numeroxPag];
 
         //Generamos la pagina
         $this->vista->render($this->params);
     }
 
-    public function listarRecetasByUser($titulo,$contenido,$idAutor, $numeroxPag=1, $pag=1, $categoria=[], $orden){
+    public function listarRecetasByUser($titulo,$contenido,$idAutor, $numeroxPag=1, $pag=0, $categoria=[], $orden){
         //Obtenemos lista de recetas
         $result=$this->mrecetas->getListaRecetasUsuario($titulo,$contenido,$idAutor,$categoria, $orden);
         $recetas=[];
-        $i=0;
-        while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $i<$numeroxPag)){
+
+        for($i=0; $i<($pag*$numeroxPag); $i++){
+            $receta=mysqli_fetch_array($result);
+        }
+
+        $j=0;
+        while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $j<$numeroxPag)){
             $visurl="index.php?p=visualizar&id=".$receta[id];
             $edurl="index.php?p=editareceta&id=".$receta[id];
             $elurl="index.php?p=eliminareceta&id=".$receta[id];
 
             array_push($recetas, ['nombre'=>$receta[nombre], 
             'visurl'=>$visurl,'edurl'=>$edurl,'elurl'=>$elurl]);
-            $i++;
+            $j++;
         }
 
         //Añadimos todo al vector de parametros
         $this->params+=['recetas'=>$recetas];
         $this->params+=['pagina'=>$pag];
+        $this->params+=['nombre'=>$titulo];
+        $this->params+=['contenido'=>$contenido];
+        $this->params+=['categorias'=>$categoria];
+        $this->params+=['orden'=>$orden];
+        $this->params+=['numerorecetas'=>$numeroxPag];
 
         //Generamos la pagina
         $this->vista->render($this->params);
@@ -225,6 +243,13 @@ class ControladorRecetas extends AbstractController{
                     $modeloCategorias->insertCategoria($rec,$cat);
                 }
             }
+
+            //Establecemos una valoracion por defecto para poder realizar el ordenamiento
+            $mv=new ModeloValoracion();
+
+            $valorInsert=[$rec, 1, 0];
+            $mv->insertValoracion($valorInsert);
+
         }
 
         $this->params+=['envio'=>$envio];
@@ -749,7 +774,7 @@ class ControladorBBDD extends AbstractController{
         parent::__construct($permisos,$webpage,$user);
     }
 
-    
+
 }
 
 ?>

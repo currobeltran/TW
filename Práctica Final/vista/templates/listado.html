@@ -4,42 +4,96 @@
 
     <form action="" method="POST" class="formulario"> 
         <label>Buscar por nombre de receta 
-            <input type="text" name="tituloBusqueda"/>
+            <input type="text" name="tituloBusqueda" value="{{ nombre }}"/>
         </label>
+
         <label>Buscar por contenido de receta 
-            <input type="text" name="contenidoBusqueda"/>
+            <input type="text" name="contenidoBusqueda" value="{{ contenido }}"/>
         </label>
         
         <h3>Categorias</h3>
         {% for tipo in tipos %}
             <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
-                value="categoria#{{ tipo.id }}"/></label>
+                value="categoria#{{ tipo.id }}"
+                {% for categoria in categorias %}
+                    {% if categoria == tipo.id %}
+                        checked
+                    {% endif %}
+                {% endfor %}
+                /></label>
         {% endfor %}
 
         <label>Orden alfabético ascendente
-            <input type="radio" name="orden" value="ASC"/>
+            <input type="radio" name="orden" value="ASC"
+            {% if orden == "ASC" %}
+                checked
+            {% endif %}
+            />
         </label>
 
         <label>Orden alfabético descendente
-            <input type="radio" name="orden" value="DESC"/>
+            <input type="radio" name="orden" value="DESC"
+            {% if orden == "DESC" %}
+                checked
+            {% endif %}
+            />
         </label>
         
         <label>Mas a menos comentadas
-            <input type="radio" name="orden" value="MASCOM"/>
+            <input type="radio" name="orden" value="MASCOM"
+            {% if orden == "MASCOM" %}
+                checked
+            {% endif %}
+            />
         </label>
         
         <label>Mas a menos valoradas
-            <input type="radio" name="orden" value="MASVAL"/>
+            <input type="radio" name="orden" value="MASVAL"
+            {% if orden == "MASVAL" %}
+                checked
+            {% endif %}
+            />
         </label>
         
         <label>Numero de recetas por página
             <select name="recetasxpagina">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
+                
+                <option value="1"
+                {% if numerorecetas == 1 %}
+                    selected
+                {% endif %}
+                >1</option>
+
+                <option value="2"
+                {% if numerorecetas == 2 %}
+                    selected
+                {% endif %}
+                >2</option>
+                
+                <option value="3"
+                {% if numerorecetas == 3 %}
+                    selected
+                {% endif %}
+                >3</option>
+                
+                <option value="4"
+                {% if numerorecetas == 4 %}
+                    selected
+                {% endif %}
+                >4</option>
+                
+                <option value="5"
+                {% if numerorecetas == 5 %}
+                    selected
+                {% endif %}
+                >5</option>
+                
+                <option value="6"
+                {% if numerorecetas == 6 %}
+                    selected
+                {% endif %}
+                >6</option>
+            
             </select>
         </label>
 
@@ -89,9 +143,15 @@
 
     {% endif %}
 
+    {% if nrecetas > numerorecetas * (pagina + 1) %}
+
+        {% set posterior = "index.php?p=listado&pag=#{pagina + 1}" %}
+    
+    {% endif %}
+
     <footer class="flecha">
         <a href={{ anterior }}><img src="/vista/templates/img/flechaIzq.svg" class="icono"></a>
-        <a href={{ "index.php?p=listado&pag=#{pagina + 1}" }}><img src="/vista/templates/img/flechaDer.png" class="icono"></a>
+        <a href={{ posterior }}><img src="/vista/templates/img/flechaDer.png" class="icono"></a>
     </footer>
 
 {% endblock %}

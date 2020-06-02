@@ -119,11 +119,21 @@ class ModeloRecetas extends AbstractModel{
             $parametroOrden="ORDER BY nombre ".$orden;
         }
         else{ //Hay que cambiarlo para comentarios y valoraciones
-            $parametroOrden="ORDER BY nombre";
+            // $parametroOrden="ORDER BY nombre";
+            //Para comentarios hacer un count desde mysql
+
+            //Para valoraciones + simple, ordenamiento normal
+            if($orden=='MASVAL'){
+                $parametroOrden="ORDER BY valoraciones.valoracion ASC".$orden;
+            }
         }
         
         if($categoria==[]){
-            $select="SELECT id, nombre FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
+            $select="SELECT recetas.id, recetas.nombre FROM valoraciones 
+            RIGHT JOIN recetas
+            ON recetas.id = valoraciones.idReceta LEFT JOIN comentarios 
+            ON recetas.id = comentarios.idReceta
+            WHERE nombre LIKE '%".$titulo."%' AND 
             (descripcion LIKE '%".$contenido."%' OR 
             ingredientes LIKE '%".$contenido."%' OR
             preparacion LIKE '%".$contenido."%') ".$parametroOrden;
@@ -406,7 +416,7 @@ class ModeloBBDD extends AbstractModel{
     }
 
     public function getBBDDBackup(){
-        
+
     }
 }
 

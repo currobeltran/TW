@@ -108,9 +108,29 @@ switch($_SESSION['opc']){
             }
         }
 
-        $controladorReceta->listarRecetas($_POST['tituloBusqueda'], 
-        $_POST['contenidoBusqueda'], $_POST['recetasxpagina'], 
-        $_SESSION['pagina'], $categoria, $_POST['orden']); 
+        if(isset($_POST['tituloBusqueda'])){
+            $_SESSION['tituloBusqueda']=$_POST['tituloBusqueda'];
+        }
+
+        if(isset($_POST['contenidoBusqueda'])){
+            $_SESSION['contenidoBusqueda']=$_POST['contenidoBusqueda'];
+        }
+
+        if(isset($_POST['recetasxpagina'])){
+            $_SESSION['recetasxpagina']=$_POST['recetasxpagina'];
+        }
+
+        if($categoria!=[]){
+            $_SESSION['categoria']=$categoria;
+        }
+
+        if(isset($_POST['orden'])){
+            $_SESSION['orden']=$_POST['orden'];
+        }
+
+        $controladorReceta->listarRecetas($_SESSION['tituloBusqueda'], 
+        $_SESSION['contenidoBusqueda'], $_SESSION['recetasxpagina'], 
+        $_GET['pag'], $_SESSION['categoria'], $_SESSION['orden']); 
     break;
 
     case 'visualizar': 
@@ -141,9 +161,9 @@ switch($_SESSION['opc']){
             }
         }
 
-        $controladorReceta->listarRecetasByUser($_POST['tituloBusqueda'], 
-        $_POST['contenidoBusqueda'], $_SESSION['usuario']['id'], $_POST['recetasxpagina'], 
-        $_SESSION['pagina'], $categoria, $_POST['orden']);  
+        $controladorReceta->listarRecetasByUser($_SESSION['tituloBusqueda'], 
+        $_SESSION['contenidoBusqueda'], $_SESSION['usuario']['id'], $_SESSION['recetasxpagina'], 
+        $_GET['pag'], $_SESSION['categoria'], $_SESSION['orden']);  
     break;
     
     case 'anadir': 
@@ -481,7 +501,12 @@ switch($_SESSION['opc']){
 
     break;
 
-    case 'basedatos': $view=new VistaAdministrador('backupBBDD.html'); break; 
+    case 'basedatos': 
+        
+        $view=new VistaAdministrador('backupBBDD.html'); 
+
+    break; 
+
     case 'log': 
         if($_SESSION['permisos']<=1){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
