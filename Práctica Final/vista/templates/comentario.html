@@ -1,0 +1,39 @@
+{% extends "visualizareceta.html" %}
+
+{% block comentario %}
+
+    {% if confirmar == false %}
+        {% if nocomentario != '' %}
+            <h2 id="titulo">Introduzca su comentario aquí</h2>
+            {% set disab = false %}
+
+        {% else %}
+            <h2 id="titulo">¿Desea introducir este comentario?</h2>
+            {% set disab = true %}
+        {% endif %}
+
+        <form action="" method="POST" class="formulario">
+            {% if envio == true %}
+                <p class="error">{{ nocomentario }}</p>
+            {% endif %}
+            
+            <textarea name="comentario" cols="24" 
+            {% if disab == true %}
+                disabled
+            {% endif %}
+            >
+            {{ comentario }}
+            </textarea>
+            
+            {% if nocomentario != '' %}
+                <input type="submit" name="comentar" value="Enviar">
+            {% else %}
+                <input type="submit" name="confirmar" value="Confirmar">
+            {% endif %}
+        </form>
+
+    {% else %}
+        <h2 id="titulo">Comentario enviado correctamente</h2>
+    {% endif %}
+ 
+{% endblock %}

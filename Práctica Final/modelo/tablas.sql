@@ -2,11 +2,11 @@ CREATE TABLE usuarios(
     id INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(200) NOT NULL,
     apellidos VARCHAR(300) NOT NULL,
-    email VARCHAR(200) NOT NULL,
+    email VARCHAR(200) NOT NULL UNIQUE,
     foto MEDIUMBLOB,
     passwd VARCHAR(30) NOT NULL, 
     tipo VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id, email));
+    PRIMARY KEY (id);
 
 CREATE TABLE recetas(
     id INT NOT NULL AUTO_INCREMENT,
@@ -27,7 +27,7 @@ CREATE TABLE fotos(
 CREATE TABLE valoraciones(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     idReceta INT NOT NULL,
-    idUsuario INT NOT NULL,
+    idUsuario INT NOT NULL UNIQUE,
     valoracion TINYINT NOT NULL,
     FOREIGN KEY(idReceta) REFERENCES recetas(id),
     FOREIGN KEY(idUsuario) REFERENCES usuarios(id));

@@ -1,0 +1,39 @@
+{% extends "visualizareceta.html" %}
+
+{% block valorar %}
+
+    {% if confirmar == false %}
+
+        {% if novaloracion != '' %}
+            <h2 id="titulo">Valore la siguiente receta de 0 a 10</h2>
+            <h6>Si ya ha introducido una valoración, esta se modificará</h6>
+            {% set disab = false %}
+        {% else %}
+            <h2 id="titulo">¿Desea introducir la siguiente valoración?</h2>
+            {% set disab = true %}
+        {% endif %}
+
+        <form action="" method="POST" class="formulario">
+            <label>Valoración
+                {% if envio == true %}
+                    <p class="error">{{ novaloracion }}</p>
+                {% endif %}
+                <input type="number" name="valoracion" value="{{ valor }}"
+                {% if disab == true %}
+                    disabled
+                {% endif %}
+                > 
+            </label>
+
+            {% if novaloracion != '' %}
+                <input type="submit" name="valorar" value="Valorar">
+            {% else %}
+                <input type="submit" name="confirmar" value="Confirmar">
+            {% endif %}
+        </form>
+
+    {% else %}
+        <h2 id="titulo">Valoracion enviada correctamente</h2>
+    {% endif %}
+
+{% endblock %}

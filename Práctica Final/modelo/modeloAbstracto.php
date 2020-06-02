@@ -302,4 +302,112 @@ class ModeloCategorias extends AbstractModel{
         $this->query($select,$idReceta,'i');
     }
 }
+
+class ModeloComentarios extends AbstractModel{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    //Peticion
+    public function query($select,$params=[],$type=''){
+        $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    public function getComentariosByIdReceta($idReceta){
+        $select="SELECT * FROM comentarios WHERE idReceta = ?";
+        $result=$this->query($select,$idReceta,'i');
+        return $result;
+    }
+
+    public function insertComentario($params){
+        $select="INSERT INTO comentarios (idUsuario, idReceta, comentario, fecha) VALUES 
+        (?,?,?,?)";
+        $this->query($select,$params,'iiss');        
+    }
+
+    public function deleteComentariosReceta($idReceta){
+        $select="DELETE FROM comentarios WHERE idReceta = ?";
+        $this->query($select,$idReceta,'i');
+    }
+}
+
+class ModeloValoracion extends AbstractModel{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    //Peticion
+    public function query($select,$params=[],$type=''){
+        $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    public function getValoracionesByIdReceta($id){
+        $select="SELECT valoracion FROM valoraciones WHERE idReceta = ?";
+        $result=$this->query($select, $id, 'i');
+        return $result;
+    }
+
+    public function insertValoracion($params){
+        $select="INSERT INTO valoraciones (idReceta, idUsuario, valoracion) VALUES (?,?,?)";
+        $this->query($select, $params, 'iii');
+    }
+
+    public function getValoracionByIdUsuarioReceta($params){
+        $select="SELECT * FROM valoraciones WHERE idReceta = ? AND idUsuario = ?";
+        $result=$this->query($select, $params, 'ii');
+        return $result; 
+    }
+
+    public function editarValoracion($params){
+        $select="UPDATE valoraciones SET valoracion = ? WHERE id = ?";
+        $this->query($select, $params, 'ii');
+    }
+
+    public function deleteValoracionesReceta($idReceta){
+        $select="DELETE FROM valoraciones WHERE idReceta = ?";
+        $this->query($select, $idReceta, 'i');
+    }
+}
+
+class ModeloLog extends AbstractModel{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    //Peticion
+    public function query($select,$params=[],$type=''){
+        $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    public function getLog(){
+        $select="SELECT * FROM log ORDER BY id DESC";
+        $result=$this->query($select);
+        return $result;
+    }
+
+    public function anadirIncidencia($params){
+        $select="INSERT INTO log (fecha,descripcion) VALUES (?,?)";
+        $this->query($select,$params,'ss');
+    }
+}
+
+class ModeloBBDD extends AbstractModel{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    //Peticion
+    public function query($select,$params=[],$type=''){
+        $result=parent::query($select,$params,$type);
+        return $result;
+    }
+
+    public function getBBDDBackup(){
+        
+    }
+}
+
 ?>

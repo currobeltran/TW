@@ -1,11 +1,14 @@
 {% extends "comun.html" %}
 
+
 {% block central %}
+
+{% block valorar %}{% endblock %}
 
 <div id="receta">
     <header id="titulo">
         <h2>{{ nombre }}</h2>
-        <h6>{{ autor }}</h6>
+        <h6>Autor: {{ autor }}, Valoracion: {{ valoracion }}</h6>
     </header>
 
     <article id="descripcion">
@@ -31,21 +34,47 @@
     </article>
 
     <footer>
+
+        <ul>
+            {% for comentario in comentarios %}
+                <li class="comentario"> 
+                    <h4>{{ comentario.fecha }}. {{ comentario.nombreUsuario }}</h4>
+                    <p>{{ comentario.comentario }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+
         <ul id="barraInferior">
-            {% if permisos >=2 %}
+            <li>
+                <a href={{ recetavalurl }}>
+                <img src="/vista/templates/img/estrella.png" alt="valorar"/>
+                </a>
+            </li>
+
+            <li>
+                <a href={{ recetacomurl }}>
+                <img src="/vista/templates/img/comentario.png" alt="comentar"/>
+                </a>
+            </li>
+
+            {% if botonesEdicion == true %}
                 <li>
                     <a href={{ recetaedurl }}>
-                    <img src="/vista/templates/img/lapiz.png" alt="editar" class="icono"/>
+                    <img src="/vista/templates/img/lapiz.png" alt="editar"/>
                     </a>
                 </li>
 
                 <li>
                     <a href={{ recetaelurl }}>
-                    <img src="/vista/templates/img/cerrar.png" alt="eliminar" class="icono"/>
+                    <img src="/vista/templates/img/cerrar.png" alt="eliminar"/>
                     </a>
                 </li>
             {% endif %}
         </ul>
+
+        {% block comentario %}
+
+        {% endblock %}
     </footer>
 </div>
 

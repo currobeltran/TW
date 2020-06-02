@@ -99,10 +99,12 @@ class ControladorRecetas extends AbstractController{
         $this->vista->render($this->params);
     }
 
-    public function verReceta($id){
+    public function verReceta($id, $usuario=[]){
         //Crear los modelos necesarios
         $modelo2=new ModeloUsuario();
         $modelo3=new ModeloFotos();
+        $modeloComentarios=new ModeloComentarios();
+        $modeloValoraciones=new ModeloValoracion();
 
         //Obtener la receta
         $result=$this->mrecetas->getRecetaById($id);
@@ -121,6 +123,40 @@ class ControladorRecetas extends AbstractController{
         $preparacion=explode("#",$receta[preparacion]);
         $recetaedurl="index.php?p=editareceta&id=".$receta[id];
         $recetaelurl="index.php?p=eliminareceta&id=".$receta[id];
+        $recetacomurl="index.php?p=comentar&id=".$receta[id];
+        $recetavalurl="index.php?p=valoracion&id=".$receta[id];
+
+        //Obtener el vector de comentarios de la receta
+        $result=$modeloComentarios->getComentariosByIdReceta($id);
+
+        $comentarios=[];
+
+        while($comentario=mysqli_fetch_array($result)){
+            
+            $user=$modelo2->getUsuarioById($comentario['idUsuario']);
+            $tuplaUsuario=mysqli_fetch_array($user);
+
+            $comentario+=['nombreUsuario'=>$tuplaUsuario['nombre']];
+
+            array_push($comentarios,$comentario);
+        }
+
+        //Obtener las valoraciones y hacer la media
+        $result=$modeloValoraciones->getValoracionesByIdReceta($id);
+        $valoracion=mysqli_fetch_array($result);
+        $media=$valoracion[0];
+
+        while($valoracion=mysqli_fetch_array($result)){
+            $media=($media+$valoracion[0])/2;
+        }
+        
+        //Si el usuario es autor de la receta, dar el acceso a la edicion
+        if($this->comprobarRecetaUsuario($id, $usuario['id']) || $usuario['tipo']=='Administrador'){
+            $botonesEdicion=true;
+        }
+        else{
+            $botonesEdicion=false;
+        }
 
         //Introducir datos en el mismo vector
         $this->params+=['nombre'=>$receta[nombre]];
@@ -131,6 +167,11 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['pasos'=>$preparacion];
         $this->params+=['recetaedurl'=>$recetaedurl];
         $this->params+=['recetaelurl'=>$recetaelurl];
+        $this->params+=['recetacomurl'=>$recetacomurl];
+        $this->params+=['recetavalurl'=>$recetavalurl];
+        $this->params+=['comentarios'=>$comentarios];
+        $this->params+=['valoracion'=>$media];
+        $this->params+=['botonesEdicion'=>$botonesEdicion];
 
         $this->vista->render($this->params);
     }
@@ -311,6 +352,21 @@ class ControladorRecetas extends AbstractController{
 
     public function eliminarReceta($id, $confirmado=false){
         if($confirmado){
+            $ml=new ControladorLog();
+
+            $result=$this->mrecetas->getRecetaById($id);
+            $recetaAux=mysqli_fetch_array($result);
+
+            $ml->nuevaRecetaEliminada($recetaAux['nombre']);
+
+            //Eliminar comentarios
+            $modeloComentarios=new ModeloComentarios();
+            $modeloComentarios->deleteComentariosReceta($id);
+
+            //Eliminar valoraciones
+            $modeloValoraciones=new ModeloValoracion();
+            $modeloValoraciones->deleteValoracionesReceta($id);
+
             //Eliminar categorias
             $modeloCategorias=new ModeloCategorias();
             $modeloCategorias->deleteCategoria($id);
@@ -349,6 +405,91 @@ class ControladorRecetas extends AbstractController{
 
     public function displayError(){
         $this->vista->render($this->params);
+    }
+
+    public function enviarComentario($comentario, $idReceta, $idUsuario, $confirmar, $envio){
+        // Creamos el modelo de comentarios
+        $modeloComentarios=new ModeloComentarios();
+        
+        //Si el comentario esta vacio, lo notificamos
+        if(!strlen(trim($comentario))){
+            $this->params+=['nocomentario'=>"Debe introducir un comentario"];
+        }
+        
+        if($confirmar){
+            $datos=[
+                $idUsuario,
+                $idReceta,
+                $comentario,
+                date('Y-m-d H:i:s')
+            ];
+    
+            $modeloComentarios->insertComentario($datos);
+        }
+
+        $this->params+=['confirmar'=>$confirmar];
+        $this->params+=['comentario'=>$comentario];
+        $this->params+=['envio'=>$envio];
+
+        if($comentario!='')
+            return $comentario;
+    }
+
+    public function enviarValoracion($idReceta, $idUsuario, $valoracion, $confirmar, $envio){
+        //Creamos el modelo de valoracion
+        $modeloValoracion=new ModeloValoracion();
+
+        //Si la valoracion es vacia o es menor que 0 o mayor que 10 lo notificamos
+        if(empty($valoracion)){
+            $this->params+=['novaloracion'=>"Debe introducir una valoracion"];
+        }
+        elseif($valoracion < 0 || $valoracion >10){
+            $this->params+=['novaloracion'=>"El valor debe estar entre 0 y 10"];
+        }
+
+        if($confirmar){
+
+            $ident=[$idReceta, $idUsuario];
+
+            //Comprobamos que el usuario no haya valorado
+            $result=$modeloValoracion->getValoracionByIdUsuarioReceta($ident);
+
+            if($valoracionAnterior=mysqli_fetch_array($result)){
+                $datos=[
+                    $valoracion,
+                    $valoracionAnterior['id']
+                ];
+
+                $modeloValoracion->editarValoracion($datos);
+            }
+            else{
+                $datos=[
+                    $idReceta,
+                    $idUsuario,
+                    $valoracion
+                ];
+                
+                $modeloValoracion->insertValoracion($datos);
+            }
+        }
+
+        $this->params+=['confirmar'=>$confirmar];
+        $this->params+=['valor'=>$valoracion];
+        $this->params+=['envio'=>$envio];
+
+        return $valoracion;
+    }
+
+    public function comprobarRecetaUsuario($idReceta, $idUsuario){
+        $result=$this->mrecetas->getRecetaById($idReceta);
+        
+        if($receta=mysqli_fetch_array($result)){
+            if($idUsuario == $receta['idAutor']){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -449,6 +590,13 @@ class ControladorUsuario extends AbstractController{
     public function eliminaUsuario($id, $confirmado){ //Controlar las eliminaciones de administradores
         if($confirmado){
             //Eliminamos el usuario en cuestion
+            $ml=new ControladorLog();
+
+            $result=$this->musuario->getUsuarioById($id);
+            $usuarioAux=mysqli_fetch_array($result);
+
+            $ml->nuevoUsuarioEliminado($usuarioAux['nombre']);
+
             $this->musuario->eliminarUsuarioById($id);
         }
 
@@ -522,6 +670,86 @@ class ControladorUsuario extends AbstractController{
         $result=$this->musuario->comprobarCredenciales($params);
         return $result;
     }
+}
+
+class ControladorLog extends AbstractController{
+    protected $mlog;
+    
+    public function __construct($permisos=0,$webpage='',$user=[]){
+        parent::__construct($permisos,$webpage,$user);
+        $this->mlog=new ModeloLog();
+    }
+
+    public function listarLog(){
+        $log=[];
+
+        $result=$this->mlog->getLog();
+
+        while($incidencia=mysqli_fetch_array($result)){
+            array_push($log, $incidencia);
+        }
+
+        $this->params+=['log'=>$log];
+
+        $this->vista->render($this->params);
+    }
+
+    public function nuevaIdentificacion($usuario){
+        $descripcion="El usuario ".$usuario." se ha logueado";
+        $fecha=date('Y-m-d H:i:s');
+
+        $datos=[$fecha,$descripcion];
+        $this->mlog->anadirIncidencia($datos);
+    }
+
+    public function nuevoErrorLogueo(){
+        $descripcion="Un usuario ha intentado loguearse sin éxito";
+        $fecha=date('Y-m-d H:i:s');
+
+        $params=[$fecha,$descripcion];
+        $this->mlog->anadirIncidencia($params);
+    }
+
+    public function nuevaReceta($datos){
+        $descripcion="Se ha añadido la receta ".$datos;
+        $fecha=date('Y-m-d H:i:s');
+
+        $params=[$fecha,$descripcion];
+        $this->mlog->anadirIncidencia($params);
+    }
+
+    public function nuevaRecetaEliminada($datos){
+        $descripcion="Se ha eliminado la receta ".$datos;
+        $fecha=date('Y-m-d H:i:s');
+
+        $params=[$fecha,$descripcion];
+        $this->mlog->anadirIncidencia($params);
+    }
+
+    public function nuevoUsuario($datos){
+        $descripcion="Se ha añadido el usuario ".$datos;
+        $fecha=date('Y-m-d H:i:s');
+
+        $params=[$fecha,$descripcion];
+        $this->mlog->anadirIncidencia($params);
+    }
+
+    public function nuevoUsuarioEliminado($datos){
+        $descripcion="Se ha eliminado el usuario ".$datos;
+        $fecha=date('Y-m-d H:i:s');
+
+        $params=[$fecha,$descripcion];
+        $this->mlog->anadirIncidencia($params);
+    }
+}
+
+class ControladorBBDD extends AbstractController{
+    
+    public function __construct($permisos=0,$webpage='',$user=[]){
+        parent::__construct($permisos,$webpage,$user);
+    }
+
+    
 }
 
 ?>
