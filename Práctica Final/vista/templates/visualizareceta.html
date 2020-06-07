@@ -31,6 +31,12 @@
                 <li>{{ paso }}</li>
             {% endfor %}
         </ol>
+
+        <ul id="imagenesPasos">
+            {% for imagen in imagenPaso %}
+                <li><img src={{ imagen }}></li>
+            {% endfor %}
+        </ul>
     </article>
 
     <footer>
@@ -45,30 +51,32 @@
         </ul>
 
         <ul id="barraInferior">
-            <li>
-                <a href={{ recetavalurl }}>
-                <img src="/vista/templates/img/estrella.png" alt="valorar"/>
-                </a>
-            </li>
-
-            <li>
-                <a href={{ recetacomurl }}>
-                <img src="/vista/templates/img/comentario.png" alt="comentar"/>
-                </a>
-            </li>
-
-            {% if botonesEdicion == true %}
+            {% if permisos != 0 %}
                 <li>
-                    <a href={{ recetaedurl }}>
-                    <img src="/vista/templates/img/lapiz.png" alt="editar"/>
+                    <a href={{ recetavalurl }}>
+                    <img src="./vista/templates/img/estrella.png" alt="valorar"/>
                     </a>
                 </li>
 
                 <li>
-                    <a href={{ recetaelurl }}>
-                    <img src="/vista/templates/img/cerrar.png" alt="eliminar"/>
+                    <a href={{ recetacomurl }}>
+                    <img src="./vista/templates/img/comentario.png" alt="comentar"/>
                     </a>
                 </li>
+
+                {% if botonesEdicion == true %}
+                    <li>
+                        <a href={{ recetaedurl }}>
+                        <img src="./vista/templates/img/lapiz.png" alt="editar"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href={{ recetaelurl }}>
+                        <img src="./vista/templates/img/cerrar.png" alt="eliminar"/>
+                        </a>
+                    </li>
+                {% endif %}
             {% endif %}
         </ul>
 

@@ -116,19 +116,19 @@
                 <td>{{ receta.nombre }}</td>
                 <td>
                     <a href={{ receta.visurl }}>
-                    <img src="/vista/templates/img/visualizar.png" alt="visualizar" class="icono"/>
+                    <img src="./vista/templates/img/visualizar.png" alt="visualizar" class="icono"/>
                     </a>
                 </td>
 
                 {% if permisos >= 1 %}
                 <td>
                     <a href={{ receta.edurl }}>
-                    <img src="/vista/templates/img/lapiz.png" alt="editar" class="icono"/>
+                    <img src="./vista/templates/img/lapiz.png" alt="editar" class="icono"/>
                     </a>
                 </td>
                 <td>
                     <a href={{ receta.elurl }}>
-                    <img src="/vista/templates/img/cerrar.png" alt="eliminar" class="icono"/>
+                    <img src="./vista/templates/img/cerrar.png" alt="eliminar" class="icono"/>
                     </a>
                 </td>
                 {% endif %}
@@ -150,8 +150,8 @@
     {% endif %}
 
     <footer class="flecha">
-        <a href={{ anterior }}><img src="/vista/templates/img/flechaIzq.svg" class="icono"></a>
-        <a href={{ posterior }}><img src="/vista/templates/img/flechaDer.png" class="icono"></a>
+        <a href={{ anterior }}><img src="./vista/templates/img/flechaIzq.svg" class="icono"></a>
+        <a href={{ posterior }}><img src="./vista/templates/img/flechaDer.png" class="icono"></a>
     </footer>
 
 {% endblock %}

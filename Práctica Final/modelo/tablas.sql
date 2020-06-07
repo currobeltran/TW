@@ -6,7 +6,7 @@ CREATE TABLE usuarios(
     foto MEDIUMBLOB,
     passwd VARCHAR(30) NOT NULL, 
     tipo VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id);
+    PRIMARY KEY (id));
 
 CREATE TABLE recetas(
     id INT NOT NULL AUTO_INCREMENT,
@@ -27,10 +27,11 @@ CREATE TABLE fotos(
 CREATE TABLE valoraciones(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     idReceta INT NOT NULL,
-    idUsuario INT NOT NULL UNIQUE,
+    idUsuario INT NOT NULL,
     valoracion TINYINT NOT NULL,
     FOREIGN KEY(idReceta) REFERENCES recetas(id),
-    FOREIGN KEY(idUsuario) REFERENCES usuarios(id));
+    FOREIGN KEY(idUsuario) REFERENCES usuarios(id),
+    UNIQUE KEY recetaUsuario (idReceta, idUsuario));
 
 CREATE TABLE listacategorias(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,

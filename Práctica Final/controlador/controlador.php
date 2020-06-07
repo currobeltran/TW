@@ -11,12 +11,14 @@ abstract class AbstractController{
     public function __construct($permisos=0, $webpage='', $user=[]){
         $modeloRecetas=new ModeloRecetas(); 
         $modeloListaCategorias=new ModeloListaCategorias();
+        $modeloValoracion=new ModeloValoracion();
+
         $this->params=[];
 
         //Obtenemos el numero de recetas
         $conteoReceta=$modeloRecetas->countRecetas();
 
-        //Obtenemos lista de categorias
+        //Obtenemos lista de categorias (listado, añadir recetas...)
         $result2=$modeloListaCategorias->getListaCategorias();
         $categorias=[];
         while(($categoria=mysqli_fetch_array($result2))){
@@ -36,10 +38,40 @@ abstract class AbstractController{
             }
         }
 
+        //Nombre y foto del usuario si está logueado
         if($user!=[]){
             $this->params+=['usuario'=>$user['nombre']];
             $this->params+=['foto'=>$user['foto']];
         }
+
+        //Recetas mas valoradas
+        $masValoradas=[];
+        $recetas=$modeloRecetas->getAllRecetas();
+
+        while($receta=mysqli_fetch_array($recetas)){
+            //Obtenemos url para ver la receta 
+            $visurl="index.php?p=visualizar&id=".$receta[id];
+
+            //Obtenemos valoracion media de las recetas
+            $result2=$modeloValoracion->getValoracionesByIdReceta($receta[id]);
+            $valoracion=mysqli_fetch_array($result2);
+            $valoracionMedia=$valoracion[0];
+
+            while($valoracion=mysqli_fetch_array($result2)){
+                $valoracionMedia=($valoracionMedia+$valoracion[0])/2;
+            }
+
+            array_push($masValoradas, ['nombre'=>$receta[nombre], 'ver'=>$visurl,
+            'valoracion'=>$valoracionMedia]);
+        }
+
+        array_multisort(array_column($masValoradas,'valoracion'), SORT_DESC, $masValoradas);
+
+        $this->params+=['masValoradas'=>[$masValoradas[0],$masValoradas[1],$masValoradas[2]]];
+    }  
+    
+    public function displayStatic(){
+        $this->vista->render($this->params);
     }
 }
 
@@ -52,23 +84,51 @@ class ControladorRecetas extends AbstractController{
     }
 
     public function listarRecetas($titulo='', $contenido='', $numeroxPag=1, $pag=1, $categoria=[], $orden){
+        $modeloValoracion=new ModeloValoracion();
+        $modeloComentarios=new ModeloComentarios();
+        
         //Obtenemos lista de recetas
         $result=$this->mrecetas->getListaRecetas($titulo,$contenido,$categoria, $orden);
         $recetas=[];
 
+        //Nos quedamos con las recetas necesarias
         for($i=0; $i<($pag*$numeroxPag); $i++){
             $receta=mysqli_fetch_array($result);
         }
 
+        //Procesamos las recetas seleccionadas
         $j=0;
         while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $j<$numeroxPag)){
             $visurl="index.php?p=visualizar&id=".$receta[id];
             $edurl="index.php?p=editareceta&id=".$receta[id];
             $elurl="index.php?p=eliminareceta&id=".$receta[id];
 
-            array_push($recetas, ['nombre'=>$receta[nombre], 
-            'visurl'=>$visurl,'edurl'=>$edurl,'elurl'=>$elurl]);
+            //Obtenemos valoracion media de las recetas
+            $result2=$modeloValoracion->getValoracionesByIdReceta($receta[id]);
+            $valoracion=mysqli_fetch_array($result2);
+            $valoracionMedia=$valoracion[0];
+
+            while($valoracion=mysqli_fetch_array($result2)){
+                $valoracionMedia=($valoracionMedia+$valoracion[0])/2;
+            }
+
+            //Obtenemos el numero de comentarios
+            $result3=$modeloComentarios->getComentariosByIdReceta($receta[id]);
+            $ncomentarios=$result3->num_rows;
+
+            //Generamos un vector de datos clave-valor correspondiente a una receta
+            array_push($recetas, ['nombre'=>$receta[nombre], 'visurl'=>$visurl,
+            'edurl'=>$edurl,'elurl'=>$elurl, 'valoracion'=>$valoracionMedia,
+            'ncomentarios'=>$ncomentarios]);
             $j++;
+        }
+
+        //Si ordenamos por comentarios o valoraciones:
+        if($orden=="MASVAL"){
+            array_multisort(array_column($recetas,'valoracion'), SORT_DESC, $recetas);
+        }
+        else if($orden=="MASCOM"){
+            array_multisort(array_column($recetas,'ncomentarios'), SORT_DESC, $recetas);
         }
 
         //Añadimos todo al vector de parametros
@@ -85,6 +145,9 @@ class ControladorRecetas extends AbstractController{
     }
 
     public function listarRecetasByUser($titulo,$contenido,$idAutor, $numeroxPag=1, $pag=0, $categoria=[], $orden){
+        $modeloValoracion=new ModeloValoracion();
+        $modeloComentarios=new ModeloComentarios();
+        
         //Obtenemos lista de recetas
         $result=$this->mrecetas->getListaRecetasUsuario($titulo,$contenido,$idAutor,$categoria, $orden);
         $recetas=[];
@@ -93,15 +156,39 @@ class ControladorRecetas extends AbstractController{
             $receta=mysqli_fetch_array($result);
         }
 
+        //Procesamos las recetas seleccionadas
         $j=0;
         while(($receta=mysqli_fetch_array($result)) && (isset($numeroxPag) && $j<$numeroxPag)){
             $visurl="index.php?p=visualizar&id=".$receta[id];
             $edurl="index.php?p=editareceta&id=".$receta[id];
             $elurl="index.php?p=eliminareceta&id=".$receta[id];
 
-            array_push($recetas, ['nombre'=>$receta[nombre], 
-            'visurl'=>$visurl,'edurl'=>$edurl,'elurl'=>$elurl]);
+            //Obtenemos valoracion media de las recetas
+            $result2=$modeloValoracion->getValoracionesByIdReceta($receta[id]);
+            $valoracion=mysqli_fetch_array($result2);
+            $valoracionMedia=$valoracion[0];
+
+            while($valoracion=mysqli_fetch_array($result2)){
+                $valoracionMedia=($valoracionMedia+$valoracion[0])/2;
+            }
+
+            //Obtenemos el numero de comentarios
+            $result3=$modeloComentarios->getComentariosByIdReceta($receta[id]);
+            $ncomentarios=$result3->num_rows;
+
+            //Generamos un vector de datos clave-valor correspondiente a una receta
+            array_push($recetas, ['nombre'=>$receta[nombre], 'visurl'=>$visurl,
+            'edurl'=>$edurl,'elurl'=>$elurl, 'valoracion'=>$valoracionMedia,
+            'ncomentarios'=>$ncomentarios]);
             $j++;
+        }
+
+        //Si ordenamos por comentarios o valoraciones:
+        if($orden=="MASVAL"){
+            array_multisort(array_column($recetas,'valoracion'), SORT_DESC, $recetas);
+        }
+        else if($orden=="MASCOM"){
+            array_multisort(array_column($recetas,'ncomentarios'), SORT_DESC, $recetas);
         }
 
         //Añadimos todo al vector de parametros
@@ -135,6 +222,12 @@ class ControladorRecetas extends AbstractController{
         //Obtener la imagen a traves del id de la receta
         $result3=$modelo3->getFotoByIdReceta($receta[id]);
         $foto=mysqli_fetch_array($result3);
+
+        //Obtener demas fotos si existen
+        $fotos=[];
+        while($paso=mysqli_fetch_array($result3)){
+            array_push($fotos, $paso['fichero']);
+        }
 
         //Generar datos para ser procesados correctamente
         $ingredientes=explode("#",$receta[ingredientes]);
@@ -190,6 +283,7 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['comentarios'=>$comentarios];
         $this->params+=['valoracion'=>$media];
         $this->params+=['botonesEdicion'=>$botonesEdicion];
+        $this->params+=['imagenPaso'=>$fotos];
 
         $this->vista->render($this->params);
     }
@@ -428,10 +522,6 @@ class ControladorRecetas extends AbstractController{
         return $recetas[$selec];
     }
 
-    public function displayError(){
-        $this->vista->render($this->params);
-    }
-
     public function enviarComentario($comentario, $idReceta, $idUsuario, $confirmar, $envio){
         // Creamos el modelo de comentarios
         $modeloComentarios=new ModeloComentarios();
@@ -564,8 +654,10 @@ class ControladorUsuario extends AbstractController{
             }
             else{
                 $datosUser=$entrada;
-
-                $datosUser['foto']=base64_encode($datosUser['foto']);
+                if(!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$datosUser['foto'])){
+                    $datosUser['foto']=base64_encode($datosUser['foto']);
+                }
+                $datosUser['clave']=crypt($datosUser['clave'], '$5%rounds=5000$oniasSUbdhaIUABakf$');
             }
         }
         else{
@@ -574,7 +666,7 @@ class ControladorUsuario extends AbstractController{
                 $entrada['apellidos'],
                 $entrada['email'],
                 $entrada['clave'],
-                base64_decode($entrada['foto']),
+                base64_decode($entrada['foto'],true),
                 $entrada['tipo'],
                 $id
             ];
@@ -664,6 +756,7 @@ class ControladorUsuario extends AbstractController{
             $hayerror+=['numeroelementos'=>count($hayerror)];
 
             $entrada['foto']=base64_encode($entrada['foto']);
+            $entrada['clave']=crypt($entrada['clave'], '$5%rounds=5000$oniasSUbdhaIUABakf$');
         }
 
         else{
@@ -691,8 +784,13 @@ class ControladorUsuario extends AbstractController{
     }
 
     public function comprobarCredenciales($email, $clave){
-        $params=[$email, $clave];
+        $params=[$email, crypt($clave, '$5%rounds=5000$oniasSUbdhaIUABakf$')];
         $result=$this->musuario->comprobarCredenciales($params);
+        return $result;
+    }
+
+    public function getUsuarioById($id){
+        $result=$this->musuario->getUsuarioById($id);
         return $result;
     }
 }
@@ -769,12 +867,36 @@ class ControladorLog extends AbstractController{
 }
 
 class ControladorBBDD extends AbstractController{
-    
+    protected $modeloDB;
+
     public function __construct($permisos=0,$webpage='',$user=[]){
         parent::__construct($permisos,$webpage,$user);
+        $this->modeloDB=new ModeloBBDD();
     }
 
+    public function copyBBDD(){
+        // Obtener listado de tablas
+        $tablas = array();
+        $result= $this->modeloDB->showTables();
+        while($row = mysqli_fetch_row($result)){
+            $tablas[] = $row[0];
+        }
+        
+        //Salvar cada tabla
+        // $salida='';
+        // foreach($tablas as $tab){
+        //     $result=$this->modeloDB->selectAllFromTable($tab);
+        // }
+        
+    }
 
+    public function restoreBBDD(){
+
+    }
+
+    public function dropBBDD(){
+        
+    }
 }
 
 ?>

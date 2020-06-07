@@ -370,6 +370,21 @@ li{
     color: blueviolet;
 }
 
+/* Reglas para imagenes de los pasos */
+
+#imagenesPasos{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    
+    padding: 0% 2%;
+}
+
+#imagenesPasos > *{
+    flex-basis: 15%;
+    margin: 1%;
+}
+
 /*Reglas para dispositivos grandes*/
 
 @media (min-width:800px){

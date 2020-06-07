@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(0);
+
 require_once "vista/vista.php";
 require_once "modelo/modeloAbstracto.php";
 require_once "controlador/controlador.php";
@@ -81,19 +83,34 @@ if(isset($_POST['Login'])){
         $ml->nuevoErrorLogueo();
     }
 }
+else{//Si no ha habido logueo, cargamos de nuevo los datos por si ha habido algun cambio
+
+    $mu=new ControladorUsuario();
+    $resultado=$mu->getUsuarioById($_SESSION['usuario']['id']);
+
+    if($tupla=mysqli_fetch_array($resultado)){
+        $_SESSION['usuario']=$tupla;
+        $_SESSION['usuario']['foto']=base64_encode($tupla['foto']);
+
+        switch($tupla['tipo']){
+            case 'Administrador': $_SESSION['permisos']=2; break;
+            case 'Colaborador': $_SESSION['permisos']=1; break;
+        }
+    }
+}
 
 switch($_SESSION['opc']){
     
-    case 'inicio': 
-        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
-        $_SESSION['usuario']);
+    // case 'inicio': 
+    //     $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
+    //     $_SESSION['usuario']);
 
-        if(isset($_COOKIE["ultimaPagina"])){
-            $idRecetaInicio=$_COOKIE["ultimaPagina"];
-        }
+    //     if(isset($_COOKIE["ultimaPagina"])){
+    //         $idRecetaInicio=$_COOKIE["ultimaPagina"];
+    //     }
 
-        $controladorReceta->verReceta($idRecetaInicio, $_SESSION['usuario']); 
-    break; 
+    //     $controladorReceta->verReceta($idRecetaInicio, $_SESSION['usuario']);
+    // break; 
     
     case 'listado': 
         $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"listado.html",
@@ -120,17 +137,13 @@ switch($_SESSION['opc']){
             $_SESSION['recetasxpagina']=$_POST['recetasxpagina'];
         }
 
-        if($categoria!=[]){
-            $_SESSION['categoria']=$categoria;
-        }
-
         if(isset($_POST['orden'])){
             $_SESSION['orden']=$_POST['orden'];
         }
 
         $controladorReceta->listarRecetas($_SESSION['tituloBusqueda'], 
         $_SESSION['contenidoBusqueda'], $_SESSION['recetasxpagina'], 
-        $_GET['pag'], $_SESSION['categoria'], $_SESSION['orden']); 
+        $_GET['pag'], $categoria, $_SESSION['orden']); 
     break;
 
     case 'visualizar': 
@@ -144,7 +157,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -160,10 +173,26 @@ switch($_SESSION['opc']){
                 array_push($categoria,$entrada[1]);
             }
         }
+        
+        if(isset($_POST['tituloBusqueda'])){
+            $_SESSION['tituloBusqueda']=$_POST['tituloBusqueda'];
+        }
+
+        if(isset($_POST['contenidoBusqueda'])){
+            $_SESSION['contenidoBusqueda']=$_POST['contenidoBusqueda'];
+        }
+
+        if(isset($_POST['recetasxpagina'])){
+            $_SESSION['recetasxpagina']=$_POST['recetasxpagina'];
+        }
+
+        if(isset($_POST['orden'])){
+            $_SESSION['orden']=$_POST['orden'];
+        }
 
         $controladorReceta->listarRecetasByUser($_SESSION['tituloBusqueda'], 
         $_SESSION['contenidoBusqueda'], $_SESSION['usuario']['id'], $_SESSION['recetasxpagina'], 
-        $_GET['pag'], $_SESSION['categoria'], $_SESSION['orden']);  
+        $_GET['pag'], $categoria, $_SESSION['orden']);  
     break;
     
     case 'anadir': 
@@ -171,7 +200,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -230,7 +259,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -241,7 +270,7 @@ switch($_SESSION['opc']){
                 $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
                 $_SESSION['usuario']);
                 
-                $controladorReceta->displayError();
+                $controladorReceta->displayStatic();
 
                 break; 
             }
@@ -300,12 +329,14 @@ switch($_SESSION['opc']){
 
         if(isset($_POST['anadirfoto']) && in_array($_FILES['foto']['type'], 
         ["image/jpeg","image/gif","image/png"])){ 
-            
-            $_FILES['foto']['name']="img_".(rand()*rand()).".jpg"; //rand*rand no sabemos si funciona
+            $_FILES['foto']['name']="img_".rand().".jpg"; 
 
             if(move_uploaded_file($_FILES['foto']['tmp_name'], 
-            "imagenes/".$_FILES['foto']['name'])){
-                $datos+=['rutanuevafoto'=>"imagenes/".$_FILES['foto']['name']];
+            "./tmp/".$_FILES['foto']['name'])){
+                $datos+=['rutanuevafoto'=>"./tmp/".$_FILES['foto']['name']];
+            }
+            else{
+                echo $_FILES['foto']['error'];
             }
         }
 
@@ -318,7 +349,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -330,7 +361,7 @@ switch($_SESSION['opc']){
                 $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
                 $_SESSION['usuario']);
                 
-                $controladorReceta->displayError();
+                $controladorReceta->displayStatic();
 
                 break; 
             }
@@ -349,7 +380,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -361,7 +392,7 @@ switch($_SESSION['opc']){
                 $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
                 $_SESSION['usuario']);
                 
-                $controladorReceta->displayError();
+                $controladorReceta->displayStatic();
 
                 break; 
             }
@@ -385,19 +416,19 @@ switch($_SESSION['opc']){
         }
         
         if(isset($_POST['nombre'])){ 
-            $datos+=['nombre'=>$_POST['nombre']];
+            $datos['nombre']=$_POST['nombre'];
         }
 
         if(isset($_POST['apellidos'])){ 
-            $datos+=['apellidos'=>$_POST['apellidos']];
+            $datos['apellidos']=$_POST['apellidos'];
         }
 
         if(isset($_POST['email'])){
-            $datos+=['email'=>$_POST['email']];
+            $datos['email']=$_POST['email'];
         }
 
         if(isset($_POST['clave'])){
-            $datos+=['clave'=>$_POST['clave']];
+            $datos['clave']=$_POST['clave'];
         }
 
         if(isset($_POST['clave2'])){
@@ -405,13 +436,13 @@ switch($_SESSION['opc']){
         }
 
         if(isset($_POST['tipo'])){
-            $datos+=['tipo'=>$_POST['tipo']];
+            $datos['tipo']=$_POST['tipo'];
         }
 
         if(isset($_FILES['foto']) && in_array($_FILES['foto']['type'], 
             ["image/jpeg","image/gif","image/png"])){
-            $datos+=['foto'=>file_get_contents($_FILES['foto']['tmp_name'])];
-            
+            move_uploaded_file($_FILES['foto']['tmp_name'],"./tmp/".$_FILES['foto']['name']);
+            $datos['foto']=file_get_contents("./tmp/".$_FILES['foto']['name']);
         }
 
         $_SESSION['datos']=$controladorUsuario->editarUsuario($idUsuario, $datos, 
@@ -423,12 +454,14 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
 
-        $view=new VistaAdministrador('gestion.html');
+        $controladorUsuario=new ControladorUsuario($_SESSION['permisos'],'gestion.html',
+        $_SESSION['usuario']);
+        $controladorUsuario->displayStatic();
     break;
 
     case 'listauser':   
@@ -436,7 +469,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -451,7 +484,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -502,8 +535,23 @@ switch($_SESSION['opc']){
     break;
 
     case 'basedatos': 
-        
-        $view=new VistaAdministrador('backupBBDD.html'); 
+        if($_SESSION['permisos']<=1){
+            $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
+            $_SESSION['usuario']);
+            
+            $controladorReceta->displayStatic();
+
+            break; 
+        }
+
+        $controladorBBDD=new ControladorBBDD($_SESSION['permisos'],'backupBBDD.html',
+        $_SESSION['usuario']);
+
+        if(isset($_POST['copia'])){
+            $controladorBBDD->copyBBDD();
+        }
+
+        $controladorBBDD->displayStatic();
 
     break; 
 
@@ -512,7 +560,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -528,7 +576,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -545,7 +593,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -571,7 +619,7 @@ switch($_SESSION['opc']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
-            $controladorReceta->displayError();
+            $controladorReceta->displayStatic();
 
             break; 
         }
@@ -596,7 +644,12 @@ switch($_SESSION['opc']){
     default: 
         $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
         $_SESSION['usuario']);
-        $controladorReceta->verReceta($_COOKIE["ultimaPagina"], $_SESSION['usuario']);
+
+        if(isset($_COOKIE["ultimaPagina"])){
+            $idRecetaInicio=$_COOKIE["ultimaPagina"];
+        }
+
+        $controladorReceta->verReceta($idRecetaInicio, $_SESSION['usuario']);
     break;
 }
 

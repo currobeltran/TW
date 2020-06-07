@@ -5,15 +5,15 @@
         <title>Inicio</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=800px">
-        <link rel="stylesheet" href="/vista/templates/style/style.css">
+        <link rel="stylesheet" href="./vista/templates/style/style.css">
     </head>
 
     <body>
 
         <header id="titulo">
-            <img src="/vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
-            <img src="/vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
-            <img src="/vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="./vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="./vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
+            <img src="./vista/templates/img/logoBurger.png" alt="logo Hamburguesa">
             <h1>Comida sana para todos los días</h1>
         </header>
 
@@ -69,9 +69,9 @@
                 </header>
                 
                 <ol>
-                    <li><a href="">Risotto de calabaza y champiñones</a></li>
-                    <li><a href="">Pollo al salmorejo</a></li>
-                    <li><a href="">Ensalada de espinacas y mango</a></li>
+                    {% for receta in masValoradas %}
+                        <li><a href={{ receta.ver }}>{{ receta.nombre }}</a></li>
+                    {% endfor %}
                 </ol>
             </article>
 

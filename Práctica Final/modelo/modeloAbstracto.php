@@ -118,25 +118,13 @@ class ModeloRecetas extends AbstractModel{
         if($orden=='ASC' || $orden=='DESC'){
             $parametroOrden="ORDER BY nombre ".$orden;
         }
-        else{ //Hay que cambiarlo para comentarios y valoraciones
-            // $parametroOrden="ORDER BY nombre";
-            //Para comentarios hacer un count desde mysql
-
-            //Para valoraciones + simple, ordenamiento normal
-            if($orden=='MASVAL'){
-                $parametroOrden="ORDER BY valoraciones.valoracion ASC".$orden;
-            }
-        }
         
         if($categoria==[]){
-            $select="SELECT recetas.id, recetas.nombre FROM valoraciones 
-            RIGHT JOIN recetas
-            ON recetas.id = valoraciones.idReceta LEFT JOIN comentarios 
-            ON recetas.id = comentarios.idReceta
-            WHERE nombre LIKE '%".$titulo."%' AND 
-            (descripcion LIKE '%".$contenido."%' OR 
-            ingredientes LIKE '%".$contenido."%' OR
-            preparacion LIKE '%".$contenido."%') ".$parametroOrden;
+            $select="SELECT recetas.id, recetas.nombre FROM recetas 
+            WHERE recetas.nombre LIKE '%".$titulo."%' AND 
+            (recetas.descripcion LIKE '%".$contenido."%' OR 
+            recetas.ingredientes LIKE '%".$contenido."%' OR
+            recetas.preparacion LIKE '%".$contenido."%') ".$parametroOrden;
         }
         else{
             $select="SELECT recetas.id, recetas.nombre FROM recetas LEFT JOIN categorias
@@ -415,8 +403,16 @@ class ModeloBBDD extends AbstractModel{
         return $result;
     }
 
-    public function getBBDDBackup(){
+    public function showTables(){
+        $select="SHOW TABLES";
+        $result=$this->query($select);
+        return $result;
+    }
 
+    public function selectAllFromTable($tabla){
+        $select="SELECT * FROM ?";
+        $result=$this->query($select, $tabla, 's');
+        return $result;
     }
 }
 

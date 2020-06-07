@@ -3,9 +3,9 @@
 class Conexion{
     private static $instance;
     private static $host = "localhost";
-    private static $database= "proyectoFinal"; 
-    private static $user= "admin"; 
-    private static $password= "clave";
+    private static $database= "franciscobel1920"; 
+    private static $user= "franciscobel1920"; 
+    private static $password= "dbQlbQZG";
     
     private function __construct() {}// Constructor privado
     
