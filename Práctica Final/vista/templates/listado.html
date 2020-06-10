@@ -104,10 +104,10 @@
     <table class="tabla">
         <tr>
             <th>Título</th>
-            <th>Ver</th>
+            <th></th>
             {% if permisos >= 1 %}
-                <th>Editar</th>
-                <th>Borrar</th>
+                <th></th>
+                <th></th>
             {% endif %}
         </tr>
 
@@ -120,7 +120,20 @@
                     </a>
                 </td>
 
-                {% if permisos >= 1 %}
+                {% if permisos > 1 %}
+                <td>
+                    <a href={{ receta.edurl }}>
+                    <img src="./vista/templates/img/lapiz.png" alt="editar" class="icono"/>
+                    </a>
+                </td>
+                <td>
+                    <a href={{ receta.elurl }}>
+                    <img src="./vista/templates/img/cerrar.png" alt="eliminar" class="icono"/>
+                    </a>
+                </td>
+                {% endif %}
+
+                {% if permisos == 1 and receta.autor == usuarioID %}
                 <td>
                     <a href={{ receta.edurl }}>
                     <img src="./vista/templates/img/lapiz.png" alt="editar" class="icono"/>

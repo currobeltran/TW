@@ -12,7 +12,7 @@ abstract class AbstractController{
         $modeloRecetas=new ModeloRecetas(); 
         $modeloListaCategorias=new ModeloListaCategorias();
         $modeloValoracion=new ModeloValoracion();
-
+        
         $this->params=[];
 
         //Obtenemos el numero de recetas
@@ -28,7 +28,7 @@ abstract class AbstractController{
 
         $this->params+=['nrecetas'=>$conteoReceta];
         $this->params+=['tipos'=>$categorias];
-
+        
         if($webpage!=''){
             switch($permisos){
                 case 0: $this->vista=new VistaVisitante($webpage); break;
@@ -41,6 +41,7 @@ abstract class AbstractController{
         //Nombre y foto del usuario si está logueado
         if($user!=[]){
             $this->params+=['usuario'=>$user['nombre']];
+            $this->params+=['usuarioID'=>$user['id']];
             $this->params+=['foto'=>$user['foto']];
         }
 
@@ -119,7 +120,7 @@ class ControladorRecetas extends AbstractController{
             //Generamos un vector de datos clave-valor correspondiente a una receta
             array_push($recetas, ['nombre'=>$receta[nombre], 'visurl'=>$visurl,
             'edurl'=>$edurl,'elurl'=>$elurl, 'valoracion'=>$valoracionMedia,
-            'ncomentarios'=>$ncomentarios]);
+            'ncomentarios'=>$ncomentarios, 'autor'=>$receta[idAutor]]);
             $j++;
         }
 
@@ -179,7 +180,7 @@ class ControladorRecetas extends AbstractController{
             //Generamos un vector de datos clave-valor correspondiente a una receta
             array_push($recetas, ['nombre'=>$receta[nombre], 'visurl'=>$visurl,
             'edurl'=>$edurl,'elurl'=>$elurl, 'valoracion'=>$valoracionMedia,
-            'ncomentarios'=>$ncomentarios]);
+            'ncomentarios'=>$ncomentarios, 'autor'=>$receta[idAutor]]);
             $j++;
         }
 
@@ -248,6 +249,7 @@ class ControladorRecetas extends AbstractController{
             $tuplaUsuario=mysqli_fetch_array($user);
 
             $comentario+=['nombreUsuario'=>$tuplaUsuario['nombre']];
+            $comentario+=['eliminaurl'=>"index.php?p=eliminacomentario&id=".$comentario['id']];
 
             array_push($comentarios,$comentario);
         }
@@ -337,12 +339,6 @@ class ControladorRecetas extends AbstractController{
                     $modeloCategorias->insertCategoria($rec,$cat);
                 }
             }
-
-            //Establecemos una valoracion por defecto para poder realizar el ordenamiento
-            $mv=new ModeloValoracion();
-
-            $valorInsert=[$rec, 1, 0];
-            $mv->insertValoracion($valorInsert);
 
         }
 
@@ -605,6 +601,47 @@ class ControladorRecetas extends AbstractController{
         }
 
         return false;
+    }
+
+    public function anadirNuevaCategoria($datos, $envio, $confirmacion){
+        $hayerror=[];
+
+        if($confirmacion){
+            $modeloListaCat=new ModeloListaCategorias();
+            $modeloListaCat->insertCategoria($datos['nombreCategoria']);
+        }
+
+        if(empty($datos['nombreCategoria'])){
+            $hayerror+=['nombreCategoria'=>"Debe introducir un nombre para la categoria"];
+        }
+
+        $hayerror+=['numeroElementos'=>count($hayerror)];
+
+        $this->params+=['datos'=>$datos];
+        $this->params+=['hayerror'=>$hayerror];
+        $this->params+=['envio'=>$envio];
+        $this->params+=['confirmacion'=>$confirmacion];
+
+        $this->vista->render($this->params);
+
+        return $datos;
+    }
+
+    public function eliminaComentario($id, $usuario, $elimina){
+        $modeloComentarios=new ModeloComentarios();
+
+        $comentario=$modeloComentarios->getComentarioById($id);
+        $tupla=mysqli_fetch_array($comentario);
+
+        $this->params+=['comentario'=>$tupla['comentario']];
+        
+        if($elimina){
+            $modeloComentarios->deleteComentarioById($id);
+
+            $this->params+=['elimina'=>$elimina];
+        }
+
+        $this->verReceta($tupla['idReceta'], $usuario);
     }
 }
 
@@ -881,22 +918,69 @@ class ControladorBBDD extends AbstractController{
         while($row = mysqli_fetch_row($result)){
             $tablas[] = $row[0];
         }
-        
+
         //Salvar cada tabla
-        // $salida='';
-        // foreach($tablas as $tab){
-        //     $result=$this->modeloDB->selectAllFromTable($tab);
-        // }
-        
+        $salida='';
+        foreach($tablas as $tab){
+            $result=$this->modeloDB->selectAllFromTable($tab);
+            $num=mysqli_num_fields($result);
+            $salida .= 'DROP TABLE '.$tab.';';
+            $row2 = mysqli_fetch_row($this->modeloDB->showCreateTable($tab));
+            $salida .= "\n\n".$row2[1].";\n\n";
+
+            while($row=mysqli_fetch_row($result)){
+                $salida .= 'INSERT INTO '.$tab.' VALUES(';
+                for($j=0;$j<$num;$j++){
+                    $row[$j]=addslashes($row[$j]);
+                    $row[$j]=preg_replace("/\n/","\\n",$row[$j]);
+                    
+                    if(isset($row[$j])){
+                        $salida .= '"'.$row[$j].'"';
+                    }
+                    else{
+                        $salida .= '""';
+                    }
+                    if($j<($num-1)){
+                        $salida .= ',';
+                    }
+                }
+                $salida .= ");\n";
+            }
+            $salida .= "\n\n\n";
+        }
+        error_reporting(E_ALL);
+        file_put_contents("./modelo/backup/backup.sql",$salida);
+        error_reporting(0);
     }
 
-    public function restoreBBDD(){
+    public function restoreBBDD($copia){
+        $this->modeloDB->setForeignChecks(0);
 
+        $result= $this->modeloDB->showTables();
+        while($row = mysqli_fetch_row($result)){
+            $this->modeloDB->deleteTable($row[0]);
+        }
+
+        $sql=file_get_contents($copia);
+        $queries=explode(';',$sql);
+
+        foreach($queries as $q){
+            $this->modeloDB->query($q);
+        }
+
+        $this->modeloDB->setForeignChecks(1);
     }
 
-    public function dropBBDD(){
-        
-    }
+    // public function deleteBBDD($archivo){
+    //     $this->modeloDB->setForeignChecks(0);
+
+    //     $result= $this->modeloDB->showTables();
+    //     while($row = mysqli_fetch_row($result)){
+    //         $this->modeloDB->deleteTable($row[0]);
+    //     }
+
+    //     $this->modeloDB->setForeignChecks(1);
+    // }
 }
 
 ?>

@@ -1,0 +1,21 @@
+{% extends "visualizareceta.html" %}
+
+{% block comentario %}
+
+{% if elimina %}
+
+<h2 id="titulo">Comentario eliminado correctamente</h2>
+
+{% else %}
+
+<h2 id="titulo">¿Desea eliminar el siguiente comentario?</h2>
+
+<form action="" method="POST" class="formulario">
+    <label>{{ comentario }}
+        <input type="submit" name="eliminar" value="Eliminar">
+    </label>
+</form>
+
+{% endif %}
+
+{% endblock %}

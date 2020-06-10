@@ -370,6 +370,12 @@ li{
     color: blueviolet;
 }
 
+.comentario img{
+    width: 5%;
+    float: right;
+    margin-top: -5%;
+}
+
 /* Reglas para imagenes de los pasos */
 
 #imagenesPasos{
@@ -473,6 +479,11 @@ li{
         text-align: center;
         font-size: small;
         margin-top: -1%;
+    }
+
+    .comentario img{
+        width: 3%;
+        margin-top: -3%;
     }
 
 }

@@ -7,6 +7,7 @@ abstract class AbstractModel{ // Clase abstracta
     
     public function __construct() {
         $this->db = Conexion::getInstance();// Conexión a la BBDD usando singleton
+        $this->db->set_charset("utf16");
     }
     
     public function query($select,$params=[],$type='') {  // Consulta que debe devolver 1 tupla
@@ -26,6 +27,9 @@ abstract class AbstractModel{ // Clase abstracta
             }
             
             $pq->execute();
+            // if(isset($pq->error)){
+            //     return $pq->error;
+            // }
             echo $pq->error;
             $result=$pq->get_result();
         }
@@ -120,14 +124,15 @@ class ModeloRecetas extends AbstractModel{
         }
         
         if($categoria==[]){
-            $select="SELECT recetas.id, recetas.nombre FROM recetas 
+            $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas 
             WHERE recetas.nombre LIKE '%".$titulo."%' AND 
             (recetas.descripcion LIKE '%".$contenido."%' OR 
             recetas.ingredientes LIKE '%".$contenido."%' OR
             recetas.preparacion LIKE '%".$contenido."%') ".$parametroOrden;
         }
         else{
-            $select="SELECT recetas.id, recetas.nombre FROM recetas LEFT JOIN categorias
+            $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas 
+            LEFT JOIN categorias
             ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE '%".$titulo."%' AND 
             (recetas.descripcion LIKE '%".$contenido."%' OR 
             recetas.ingredientes LIKE '%".$contenido."%' OR
@@ -157,13 +162,15 @@ class ModeloRecetas extends AbstractModel{
         } 
 
         if($categoria==[]){
-            $select="SELECT * FROM recetas WHERE nombre LIKE '%".$titulo."%' AND 
+            $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas WHERE nombre 
+            LIKE '%".$titulo."%' AND 
             (descripcion LIKE '%".$contenido."%' OR 
             ingredientes LIKE '%".$contenido."%' OR
             preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor." ".$parametroOrden;
         }
         else{
-            $select="SELECT recetas.id, recetas.nombre FROM recetas LEFT JOIN categorias
+            $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas 
+            LEFT JOIN categorias
             ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE '%".$titulo."%' AND 
             (recetas.descripcion LIKE '%".$contenido."%' OR 
             recetas.ingredientes LIKE '%".$contenido."%' OR
@@ -231,6 +238,11 @@ class ModeloListaCategorias extends AbstractModel{
         $select="SELECT * FROM listacategorias";
         $result=$this->query($select);
         return $result;
+    }
+
+    public function insertCategoria($nombre){
+        $select="INSERT INTO listacategorias (nombre) VALUES (?)";
+        $this->query($select, $nombre, 's');
     }
 }
 
@@ -318,6 +330,12 @@ class ModeloComentarios extends AbstractModel{
         return $result;
     }
 
+    public function getComentarioById($id){
+        $select="SELECT * FROM comentarios WHERE id = ?";
+        $result=$this->query($select,$id,'i');
+        return $result;
+    }
+
     public function insertComentario($params){
         $select="INSERT INTO comentarios (idUsuario, idReceta, comentario, fecha) VALUES 
         (?,?,?,?)";
@@ -327,6 +345,11 @@ class ModeloComentarios extends AbstractModel{
     public function deleteComentariosReceta($idReceta){
         $select="DELETE FROM comentarios WHERE idReceta = ?";
         $this->query($select,$idReceta,'i');
+    }
+
+    public function deleteComentarioById($id){
+        $select="DELETE FROM comentarios WHERE id = ?";
+        $this->query($select,$id,'i');
     }
 }
 
@@ -409,10 +432,26 @@ class ModeloBBDD extends AbstractModel{
         return $result;
     }
 
-    public function selectAllFromTable($tabla){
-        $select="SELECT * FROM ?";
-        $result=$this->query($select, $tabla, 's');
+    public function showCreateTable($tabla){
+        $select="SHOW CREATE TABLE ".$tabla;
+        $result=$this->query($select);
         return $result;
+    }
+
+    public function selectAllFromTable($tabla){
+        $select="SELECT * FROM ".$tabla;
+        $result=$this->query($select);
+        return $result;
+    }
+
+    public function setForeignChecks($val){
+        $select="SET FOREIGN_KEY_CHECKS=?";
+        $result=$this->query($select,$val,'i');
+        return $result;
+    }
+
+    public function deleteTable($tabla){
+        $select="DELETE * FROM ".$tabla;
     }
 }
 

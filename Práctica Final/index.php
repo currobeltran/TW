@@ -534,7 +534,7 @@ switch($_SESSION['opc']){
 
     break;
 
-    case 'basedatos': 
+    case 'basedatos': //Tiene algunos problemas aun
         if($_SESSION['permisos']<=1){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
@@ -549,6 +549,14 @@ switch($_SESSION['opc']){
 
         if(isset($_POST['copia'])){
             $controladorBBDD->copyBBDD();
+        }
+
+        else if(isset($_POST['restaurar'])){
+            $controladorBBDD->restoreBBDD("./modelo/backup/backup.sql");
+        }
+
+        else if(isset($_POST['eliminar'])){
+            // $controladorBBDD->deleteBBDD("./modelo/backup/drop.sql");
         }
 
         $controladorBBDD->displayStatic();
@@ -572,7 +580,7 @@ switch($_SESSION['opc']){
     break;
     
     case 'eliminauser': //Log
-        if($_SESSION['permisos']<=1){
+        if($_SESSION['permisos']<=1 || $_GET['id']==$_SESSION['usuario']['id']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
             
@@ -589,14 +597,6 @@ switch($_SESSION['opc']){
     break;
 
     case 'comentar': //Log
-        if($_SESSION['permisos']==0){
-            $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
-            $_SESSION['usuario']);
-            
-            $controladorReceta->displayStatic();
-
-            break; 
-        }
 
         $controladorReceta=new ControladorRecetas($_SESSION['permisos'],'comentario.html',
         $_SESSION['usuario']);
@@ -639,6 +639,32 @@ switch($_SESSION['opc']){
         isset($_POST['valorar']));
         
         $controladorReceta->verReceta($_GET['id'], $_SESSION['usuario']);
+    break;
+
+    case 'anadircategoria':
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"anadircategoria.html",
+        $_SESSION['usuario']);
+
+        if(isset($_POST['confirmar'])){
+            $datos=$_SESSION['datos']; 
+        }
+        else{
+            $datos=[];
+            if(isset($_POST['nombreCategoria'])){
+                $datos+=['nombreCategoria'=>$_POST['nombreCategoria']];
+            }
+        }
+        
+        $_SESSION['datos']=$controladorReceta->anadirNuevaCategoria($datos, isset($_POST['enviar']),
+        isset($_POST['confirmar']));
+    break;
+
+    case 'eliminacomentario':
+        $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"eliminacomentario.html",
+        $_SESSION['usuario']);
+
+        $controladorReceta->eliminaComentario($_GET['id'], $_SESSION['usuario'], 
+        isset($_POST['eliminar']));
     break;
     
     default: 

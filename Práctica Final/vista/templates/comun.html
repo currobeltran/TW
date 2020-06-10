@@ -28,7 +28,7 @@
                 {% endif %}
 
                 {% if permisos >= 2 %}
-                <li><a href="index.php?p=gestionar">Gestión de usuarios</a></li>
+                <li><a href="index.php?p=gestionar">Gestión</a></li>
                 <li><a href="index.php?p=log">Ver log</a></li>
                 <li><a href="index.php?p=basedatos">Gestión de la BBDD</a></li>
                 {% endif %}
@@ -43,8 +43,9 @@
 
                 {% if permisos >= 1 %}
                     <p>Te has identificado como {{ usuario }}</p>
-                    <img src="data:image/jpeg;base64,{{ foto }}" class="iconos">
-
+                    <img src="data:image/jpeg;base64,{{ foto }}" class="iconos" 
+                         alt="Foto de {{ usuario }}">
+                    
                     <form action='' method='POST'>
                         <input type='submit' value='Logout' name='Logout'>
                     </form>

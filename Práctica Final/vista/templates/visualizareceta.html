@@ -44,23 +44,35 @@
         <ul>
             {% for comentario in comentarios %}
                 <li class="comentario"> 
-                    <h4>{{ comentario.fecha }}. {{ comentario.nombreUsuario }}</h4>
+                    <h4>{{ comentario.fecha }}. 
+                        {% if comentario.nombreUsuario %}
+                            {{ comentario.nombreUsuario }}
+                        {% else %}
+                            Anónimo
+                        {% endif %}
+                    </h4>
                     <p>{{ comentario.comentario }}</p>
+                    {% if permisos == 2 %}
+                        <a href={{ comentario.eliminaurl }}>
+                            <img src="./vista/templates/img/cerrar.png">
+                        </a>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
 
         <ul id="barraInferior">
+
+            <li>
+                <a href={{ recetacomurl }}>
+                <img src="./vista/templates/img/comentario.png" alt="comentar"/>
+                </a>
+            </li>
+
             {% if permisos != 0 %}
                 <li>
                     <a href={{ recetavalurl }}>
                     <img src="./vista/templates/img/estrella.png" alt="valorar"/>
-                    </a>
-                </li>
-
-                <li>
-                    <a href={{ recetacomurl }}>
-                    <img src="./vista/templates/img/comentario.png" alt="comentar"/>
                     </a>
                 </li>
 

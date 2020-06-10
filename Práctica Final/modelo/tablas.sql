@@ -46,7 +46,7 @@ CREATE TABLE categorias(
 
 CREATE TABLE comentarios(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    idUsuario INT NOT NULL,
+    idUsuario INT,
     idReceta INT NOT NULL,
     comentario TEXT NOT NULL,
     fecha DATETIME NOT NULL,
