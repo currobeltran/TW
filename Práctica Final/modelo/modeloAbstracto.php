@@ -10,7 +10,7 @@ abstract class AbstractModel{ // Clase abstracta
         $this->db->set_charset("utf16");
     }
     
-    public function query($select,$params=[],$type='') {  // Consulta que debe devolver 1 tupla
+    public function query($select,$params=[],$type='') {  
         
         if (empty($params)){// Si no lleva parámetros -> consulta normal
             $result = $this->db->query($select);
@@ -27,10 +27,6 @@ abstract class AbstractModel{ // Clase abstracta
             }
             
             $pq->execute();
-            // if(isset($pq->error)){
-            //     return $pq->error;
-            // }
-            echo $pq->error;
             $result=$pq->get_result();
         }
 
@@ -47,6 +43,7 @@ class ModeloUsuario extends AbstractModel{
     public function query($select,$params=[],$type=''){
         $result=parent::query($select,$params,$type);
         return $result;
+        
     }
 
     public function getListaUsuarios(){
@@ -76,12 +73,14 @@ class ModeloUsuario extends AbstractModel{
     public function editarUsuario($params){
         $select="UPDATE usuarios SET nombre = ?, apellidos = ?, 
         email = ?, passwd = ?, foto = ? ,tipo = ? WHERE id = ?";
-        $this->query($select,$params,'ssssssi'); 
+        $result=$this->query($select,$params,'ssssssi'); 
+        return $result;
     }
 
     public function eliminarUsuarioById($id){
         $select="DELETE FROM usuarios WHERE id = ?";
-        $this->query($select,$id,'i');
+        $result=$this->query($select,$id,'i');
+        return $result;
     }
 
     public function comprobarCredenciales($params){
@@ -125,22 +124,24 @@ class ModeloRecetas extends AbstractModel{
         
         if($categoria==[]){
             $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas 
-            WHERE recetas.nombre LIKE '%".$titulo."%' AND 
-            (recetas.descripcion LIKE '%".$contenido."%' OR 
-            recetas.ingredientes LIKE '%".$contenido."%' OR
-            recetas.preparacion LIKE '%".$contenido."%') ".$parametroOrden;
+            WHERE recetas.nombre LIKE CONCAT('%',?,'%') AND 
+            (recetas.descripcion LIKE CONCAT('%',?,'%') OR 
+            recetas.ingredientes LIKE CONCAT('%',?,'%') OR
+            recetas.preparacion LIKE CONCAT('%',?,'%')) ".$parametroOrden;
         }
         else{
             $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas 
             LEFT JOIN categorias
-            ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE '%".$titulo."%' AND 
-            (recetas.descripcion LIKE '%".$contenido."%' OR 
-            recetas.ingredientes LIKE '%".$contenido."%' OR
-            recetas.preparacion LIKE '%".$contenido."%') AND categorias.idCategoria IN 
+            ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE CONCAT('%',?,'%') AND 
+            (recetas.descripcion LIKE CONCAT('%',?,'%') OR 
+            recetas.ingredientes LIKE CONCAT('%',?,'%') OR
+            recetas.preparacion LIKE CONCAT('%',?,'%')) AND categorias.idCategoria IN 
             (".implode(",", $categoria).") ".$parametroOrden;
         }
 
-        $result=$this->query($select);
+        $params=[$titulo, $contenido, $contenido, $contenido];
+
+        $result=$this->query($select, $params, 'ssss');
         return $result;
     }
 
@@ -160,31 +161,33 @@ class ModeloRecetas extends AbstractModel{
         else{ //Hay que cambiarlo para comentarios y valoraciones
             $parametroOrden="ORDER BY nombre";
         } 
-
+        
         if($categoria==[]){
             $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas WHERE nombre 
-            LIKE '%".$titulo."%' AND 
-            (descripcion LIKE '%".$contenido."%' OR 
-            ingredientes LIKE '%".$contenido."%' OR
-            preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor." ".$parametroOrden;
+            LIKE CONCAT('%',?,'%') AND 
+            (descripcion LIKE CONCAT('%',?,'%') OR 
+            ingredientes LIKE CONCAT('%',?,'%') OR
+            preparacion LIKE CONCAT('%',?,'%')) AND idAutor = ? ".$parametroOrden;
         }
         else{
             $select="SELECT recetas.id, recetas.nombre, recetas.idAutor FROM recetas 
             LEFT JOIN categorias
-            ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE '%".$titulo."%' AND 
-            (recetas.descripcion LIKE '%".$contenido."%' OR 
-            recetas.ingredientes LIKE '%".$contenido."%' OR
-            recetas.preparacion LIKE '%".$contenido."%') AND idAutor LIKE ".$idAutor."
+            ON recetas.id = categorias.idReceta WHERE recetas.nombre LIKE CONCAT('%',?,'%') AND 
+            (recetas.descripcion LIKE CONCAT('%',?,'%') OR 
+            recetas.ingredientes LIKE CONCAT('%',?,'%') OR
+            recetas.preparacion LIKE CONCAT('%',?,'%')) AND idAutor = ?
             AND categorias.idCategoria IN (".implode(",", $categoria).") ".$parametroOrden;
         }
 
-        $result=$this->query($select);
+        $params=[$titulo, $contenido, $contenido, $contenido, $idAutor];
+
+        $result=$this->query($select, $params, 'ssssi');
         return $result;
     }
 
     //Cuenta las recetas (Se puede mejorar)
     public function countRecetas(){
-        $result=$this->getListaRecetas();
+        $result=$this->getAllRecetas();
         $recetas=[];
         while(($receta=mysqli_fetch_array($result))){
             array_push($recetas, $receta[nombre]);
@@ -203,7 +206,7 @@ class ModeloRecetas extends AbstractModel{
     public function insertReceta($params){
         $select="INSERT INTO recetas (idAutor, nombre, descripcion, 
         ingredientes, preparacion) VALUES (?,?,?,?,?)";
-        $this->query($select,$params,'issss'); 
+        $this->query($select,$params,'issss');
         $result=$this->db->insert_id;
         return $result;
     }
@@ -220,7 +223,8 @@ class ModeloRecetas extends AbstractModel{
     //Elimina una receta
     public function eliminaReceta($id){
         $select="DELETE FROM recetas WHERE id = ?";
-        $this->query($select,$id,'i');
+        $result=$this->query($select,$id,'i');
+        return $result;
     }
 }
 
@@ -242,7 +246,8 @@ class ModeloListaCategorias extends AbstractModel{
 
     public function insertCategoria($nombre){
         $select="INSERT INTO listacategorias (nombre) VALUES (?)";
-        $this->query($select, $nombre, 's');
+        $result=$this->query($select, $nombre, 's');
+        return $result;
     }
 }
 
@@ -267,19 +272,22 @@ class ModeloFotos extends AbstractModel{
     //Insertar nueva foto en receta
     public function insertFotoInReceta($idReceta, $fichero){
         $select="INSERT INTO fotos (idReceta, fichero) VALUES (?,?)";
-        $this->query($select, [$idReceta,$fichero], 'is');
+        $result=$this->query($select, [$idReceta,$fichero], 'is');
+        return $result;
     }
 
     //Elimina una foto concreta de la tabla
     public function eliminaFotoById($id){
         $select="DELETE FROM fotos WHERE id LIKE ?";
-        $this->query($select,$id,'i');
+        $result=$this->query($select,$id,'i');
+        return $result;
     }
 
     //Eliminar foto a traves del id de la receta
     public function eliminaFotoByIdReceta($id){
         $select="DELETE FROM fotos WHERE idReceta LIKE ?";
-        $this->query($select,$id,'i');
+        $result=$this->query($select,$id,'i');
+        return $result;
     }
 }
 
@@ -309,7 +317,8 @@ class ModeloCategorias extends AbstractModel{
 
     public function deleteCategoria($idReceta){
         $select="DELETE FROM categorias WHERE idReceta LIKE ?";
-        $this->query($select,$idReceta,'i');
+        $result=$this->query($select,$idReceta,'i');
+        return $result; 
     }
 }
 
@@ -339,17 +348,20 @@ class ModeloComentarios extends AbstractModel{
     public function insertComentario($params){
         $select="INSERT INTO comentarios (idUsuario, idReceta, comentario, fecha) VALUES 
         (?,?,?,?)";
-        $this->query($select,$params,'iiss');        
+        $result=$this->query($select,$params,'iiss');    
+        return $result;    
     }
 
     public function deleteComentariosReceta($idReceta){
         $select="DELETE FROM comentarios WHERE idReceta = ?";
-        $this->query($select,$idReceta,'i');
+        $result=$this->query($select,$idReceta,'i');
+        return $result;
     }
 
     public function deleteComentarioById($id){
         $select="DELETE FROM comentarios WHERE id = ?";
-        $this->query($select,$id,'i');
+        $result=$this->query($select,$id,'i');
+        return $result;
     }
 }
 
@@ -372,7 +384,8 @@ class ModeloValoracion extends AbstractModel{
 
     public function insertValoracion($params){
         $select="INSERT INTO valoraciones (idReceta, idUsuario, valoracion) VALUES (?,?,?)";
-        $this->query($select, $params, 'iii');
+        $result=$this->query($select, $params, 'iii');
+        return $result;
     }
 
     public function getValoracionByIdUsuarioReceta($params){
@@ -383,12 +396,14 @@ class ModeloValoracion extends AbstractModel{
 
     public function editarValoracion($params){
         $select="UPDATE valoraciones SET valoracion = ? WHERE id = ?";
-        $this->query($select, $params, 'ii');
+        $result=$this->query($select, $params, 'ii');
+        return $result;
     }
 
     public function deleteValoracionesReceta($idReceta){
         $select="DELETE FROM valoraciones WHERE idReceta = ?";
-        $this->query($select, $idReceta, 'i');
+        $result=$this->query($select, $idReceta, 'i');
+        return $result;
     }
 }
 
@@ -411,7 +426,8 @@ class ModeloLog extends AbstractModel{
 
     public function anadirIncidencia($params){
         $select="INSERT INTO log (fecha,descripcion) VALUES (?,?)";
-        $this->query($select,$params,'ss');
+        $result=$this->query($select,$params,'ss');
+        return $result;
     }
 }
 

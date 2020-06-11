@@ -1,8 +1,8 @@
-TRUNCATE TABLE log;
-TRUNCATE TABLE comentarios;
-TRUNCATE TABLE categorias;
-TRUNCATE TABLE listacategorias;
-TRUNCATE TABLE valoraciones;
-TRUNCATE TABLE fotos;
-TRUNCATE TABLE recetas;
-TRUNCATE TABLE usuarios;
+DROP TABLE log;
+DROP TABLE comentarios;
+DROP TABLE categorias;
+DROP TABLE listacategorias;
+DROP TABLE valoraciones;
+DROP TABLE fotos;
+DROP TABLE recetas;
+DROP TABLE usuarios;

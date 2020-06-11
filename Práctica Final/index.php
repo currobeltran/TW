@@ -534,7 +534,7 @@ switch($_SESSION['opc']){
 
     break;
 
-    case 'basedatos': //Tiene algunos problemas aun
+    case 'basedatos': 
         if($_SESSION['permisos']<=1){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
@@ -556,7 +556,7 @@ switch($_SESSION['opc']){
         }
 
         else if(isset($_POST['eliminar'])){
-            // $controladorBBDD->deleteBBDD("./modelo/backup/drop.sql");
+            $controladorBBDD->deleteBBDD("./modelo/backup/drop.sql");
         }
 
         $controladorBBDD->displayStatic();

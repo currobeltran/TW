@@ -17,9 +17,10 @@ abstract class AbstractController{
 
         //Obtenemos el numero de recetas
         $conteoReceta=$modeloRecetas->countRecetas();
-
+        
         //Obtenemos lista de categorias (listado, añadir recetas...)
         $result2=$modeloListaCategorias->getListaCategorias();
+
         $categorias=[];
         while(($categoria=mysqli_fetch_array($result2))){
             array_push($categorias, ['id'=>$categoria[id],
@@ -44,28 +45,29 @@ abstract class AbstractController{
             $this->params+=['usuarioID'=>$user['id']];
             $this->params+=['foto'=>$user['foto']];
         }
-
+        
         //Recetas mas valoradas
         $masValoradas=[];
         $recetas=$modeloRecetas->getAllRecetas();
-
+        
         while($receta=mysqli_fetch_array($recetas)){
             //Obtenemos url para ver la receta 
             $visurl="index.php?p=visualizar&id=".$receta[id];
-
+            
             //Obtenemos valoracion media de las recetas
             $result2=$modeloValoracion->getValoracionesByIdReceta($receta[id]);
+            
             $valoracion=mysqli_fetch_array($result2);
             $valoracionMedia=$valoracion[0];
 
             while($valoracion=mysqli_fetch_array($result2)){
                 $valoracionMedia=($valoracionMedia+$valoracion[0])/2;
             }
-
+            
             array_push($masValoradas, ['nombre'=>$receta[nombre], 'ver'=>$visurl,
             'valoracion'=>$valoracionMedia]);
         }
-
+        
         array_multisort(array_column($masValoradas,'valoracion'), SORT_DESC, $masValoradas);
 
         $this->params+=['masValoradas'=>[$masValoradas[0],$masValoradas[1],$masValoradas[2]]];
@@ -90,6 +92,9 @@ class ControladorRecetas extends AbstractController{
         
         //Obtenemos lista de recetas
         $result=$this->mrecetas->getListaRecetas($titulo,$contenido,$categoria, $orden);
+        if(!empty($result->error)){
+            return false;
+        }
         $recetas=[];
 
         //Nos quedamos con las recetas necesarias
@@ -106,6 +111,9 @@ class ControladorRecetas extends AbstractController{
 
             //Obtenemos valoracion media de las recetas
             $result2=$modeloValoracion->getValoracionesByIdReceta($receta[id]);
+            if(!empty($result2->error)){
+                return false;
+            }
             $valoracion=mysqli_fetch_array($result2);
             $valoracionMedia=$valoracion[0];
 
@@ -115,6 +123,9 @@ class ControladorRecetas extends AbstractController{
 
             //Obtenemos el numero de comentarios
             $result3=$modeloComentarios->getComentariosByIdReceta($receta[id]);
+            if(!empty($result3->error)){
+                return false;
+            }
             $ncomentarios=$result3->num_rows;
 
             //Generamos un vector de datos clave-valor correspondiente a una receta
@@ -217,11 +228,11 @@ class ControladorRecetas extends AbstractController{
         $receta=mysqli_fetch_array($result);
         
         //Obtener el nombre del autor a través de su id
-        $result2=$modelo2->getUsuarioById($receta[idAutor]);
+        $result2=$modelo2->getUsuarioById($receta['idAutor']);
         $autor=mysqli_fetch_array($result2);
 
         //Obtener la imagen a traves del id de la receta
-        $result3=$modelo3->getFotoByIdReceta($receta[id]);
+        $result3=$modelo3->getFotoByIdReceta($receta['id']);
         $foto=mysqli_fetch_array($result3);
 
         //Obtener demas fotos si existen
@@ -231,12 +242,12 @@ class ControladorRecetas extends AbstractController{
         }
 
         //Generar datos para ser procesados correctamente
-        $ingredientes=explode("#",$receta[ingredientes]);
-        $preparacion=explode("#",$receta[preparacion]);
-        $recetaedurl="index.php?p=editareceta&id=".$receta[id];
-        $recetaelurl="index.php?p=eliminareceta&id=".$receta[id];
-        $recetacomurl="index.php?p=comentar&id=".$receta[id];
-        $recetavalurl="index.php?p=valoracion&id=".$receta[id];
+        $ingredientes=explode("#",$receta['ingredientes']);
+        $preparacion=explode("#",$receta['preparacion']);
+        $recetaedurl="index.php?p=editareceta&id=".$receta['id'];
+        $recetaelurl="index.php?p=eliminareceta&id=".$receta['id'];
+        $recetacomurl="index.php?p=comentar&id=".$receta['id'];
+        $recetavalurl="index.php?p=valoracion&id=".$receta['id'];
 
         //Obtener el vector de comentarios de la receta
         $result=$modeloComentarios->getComentariosByIdReceta($id);
@@ -272,10 +283,10 @@ class ControladorRecetas extends AbstractController{
         }
 
         //Introducir datos en el mismo vector
-        $this->params+=['nombre'=>$receta[nombre]];
-        $this->params+=['autor'=>$autor[nombre]];
-        $this->params+=['imagen'=>$foto[fichero]];
-        $this->params+=['descripcion'=>$receta[descripcion]];
+        $this->params+=['nombre'=>$receta['nombre']];
+        $this->params+=['autor'=>$autor['nombre']];
+        $this->params+=['imagen'=>$foto['fichero']];
+        $this->params+=['descripcion'=>$receta['descripcion']];
         $this->params+=['ingredientes'=>$ingredientes];
         $this->params+=['pasos'=>$preparacion];
         $this->params+=['recetaedurl'=>$recetaedurl];
@@ -948,9 +959,7 @@ class ControladorBBDD extends AbstractController{
             }
             $salida .= "\n\n\n";
         }
-        error_reporting(E_ALL);
         file_put_contents("./modelo/backup/backup.sql",$salida);
-        error_reporting(0);
     }
 
     public function restoreBBDD($copia){
@@ -971,16 +980,16 @@ class ControladorBBDD extends AbstractController{
         $this->modeloDB->setForeignChecks(1);
     }
 
-    // public function deleteBBDD($archivo){
-    //     $this->modeloDB->setForeignChecks(0);
+    public function deleteBBDD($archivo){
+        $this->modeloDB->setForeignChecks(0);
 
-    //     $result= $this->modeloDB->showTables();
-    //     while($row = mysqli_fetch_row($result)){
-    //         $this->modeloDB->deleteTable($row[0]);
-    //     }
+        $result= $this->modeloDB->showTables();
+        while($row = mysqli_fetch_row($result)){
+            $this->modeloDB->deleteTable($row[0]);
+        }
 
-    //     $this->modeloDB->setForeignChecks(1);
-    // }
+        $this->modeloDB->setForeignChecks(1);
+    }
 }
 
 ?>
