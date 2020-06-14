@@ -12,7 +12,11 @@
             <input type="submit" name="Confirmar" value="Confirmar"/>
         </form>
     {% else %}
-        <h2>Receta eliminada</h2>
+        {% if errorEnvio == true %}
+        <h2 id="titulo">Error al eliminar receta</h2>
+        {% else %}
+        <h2 id="titulo">Receta eliminada correctamente</h2>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

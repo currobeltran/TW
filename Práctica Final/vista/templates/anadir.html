@@ -1,148 +1,92 @@
-{% extends 'comun.html' %}
+{% extends "templateform.html" %}
 
-{% block central %}
+{% block formulario %}
 
-    {% if envio == confirmado %}
-        <h2 id="titulo">Introduzca una nueva receta aquí<h2>
-        <h6>Debe rellenar todos los campos del siguiente formulario</h6>
-        <h6>Para añadir elementos en formato de lista (por ejemplo, los ingredientes)
-        debe introducir "#" entre los distintos elementos</h6>
-
-        <form action="" method="POST" class="formulario">
-            <label> Título 
-                <input type="text" name="titulo"/>
-            </label>
-
-            <h3> Categoría </h3 >
-                {% for tipo in tipos %}
-                    <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
-                        value="categoria#{{ tipo.id }}"/></label>
-                {% endfor %}
-
-            <label> Descripción 
-                <textarea name="descripcion" cols="24">
-                </textarea>
-            </label>
-
-            <label> Ingredientes 
-                <textarea name="ingredientes" cols="24">
-                </textarea>
-            </label>
-
-            <label> Preparación 
-                <textarea name="preparacion" cols="24">
-                </textarea>
-            </label>
-
-            <input type="submit" name="anadir"/>
-        </form>
-    {% elseif hayerror.numeroelementos > 0 %}
-        <h2 id="titulo">Datos erroneos<h2>
-        <h6>Debe rellenar todos los campos del siguiente formulario</h6>
-        <h6>Para añadir elementos en formato de lista (por ejemplo, los ingredientes)
-        debe introducir "#" entre los distintos elementos</h6>
-
-        <form action="" method="POST" class="formulario">
-            <label> Título 
-                <p class="error">{{ hayerror.titulo }}</p>
-                <input type="text" name="titulo" value='{{ datos.titulo }}'/>
-            </label>
-
-            <h3> Categoría </h3 >
-                {% for tipo in tipos %}
-                    <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
-                        value="categoria#{{ tipo.id }}" 
-                        {% for aux in datos.categorias %}
-                            {% if tipo.id == aux %}
-                                checked
-                            {% endif %}
-                        {% endfor %}
-                        /></label>
-                {% endfor %}
-
-            <label> Descripción 
-                <p class="error">{{ hayerror.descripcion }}</p>
-                <textarea name="descripcion" cols="24">
-                    {{ datos.descripcion }}
-                </textarea>
-            </label>
-
-            <label> Ingredientes 
-                <p class="error">{{ hayerror.ingredientes }}</p>
-                <textarea name="ingredientes" cols="24">
-                    {{ datos.ingredientes }}
-                </textarea>
-            </label>
-
-            <label> Preparación 
-                <p class="error">{{ hayerror.preparacion }}</p>
-                <textarea name="preparacion" cols="24">
-                    {{ datos.preparacion }}
-                </textarea>
-            </label>
-
-            <input type="submit" name="anadir"/>
-        </form>
-    {% elseif hayerror.numeroelementos == 0 %}
-        {% if confirmado == true %}
-
-        <h2>Envio realizado con éxito</h2>
-
-        {% else %}
-
-        <h2 id="titulo">¿Está seguro de que desea introducir esta información?<h2>
-        <h6>Para añadir elementos en formato de lista (por ejemplo, los ingredientes)
-        debe introducir "#" entre los distintos elementos</h6>
-
-        <form action="" method="POST" class="formulario">
-            <label> Título 
-                <p class="error">{{ hayerror.titulo }}</p>
-                <input type="text" name="titulo" value='{{ datos.titulo }}' disabled/>
-            </label>
-
-            <h3> Categoría </h3 >
-                {% for tipo in tipos %}
-                    <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}" 
-                        value="categoria#{{ tipo.id }}" 
-                        {% for aux in datos.categorias %}
-                            {% if tipo.id == aux %}
-                                checked
-                            {% endif %}
-                        {% endfor %} disabled
-                        /></label>
-                {% endfor %}
-
-            <label> Descripción 
-                <p class="error">{{ hayerror.descripcion }}</p>
-                <textarea name="descripcion" cols="24" disabled>
-                    {{ datos.descripcion }}
-                </textarea>
-            </label>
-
-            <label> Ingredientes 
-                <p class="error">{{ hayerror.ingredientes }}</p>
-                <textarea name="ingredientes" cols="24" disabled>
-                    {{ datos.ingredientes }}
-                </textarea>
-            </label>
-
-            <label> Preparación 
-                <p class="error">{{ hayerror.preparacion }}</p>
-                <textarea name="preparacion" cols="24" disabled>
-                    {{ datos.preparacion }}
-                </textarea>
-            </label>
-
-            <input type="submit" name="confirmar"/>
-        </form>
-
+<form action="" method="POST" class="formulario">
+    <label> Título 
+        {% if hayerror.numeroelementos > 0 and envio != confirmacion %}
+            <p class="error">{{ hayerror.titulo }}</p>
         {% endif %}
-    
-    {% else %}
+        <input type="text" name="titulo"
+            {% if envio != confirmacion %}
+                value="{{ datos.titulo }}"
+            {% endif %}
+            {% if hayerror.numeroelementos == 0 %}
+                disabled
+            {% endif %}
+        />
+    </label>
 
-        <h2>Ha ocurrido un error</h2>
-        <h6>Vuelva a intentarlo más tarde</h6>
+    <h3> Categoría </h3 >
+        {% for tipo in tipos %}
+            <label>{{ tipo.nombre }}<input type="checkbox" name="categoria#{{ tipo.id }}"
+                value="categoria#{{ tipo.id }}"
+                {% if envio != confirmacion %}
+                    {% for aux in datos.categorias %}
+                        {% if tipo.id == aux %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if hayerror.numeroelementos == 0 %}
+                    disabled
+                {% endif %}
+                />
+            </label>
+        {% endfor %}
 
-    {% endif %}
+    <label> Descripción 
+        {% if hayerror.numeroelementos > 0 and envio != confirmacion %}
+            <p class="error">{{ hayerror.descripcion }}</p>
+        {% endif %}
+        <textarea name="descripcion" cols="24"
+            {% if hayerror.numeroelementos == 0 %}
+                disabled
+            {% endif %}
+        >
+        {% if envio != confirmacion %}
+            {{ datos.descripcion }}
+        {% endif %}
+        </textarea>
+    </label>
+
+    <label> Ingredientes 
+        {% if hayerror.numeroelementos > 0 and envio != confirmacion %}
+            <p class="error">{{ hayerror.ingredientes }}</p>
+        {% endif %}
+        <textarea name="ingredientes" cols="24"
+            {% if hayerror.numeroelementos == 0 %}
+                disabled
+            {% endif %}
+        >
+        {% if envio != confirmacion %}
+            {{ datos.ingredientes }}
+        {% endif %}
+        </textarea>
+    </label>
+
+    <label> Preparación 
+        {% if hayerror.numeroelementos > 0 and envio != confirmacion %}
+            <p class="error">{{ hayerror.preparacion }}</p>
+        {% endif %}
+        <textarea name="preparacion" cols="24"
+            {% if hayerror.numeroelementos == 0 %}
+                disabled
+            {% endif %}
+        >
+        {% if envio != confirmacion %}
+            {{ datos.preparacion }}
+        {% endif %}
+        </textarea>
+    </label>
+
+    <input type="submit"
+        {% if envio != confirmacion and hayerror.numeroelementos == 0 %} 
+            name="confirmar" 
+        {% else %}
+            name="anadir"
+        {% endif %}
+    value="Añadir">
+</form>
 
 {% endblock %}

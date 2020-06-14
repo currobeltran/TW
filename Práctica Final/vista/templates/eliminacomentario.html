@@ -4,7 +4,11 @@
 
 {% if elimina %}
 
+{% if errorEnvio == true %}
+<h2 id="titulo">Error al eliminar el comentario</h2>
+{% else %}
 <h2 id="titulo">Comentario eliminado correctamente</h2>
+{% endif %}
 
 {% else %}
 

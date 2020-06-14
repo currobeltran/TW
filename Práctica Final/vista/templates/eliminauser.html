@@ -10,6 +10,10 @@
         <input type="submit" value="Confirmar" name="confirmado"/>
     </form>
 
+    {% elseif errorEnvio == true %}
+
+    <h2 id="titulo">Ha habido un error</h2>
+
     {% else %}
 
     <h2 id="titulo">Eliminación realizada correctamente</h2>

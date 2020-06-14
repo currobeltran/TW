@@ -1,0 +1,27 @@
+{% extends "comun.html" %}
+
+{% block central %}
+
+    {% if confirmacion == true %}
+        {% if errorEnvio == true %}
+            <h2 id="titulo">Error al enviar</h2>
+        {% else %}
+            <h2 id="titulo">Envio realizado correctamente</h2>
+        {% endif %}
+        
+    {% else %}
+
+        {% if envio == confirmacion %}
+            <h2 id="titulo">{{ tipoDato }}</h2>
+        {% elseif hayerror.numeroelementos > 0 %}
+            <h2 id="titulo">Corrija los siguientes errores</h2>
+        {% else %}
+            <h2 id="titulo">¿Está seguro de que desea añadir la siguiente información?</h2>
+        {% endif %}
+
+            {% block formulario %}
+
+            {% endblock %}
+    {% endif %}
+
+{% endblock %}

@@ -33,7 +33,11 @@
         </form>
 
     {% else %}
-        <h2 id="titulo">Valoracion enviada correctamente</h2>
+        {% if errorEnvio == true %}
+        <h2 id="titulo">Error al enviar valoración</h2>
+        {% else %}
+        <h2 id="titulo">Valoración eliminada correctamente</h2>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

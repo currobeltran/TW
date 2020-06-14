@@ -43,8 +43,12 @@
 
                 {% if permisos >= 1 %}
                     <p>Te has identificado como {{ usuario }}</p>
+                    {% if foto == '' %}
+                        <img src="./vista/templates/img/iconouser.png" class="iconos">
+                    {% else %}
                     <img src="data:image/jpeg;base64,{{ foto }}" class="iconos" 
                          alt="Foto de {{ usuario }}">
+                    {% endif %}
                     
                     <form action='' method='POST'>
                         <input type='submit' value='Logout' name='Logout'>
@@ -94,9 +98,8 @@
 
         <footer id="footer">
             <ul>
-                <li><a href="">(C) 2020 Tecnologías Web</a></li>
-                <li><a href="">Mapa del sitio</a></li>
-                <li><a href="">Contacto</a></li>
+                <li><a href="">Francisco Beltrán Sánchez</a></li>
+                <li><a href="./documentación/Documentación.pdf">Documentación</a></li>
             </ul>
         </footer>
 </html>

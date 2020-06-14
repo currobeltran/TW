@@ -1,47 +1,29 @@
-{% extends "gestion.html" %}
+{% extends "templateform.html" %}
 
-{% block seleccion %}
-
-{% if envio == confirmacion %}
-
-    <h2 id="titulo">Añada una nueva categoría</h2>
+{% block formulario %}
 
     <form action="" method="POST" class="formulario">
         <label>Nombre de la categoria
-            <input type="text" name="nombreCategoria">
+            {% if hayerror.numeroelementos > 0 and envio != confirmacion %}
+                <p class="error">{{ hayerror.nombreCategoria }}</p>
+            {% endif %}
+
+            <input type="text" name="nombreCategoria" 
+                {% if envio != confirmacion %}
+                    value={{ datos.nombreCategoria }}
+                {% endif %}
+                {% if hayerror.numeroelementos == 0 %}
+                    disabled
+                {% endif %}
+            >
         </label>
-        <input type="submit" name="enviar" value="Añadir">
+        <input type="submit"
+            {% if envio != confirmacion  and hayerror.numeroelementos == 0 %} 
+                name="confirmar" 
+            {% else %}
+                name="enviar"
+            {% endif %}
+        value="Añadir">
     </form>
-
-{% elseif hayerror.numeroElementos > 0 %}
-
-    <h2 id="titulo">Corrija los siguientes errores</h2>
-
-    <form action="" method="POST" class="formulario">
-        <label>Nombre de la categoria
-            <p class="error">{{ hayerror.nombreCategoria }}</p>
-            <input type="text" name="nombreCategoria" value={{ datos.nombreCategoria }}>
-        </label>
-        <input type="submit" name="enviar" value="Añadir">
-    </form>
-
-{% elseif hayerror.numeroElementos == 0 %}
-
-    {% if confirmacion == true %}
-        <h2 id="titulo">Envio realizado con éxito</h2>
-    
-    {% else %}
-        <h2 id="titulo">¿Está seguro de que desea añadir la nueva categoría?</h2>
-
-        <form action="" method="POST" class="formulario">
-            <label>Nombre de la categoria
-                <input type="text" name="nombreCategoria" value={{ datos.nombreCategoria }} disabled>
-            </label>
-            <input type="submit" name="confirmar" value="Añadir">
-        </form>
-
-    {% endif %}
-
-{% endif %}
 
 {% endblock %}

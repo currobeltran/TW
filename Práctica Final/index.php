@@ -5,6 +5,19 @@ error_reporting(0);
 require_once "vista/vista.php";
 require_once "modelo/modeloAbstracto.php";
 require_once "controlador/controlador.php";
+require_once "modelo/modeloUsuario.php";
+require_once "modelo/modeloBBDD.php";
+require_once "modelo/modeloCategorias.php";
+require_once "modelo/modeloComentarios.php";
+require_once "modelo/modeloFotos.php";
+require_once "modelo/modeloListaCategorias.php";
+require_once "modelo/modeloLog.php";
+require_once "modelo/modeloRecetas.php";
+require_once "modelo/modeloValoracion.php";
+require_once "controlador/controladorRecetas.php";
+require_once "controlador/controladorUsuario.php";
+require_once "controlador/controladorLog.php";
+require_once "controlador/controladorBBDD.php";
 
 if(!isset($_COOKIE["ultimaPagina"]) && !isset($_GET['p'])){
     $aux=new ControladorRecetas();
@@ -83,8 +96,10 @@ if(isset($_POST['Login'])){
         $ml->nuevoErrorLogueo();
     }
 }
-else{//Si no ha habido logueo, cargamos de nuevo los datos por si ha habido algun cambio
 
+//Si no ha habido logueo, cargamos de nuevo los datos por si ha habido algun cambio en los datos
+//del usuario
+else{
     $mu=new ControladorUsuario();
     $resultado=$mu->getUsuarioById($_SESSION['usuario']['id']);
 
@@ -100,17 +115,6 @@ else{//Si no ha habido logueo, cargamos de nuevo los datos por si ha habido algu
 }
 
 switch($_SESSION['opc']){
-    
-    // case 'inicio': 
-    //     $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"visualizareceta.html",
-    //     $_SESSION['usuario']);
-
-    //     if(isset($_COOKIE["ultimaPagina"])){
-    //         $idRecetaInicio=$_COOKIE["ultimaPagina"];
-    //     }
-
-    //     $controladorReceta->verReceta($idRecetaInicio, $_SESSION['usuario']);
-    // break; 
     
     case 'listado': 
         $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"listado.html",
@@ -209,9 +213,6 @@ switch($_SESSION['opc']){
         $_SESSION['usuario']);
         if(isset($_POST['confirmar'])){
             $datos=$_SESSION['datos'];
-
-            $ml=new ControladorLog();
-            $ml->nuevaReceta($datos['titulo']);
         }
         else{
             $datos=[];
@@ -312,7 +313,7 @@ switch($_SESSION['opc']){
         }
 
         if(isset($_POST['titulo'])){ 
-            $datos+=['titulo'=>$_POST['titulo']];
+            $datos+=['nombre'=>$_POST['titulo']];
         }
 
         if(isset($_POST['descripcion'])){ 
@@ -326,17 +327,14 @@ switch($_SESSION['opc']){
         if(isset($_POST['preparacion'])){
             $datos+=['preparacion'=>$_POST['preparacion']];
         }
-
+        
         if(isset($_POST['anadirfoto']) && in_array($_FILES['foto']['type'], 
         ["image/jpeg","image/gif","image/png"])){ 
-            $_FILES['foto']['name']="img_".rand().".jpg"; 
-
+            $_FILES['foto']['name']="img_".rand()/**.".".$_FILES['foto']['type']*/; 
+            
             if(move_uploaded_file($_FILES['foto']['tmp_name'], 
             "./tmp/".$_FILES['foto']['name'])){
                 $datos+=['rutanuevafoto'=>"./tmp/".$_FILES['foto']['name']];
-            }
-            else{
-                echo $_FILES['foto']['error'];
             }
         }
 
@@ -403,9 +401,15 @@ switch($_SESSION['opc']){
 
         if(isset($_POST['confirmado'])){
             $datos=$_SESSION['datos'];
+
         }
         else{
-            $datos=$_SESSION['usuario'];
+            if(!isset($_GET['id'])){ 
+                $datos=$_SESSION['usuario'];   
+            }
+            else{
+                $datos=$_SESSION['datos'];
+            }
         }
 
         if(!isset($_GET['id'])){ 
@@ -441,8 +445,7 @@ switch($_SESSION['opc']){
 
         if(isset($_FILES['foto']) && in_array($_FILES['foto']['type'], 
             ["image/jpeg","image/gif","image/png"])){
-            move_uploaded_file($_FILES['foto']['tmp_name'],"./tmp/".$_FILES['foto']['name']);
-            $datos['foto']=file_get_contents("./tmp/".$_FILES['foto']['name']);
+            $datos['foto']=file_get_contents($_FILES['foto']['tmp_name']);
         }
 
         $_SESSION['datos']=$controladorUsuario->editarUsuario($idUsuario, $datos, 
@@ -494,9 +497,6 @@ switch($_SESSION['opc']){
 
         if(isset($_POST['confirmar'])){
             $datos=$_SESSION['datos'];
-
-            $ml=new ControladorLog();
-            $ml->nuevoUsuario($datos['nombre']);
         }
         else{
             $datos=[];
@@ -588,10 +588,10 @@ switch($_SESSION['opc']){
 
             break; 
         }
-
+        
         $controladorUsuario=new ControladorUsuario($_SESSION['permisos'],'eliminauser.html',
         $_SESSION['usuario']);
-
+        
         $controladorUsuario->eliminaUsuario($_GET['id'], isset($_POST['confirmado']));
 
     break;
@@ -678,7 +678,5 @@ switch($_SESSION['opc']){
         $controladorReceta->verReceta($idRecetaInicio, $_SESSION['usuario']);
     break;
 }
-
-$view->render([]);
 
 ?>
