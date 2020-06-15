@@ -14,7 +14,7 @@ class ModeloValoracion extends AbstractModel{
     }
 
     public function exists($id){
-        $result=parent::exists("valoracion", $id);
+        $result=parent::exists("valoraciones", $id);
         return $result;
     }
 

@@ -563,7 +563,6 @@ class ControladorRecetas extends AbstractController{
                 ];
                 
                 $idValor=$modeloValoracion->insertValoracion($datos);
-
                 if(!$modeloValoracion->exists($idValor)){
                     $this->params+=['errorEnvio'=>true];
                 }
@@ -573,7 +572,7 @@ class ControladorRecetas extends AbstractController{
         $this->params+=['confirmar'=>$confirmar];
         $this->params+=['valor'=>$valoracion];
         $this->params+=['envio'=>$envio];
-
+        
         return $valoracion;
     }
 

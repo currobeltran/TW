@@ -76,6 +76,8 @@ if(!isset($_SESSION['permisos'])){
 //Si es todo correcto, se guardan las credenciales en $_SESSION
 if(isset($_POST['Login'])){
     $mu=new ControladorUsuario();
+    //Cada vez que vaya a ocurrir un evento remarcable, crearemos un ControladorLog para 
+    //anotarlo en la respectiva tabla
     $ml=new ControladorLog();
 
     $resultado=$mu->comprobarCredenciales($_POST['email'], $_POST['clave']);
@@ -114,6 +116,8 @@ else{
     }
 }
 
+//Dependiendo de la opcion escogida, ejecutamos un código u otro
+
 switch($_SESSION['opc']){
     
     case 'listado': 
@@ -121,6 +125,12 @@ switch($_SESSION['opc']){
         $_SESSION['usuario']);
 
         $categoria=[];
+
+        /**
+         * Para todos los formularios, antes de llamar a la función del controlador, se 
+         * trata la información que llega a través de POST para, posteriormente, 
+         * realizar correctamente la función deseada.
+         */
 
         foreach($_POST as $entrada){
             if(strpos($entrada,"categoria") !== false){
@@ -157,6 +167,11 @@ switch($_SESSION['opc']){
     break;
     
     case 'milistado': 
+        /**
+         * Presente en todas las opciones con acceso restringido para algún tipo de usuario.
+         * Si no se tienen los permisos adecuados, se muestra una pantalla que indica 
+         * un intento de acceso no autorizado.
+         */
         if($_SESSION['permisos']==0){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
@@ -212,6 +227,9 @@ switch($_SESSION['opc']){
         $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"anadir.html",
         $_SESSION['usuario']);
         if(isset($_POST['confirmar'])){
+            /**Al confirmar una operacion CRUD, para tener los datos correspondientes
+             * han tenido que ser almacenados previamente en una variable de sesión.
+            */
             $datos=$_SESSION['datos'];
         }
         else{
@@ -330,7 +348,7 @@ switch($_SESSION['opc']){
         
         if(isset($_POST['anadirfoto']) && in_array($_FILES['foto']['type'], 
         ["image/jpeg","image/gif","image/png"])){ 
-            $_FILES['foto']['name']="img_".rand()/**.".".$_FILES['foto']['type']*/; 
+            $_FILES['foto']['name']="img_".rand(); 
             
             if(move_uploaded_file($_FILES['foto']['tmp_name'], 
             "./tmp/".$_FILES['foto']['name'])){
@@ -352,7 +370,7 @@ switch($_SESSION['opc']){
             break; 
         }
         
-        elseif($_SESSION['permisos']==1){ //Comprobamos si el usuario es propietario de la receta
+        elseif($_SESSION['permisos']==1){ 
             $aux=new ControladorRecetas();
 
             if($aux->comprobarRecetaUsuario($_GET['id'],$_SESSION['usuario']['id']) == false){
@@ -383,7 +401,7 @@ switch($_SESSION['opc']){
             break; 
         }
         
-        elseif($_SESSION['permisos']==1){ //Comprobamos si el usuario es propietario de la receta
+        elseif($_SESSION['permisos']==1){ 
             $aux=new ControladorRecetas();
 
             if($_GET['id'] == $_SESSION['usuario']['id']){
@@ -579,7 +597,7 @@ switch($_SESSION['opc']){
         $controladorLog->listarLog();
     break;
     
-    case 'eliminauser': //Log
+    case 'eliminauser': 
         if($_SESSION['permisos']<=1 || $_GET['id']==$_SESSION['usuario']['id']){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
@@ -596,7 +614,7 @@ switch($_SESSION['opc']){
 
     break;
 
-    case 'comentar': //Log
+    case 'comentar': 
 
         $controladorReceta=new ControladorRecetas($_SESSION['permisos'],'comentario.html',
         $_SESSION['usuario']);
@@ -614,7 +632,7 @@ switch($_SESSION['opc']){
         $controladorReceta->verReceta($_GET['id'], $_SESSION['usuario']);
     break;
 
-    case 'valoracion': //Log
+    case 'valoracion': 
         if($_SESSION['permisos']==0){
             $controladorReceta=new ControladorRecetas($_SESSION['permisos'],"error.html",
             $_SESSION['usuario']);
